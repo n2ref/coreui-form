@@ -203,7 +203,7 @@ class Db extends Form {
 
                     $buttons_wrapper = $this->buttons_wrapper !== null
                         ? $this->buttons_wrapper
-                        : file_get_contents(__DIR__ . '/html/form/wrappers/button.html');
+                        : file_get_contents(__DIR__ . '/../html/form/wrappers/button.html');
 
                     $buttons_html = str_replace('[BUTTONS]', implode(' ', $buttons_controls), $buttons_wrapper);
                 }
@@ -232,7 +232,7 @@ class Db extends Form {
         }
 
 
-        $form = file_get_contents(__DIR__ . '/html/form.html');
+        $form = file_get_contents(__DIR__ . '/../html/template.html');
 
         $form = str_replace('[ATTRIBUTES]', implode(' ', $attributes), $form);
         $form = str_replace('[CONTROLS]',   $template, $form);
