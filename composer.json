@@ -2,7 +2,10 @@
   "name": "bluefish/coreui-form",
   "type": "framework",
   "description": "PHP framework for web applications",
-  "keywords": ["framework"],
+  "keywords": [
+    "framework",
+    "coreui"
+  ],
   "homepage": "https://github.com/shabuninil/coreui-form",
   "license": "GNU3",
   "authors": [
@@ -17,5 +20,10 @@
   "require": {
     "php": ">=5.6.0",
     "bluefish/coreui-core": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "CoreUI\\": "src/"
+    }
   }
 }
