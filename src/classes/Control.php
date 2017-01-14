@@ -257,7 +257,7 @@ abstract class Control {
      */
     protected function makeWrapper() {
 
-        $tpl = new Mtpl(__DIR__ . '/html/form/wrappers/control.html');
+        $tpl = new Mtpl(__DIR__ . '/../html/form/wrappers/control.html');
 
         if ( ! empty($this->attributes['id'])) {
             $label_for = ' for="' . $this->attributes['id'] . '"';
