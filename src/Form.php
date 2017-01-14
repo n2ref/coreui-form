@@ -190,7 +190,7 @@ class Form {
 	public function addControl($label, $type, $name = '') {
 
         $type      = ucfirst(strtolower($type));
-        $file_type = __DIR__ . '/Form/Classes/Control/' . $type . '.php';
+        $file_type = __DIR__ . '/classes/Control/' . $type . '.php';
 
         if ( ! file_exists($file_type)) {
             throw new Exception("Type '{$type}' not found");
@@ -225,7 +225,7 @@ class Form {
 	 * @return Control\Text
 	 */
 	public function addText($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Text.php';
+        require_once __DIR__ . '/classes/Control/Text.php';
         $control = new Control\Text($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -244,7 +244,7 @@ class Form {
 	 * @return Control\Custom
 	 */
 	public function addCustom($label, $html) {
-        require_once __DIR__ . '/Form/Classes/Control/Custom.php';
+        require_once __DIR__ . '/classes/Control/Custom.php';
         $control = new Control\Custom($label, $html);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -258,7 +258,7 @@ class Form {
 	 * @return Control\Password
 	 */
 	public function addPassword($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Password.php';
+        require_once __DIR__ . '/classes/Control/Password.php';
         $control = new Control\Password($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -275,7 +275,7 @@ class Form {
 	 * @return Control\Email
 	 */
 	public function addEmail($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Email.php';
+        require_once __DIR__ . '/classes/Control/Email.php';
         $control = new Control\Email($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -292,7 +292,7 @@ class Form {
 	 * @return Control\Select
 	 */
 	public function addSelect($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Select.php';
+        require_once __DIR__ . '/classes/Control/Select.php';
         $control = new Control\Select($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -309,7 +309,7 @@ class Form {
 	 * @return Control\Radio
 	 */
 	public function addRadio($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Radio.php';
+        require_once __DIR__ . '/classes/Control/Radio.php';
         $control = new Control\Radio($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -326,7 +326,7 @@ class Form {
 	 * @return Control\Checkbox
 	 */
 	public function addCheckbox($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Checkbox.php';
+        require_once __DIR__ . '/classes/Control/Checkbox.php';
         $control = new Control\Checkbox($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -343,7 +343,7 @@ class Form {
 	 * @return Control\Captcha
 	 */
 	public function addCaptcha($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Captcha.php';
+        require_once __DIR__ . '/classes/Control/Captcha.php';
         $control = new Control\Captcha($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -360,7 +360,7 @@ class Form {
 	 * @return Control\Date
 	 */
 	public function addDate($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Date.php';
+        require_once __DIR__ . '/classes/Control/Date.php';
         $control = new Control\Date($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -377,7 +377,7 @@ class Form {
 	 * @return Control\Datetime
 	 */
 	public function addDatetime($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Datetime.php';
+        require_once __DIR__ . '/classes/Control/Datetime.php';
         $control = new Control\Datetime($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -394,7 +394,7 @@ class Form {
 	 * @return Control\File
 	 */
 	public function addFile($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/File.php';
+        require_once __DIR__ . '/classes/Control/File.php';
         $control = new Control\File($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -411,7 +411,7 @@ class Form {
 	 * @return Control\Upload
 	 */
 	public function addUpload($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Upload.php';
+        require_once __DIR__ . '/classes/Control/Upload.php';
         $control = new Control\Upload($label, $name);
         $control->setResource($this->resource);
         $this->positions[$this->current_position]['controls'][] = $control;
@@ -428,7 +428,7 @@ class Form {
 	 * @return Control\Hidden
 	 */
 	public function addHidden($name) {
-        require_once __DIR__ . '/Form/Classes/Control/Hidden.php';
+        require_once __DIR__ . '/classes/Control/Hidden.php';
         $control = new Control\Hidden('', $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -445,7 +445,7 @@ class Form {
 	 * @return Control\Textarea
 	 */
 	public function addTextarea($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Textarea.php';
+        require_once __DIR__ . '/classes/Control/Textarea.php';
         $control = new Control\Textarea($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -463,7 +463,7 @@ class Form {
 	 * @return Control\Wysiwyg\Ckeditor
 	 */
 	public function addWysiwygCkeditor($label, $name = '', $config = 'basic') {
-        require_once __DIR__ . '/Form/Classes/Control/Wysiwyg/Ckeditor.php';
+        require_once __DIR__ . '/classes/Control/Wysiwyg/Ckeditor.php';
         $control = new Control\Wysiwyg\Ckeditor($label, $name, $config);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -480,7 +480,7 @@ class Form {
 	 * @return Control\Markdown
 	 */
 	public function addMarkdown($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Markdown.php';
+        require_once __DIR__ . '/classes/Control/Markdown.php';
         $control = new Control\Markdown($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -498,7 +498,7 @@ class Form {
 	 * @return Control\Modal
 	 */
 	public function addModal($label, $name = '', $title = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Modal.php';
+        require_once __DIR__ . '/classes/Control/Modal.php';
         $control = new Control\Modal($label, $name, $title);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -515,7 +515,7 @@ class Form {
 	 * @return Control\Number
 	 */
 	public function addNumber($label, $name = '') {
-        require_once __DIR__ . '/Form/Classes/Control/Number.php';
+        require_once __DIR__ . '/classes/Control/Number.php';
         $control = new Control\Number($label, $name);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
@@ -531,7 +531,7 @@ class Form {
 	 * @return Button\Submit
 	 */
 	public function addSubmit($title) {
-        require_once __DIR__ . '/Form/Classes/Button/Submit.php';
+        require_once __DIR__ . '/classes/Button/Submit.php';
         $control = new Button\Submit($title);
         $this->positions[$this->current_position]['buttons'][] = $control;
         $this->current_position = 'default';
@@ -544,7 +544,7 @@ class Form {
 	 * @return Button\Button
 	 */
 	public function addButton($title) {
-        require_once __DIR__ . '/Form/Classes/Button/Button.php';
+        require_once __DIR__ . '/classes/Button/Button.php';
         $control = new Button\Button($title);
         $this->positions[$this->current_position]['buttons'][] = $control;
         $this->current_position = 'default';
@@ -561,7 +561,7 @@ class Form {
      * @return Button\Switched
      */
 	public function addButtonSwitched($name, $value, $active_value, $inactive_value, $default = true) {
-        require_once __DIR__ . '/Form/Classes/Button/Switched.php';
+        require_once __DIR__ . '/classes/Button/Switched.php';
         $control = new Button\Switched($name, $value, $active_value, $inactive_value, $default);
         $this->positions[$this->current_position]['buttons'][] = $control;
         $this->current_position = 'default';
@@ -578,7 +578,7 @@ class Form {
 	 * @return Button\Reset
 	 */
 	public function addReset($title) {
-        require_once __DIR__ . '/Form/Classes/Button/Reset.php';
+        require_once __DIR__ . '/classes/Button/Reset.php';
         $control = new Button\Reset($title);
         $this->positions[$this->current_position]['buttons'][] = $control;
         $this->current_position = 'default';
