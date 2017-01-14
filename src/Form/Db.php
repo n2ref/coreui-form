@@ -225,7 +225,7 @@ class Db extends Form {
 
         // Стили
         $scripts_css = array();
-        $main_css = "{$this->theme_src}/html/css/form.css";
+        $main_css = "{$this->theme_src}/html/css/styles.css";
         if ( ! isset(self::$scripts_css[$main_css])) {
             self::$scripts_css[$main_css] = false;
             $scripts_css[] = "<link href=\"{$main_css}\" rel=\"stylesheet\"/>";
