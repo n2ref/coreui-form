@@ -23,7 +23,8 @@
   },
   "autoload": {
     "psr-4": {
-      "CoreUI\\": "src/"
+      "CoreUI\\": "src/",
+      "CoreUI\\Form\\": "src/Form/"
     }
   }
 }
