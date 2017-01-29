@@ -3,6 +3,7 @@ namespace CoreUI\Form\Classes;
 use CoreUI\Registry;
 use CoreUI\Exception;
 use CoreUI\Utils\Mtpl;
+use CoreUI\Utils\Session\SessionNamespace;
 
 
 
@@ -13,7 +14,9 @@ use CoreUI\Utils\Mtpl;
 abstract class Control {
 
     protected $label            = '';
+    protected $name             = '';
     protected $resource         = '';
+    protected $token            = '';
     protected $attributes       = array();
     protected $validators       = array();
     protected $out              = '';
@@ -32,12 +35,14 @@ abstract class Control {
      */
     public function __construct($label, $name = '') {
         $this->label = $label;
-        if ( ! empty($name)) {
-            $this->attributes['name'] = $name;
+        $this->name  = $name;
+
+        if ( ! empty($this->name)) {
+            $this->attributes['name'] = $this->name;
         }
 
-        $this->lang       = Registry::getLanguage();
-        $this->theme_src  = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']));
+        $this->lang      = Registry::getLanguage();
+        $this->theme_src = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']));
     }
 
 
@@ -46,6 +51,14 @@ abstract class Control {
      */
     public function setResource($resource) {
         $this->resource = $resource;
+    }
+
+
+    /**
+     * @param string $token
+     */
+    public function setToken($token) {
+        $this->token = $token;
     }
 
 
@@ -155,6 +168,18 @@ abstract class Control {
     public function setRequired($message = '') {
         $this->required = true;
         $this->required_message = $message;
+
+        if ($this->resource && $this->name && $this->token) {
+            $this->session = new SessionNamespace($this->resource);
+            if (isset($this->session->form) &&
+                isset($this->session->form->{$this->token}) &&
+                isset($this->session->form->{$this->token}->controls) &&
+                ! empty($this->session->form->{$this->token}->controls[$this->name])
+            ) {
+                $this->session->form->{$this->token}->controls[$this->name]['required'] = true;
+            }
+        }
+
         return $this;
     }
 
@@ -266,7 +291,7 @@ abstract class Control {
             $label_for = '';
         }
         $name = ! empty($this->attributes['name']) ? $this->attributes['name'] : '';
-        $tpl->assign('[RESOURCE]',  $this->resource);
+        $tpl->assign('[RESOURCE]',  strtolower($this->resource));
         $tpl->assign('[NAME]',      $name);
         $tpl->assign('[LABEL_FOR]', $label_for);
         $tpl->assign('[LABEL]',     $this->label);

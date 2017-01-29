@@ -7,10 +7,6 @@
     height: 100%;
     z-index: 10000;
     background-color: #fff;
-    -webkit-box-shadow: inset 0 0 10px #D8D8D8;
-    -moz-box-shadow: inset 0 0 10px #D8D8D8;
-    -o-box-shadow: inset 0 0 10px #D8D8D8;
-    box-shadow: inset 0 0 10px #D8D8D8;
     opacity: .2;
     cursor: wait;
 }
@@ -206,4 +202,55 @@ fieldset[disabled] .combine-form-control {
 .combine-req-star {
     color: #DB1515;
     font-size: 16px;
+}
+
+
+.coreui-form-alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px
+}
+.coreui-form-alert h4 {
+    margin-top: 0;
+    color: inherit
+}
+.coreui-form-alert > p,
+.coreui-form-alert > ul {
+    margin-bottom: 0
+}
+.coreui-form-alert > p + p {
+    margin-top: 5px
+}
+.coreui-form-alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6
+}
+.coreui-form-alert-success hr {
+    border-top-color: #c9e2b3
+}
+.coreui-form-alert-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1
+}
+.coreui-form-alert-info hr {
+    border-top-color: #a6e1ec
+}
+.coreui-form-alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc
+}
+.coreui-form-alert-warning hr {
+    border-top-color: #f7e1b5
+}
+.coreui-form-alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1
+}
+.coreui-form-alert-danger hr {
+    border-top-color: #e4b9c0
 }

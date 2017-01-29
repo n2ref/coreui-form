@@ -1,5 +1,4 @@
 <?php
-
 namespace CoreUI\Form\Classes;
 use CoreUI\Form\Classes\Button\Submit;
 use CoreUI\Exception;

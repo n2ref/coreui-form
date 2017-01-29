@@ -36,8 +36,15 @@ combine.form = {
                         window.location.href = result.back_url;
                     }
                 } else {
-                    if (result.message) {
-                        alert(result.message);
+                    $(form).find(' > .coreui-form-alert.coreui-form-alert-danger').remove();
+                    if (result.errors) {
+                        var alert_danger = $('<div class="coreui-form-alert coreui-form-alert-danger"></div>');
+                        $.each(result.errors, function(){
+                            if (this.message) {
+                                alert_danger.append($('<div>' + this.message + '</div>'));
+                            }
+                        });
+                        $(form).prepend(alert_danger);
                     }
                 }
             },

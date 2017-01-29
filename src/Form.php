@@ -20,6 +20,7 @@ class Form {
 	protected $theme_src        = '';
     protected $theme_location   = '';
     protected $buttons_wrapper  = null;
+    protected $token            = null;
 
     /**
      * @var SessionNamespace|null
@@ -46,11 +47,14 @@ class Form {
         $this->resource  = $resource;
         $this->lang      = Registry::getLanguage();
         $this->theme_src = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']));
+        $this->token     = sha1(uniqid('coreui', true));
 
         $this->session = new SessionNamespace($this->resource);
         if ( ! isset($this->session->form)) {
             $this->session->form = new \stdClass();
         }
+
+        $this->session->form->{$this->token} = new \stdClass();
     }
 
 
@@ -58,7 +62,7 @@ class Form {
 	 * @param  string       $name
 	 * @param  array        $args
 	 * @return Control\Text
-     * @throws \Exception
+     * @throws Exception
 	 */
 	public function __call($name, $args) {
 
@@ -74,7 +78,7 @@ class Form {
             return $control;
 
         } else {
-            throw new \Exception("Incorrect name magic function '{$name}'");
+            throw new Exception("Incorrect name magic function '{$name}'");
         }
 	}
 
@@ -116,7 +120,7 @@ class Form {
 	 * @param  string     $name
 	 * @param  string     $value
 	 * @return self
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function setAttr($name, $value) {
 
@@ -124,7 +128,7 @@ class Form {
             $this->attributes[$name] = $value;
 
 		} else {
-			throw new \Exception("Attribute not valid type. Need string or number");
+			throw new Exception("Attribute not valid type. Need string or number");
 		}
 
 		return $this;
@@ -156,7 +160,7 @@ class Form {
 	 * @param $value
 	 */
 	public function setSessData($name, $value) {
-        $this->session->form->$name = $value;
+        $this->session->form->{$this->token}->{$name} = $value;
 	}
 
 
@@ -165,8 +169,8 @@ class Form {
      * @return mixed|null
      */
 	public function getSessData($name) {
-        if (isset($this->session->form) && isset($this->session->form->$name)) {
-            return $this->session->form->$name;
+        if (isset($this->session->form->{$this->token}->{$name})) {
+            return $this->session->form->{$this->token}->{$name};
         }
         return null;
 	}
@@ -189,22 +193,23 @@ class Form {
 	 */
 	public function addControl($label, $type, $name = '') {
 
-        $type      = ucfirst(strtolower($type));
-        $file_type = __DIR__ . '/classes/Control/' . $type . '.php';
+        $type_class = ucfirst(strtolower($type));
+        $file_type  = __DIR__ . '/classes/Control/' . $type_class . '.php';
 
         if ( ! file_exists($file_type)) {
-            throw new Exception("Type '{$type}' not found");
+            throw new Exception("Type '{$type_class}' not found");
         }
 
         require_once $file_type;
 
-        $class_name = 'CoreUI\\Form\\Classes\\Control\\'.$type;
+        $class_name = 'CoreUI\\Form\\Classes\\Control\\'.$type_class;
         if ( ! class_exists($class_name)) {
-            throw new Exception("Type '{$type}' broken. Not found class");
+            throw new Exception("Type '{$type_class}' broken. Not found class");
         }
 
         $control = new $class_name($label, $name);
         $control->setResource($this->resource);
+        $control->setToken($this->token);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
 
@@ -212,7 +217,10 @@ class Form {
             if (strpos($name, '[]') == strlen($name) - 2) {
                 $name = substr($name, 0, -2);
             }
-            $this->session->form->controls[$name] = $type;
+            $this->session->form->{$this->token}->controls[$name] = [
+                'label' => $label,
+                'type'  => $type,
+            ];
         }
 
         return $control;
@@ -566,11 +574,12 @@ class Form {
         $this->positions[$this->current_position]['buttons'][] = $control;
         $this->current_position = 'default';
         if ($name) {
-            $this->session->form->controls[$name] = 'button_switched';
+            $this->session->form->{$this->token}->controls[$name] = [
+                'type'  => 'button_switched',
+            ];
         }
         return $control;
     }
-
 
 
 	/**
@@ -592,9 +601,7 @@ class Form {
 	 */
 	public function render() {
 
-        $token = sha1(uniqid());
-        $this->setSessData('__csrf_token', $token);
-        $this->attributes['data-csrf-token'] = $token;
+        $this->attributes['data-csrf-token'] = $this->token;
         $this->attributes['data-resource']   = $this->resource;
 
 

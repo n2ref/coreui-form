@@ -35,7 +35,7 @@ class Db extends Form {
     public function __construct($resource) {
         parent::__construct($resource);
         $this->db = Registry::getDbConnection()->getAdapter();
-        $this->session->form->controls = array();
+        $this->session->form->{$this->token}->controls = array();
     }
 
 
@@ -123,9 +123,8 @@ class Db extends Form {
 
         $data = $this->fetchData();
 
-        $token = sha1(uniqid());
-        $this->setSessData('__csrf_token', $token);
-        $this->attributes['data-csrf-token'] = $token;
+
+        $this->attributes['data-csrf-token'] = $this->token;
         $this->attributes['data-resource']   = $this->resource;
 
 
