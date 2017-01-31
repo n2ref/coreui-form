@@ -11,7 +11,7 @@ use CoreUI\Utils\Session\SessionNamespace;
  */
 class Form {
 
-	protected $attributes       = array();
+	protected $attributes       = ['method' => 'post'];
 	protected $resource	 		= '';
 	protected $template	 	    = '[default]';
 	protected $current_position = 'default';
@@ -48,6 +48,8 @@ class Form {
         $this->lang      = Registry::getLanguage();
         $this->theme_src = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']));
         $this->token     = sha1(uniqid('coreui', true));
+
+        $this->attributes['action'] = $_SERVER['REQUEST_URI'];
 
         $this->session = new SessionNamespace($this->resource);
         if ( ! isset($this->session->form)) {
@@ -124,7 +126,7 @@ class Form {
 	 */
 	public function setAttr($name, $value) {
 
-		if (is_string($name) && (is_string($value) || is_numeric($value))) {
+		if (is_string($name) && is_scalar($value)) {
             $this->attributes[$name] = $value;
 
 		} else {
@@ -209,7 +211,6 @@ class Form {
 
         $control = new $class_name($label, $name);
         $control->setResource($this->resource);
-        $control->setToken($this->token);
         $this->positions[$this->current_position]['controls'][] = $control;
         $this->current_position = 'default';
 
@@ -223,313 +224,6 @@ class Form {
             ];
         }
 
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Text
-	 */
-	public function addText($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Text.php';
-        $control = new Control\Text($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-
-        if ($name) {
-            $this->session->form->controls[$name] = 'text';
-        }
-
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $html
-	 * @return Control\Custom
-	 */
-	public function addCustom($label, $html) {
-        require_once __DIR__ . '/classes/Control/Custom.php';
-        $control = new Control\Custom($label, $html);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Password
-	 */
-	public function addPassword($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Password.php';
-        $control = new Control\Password($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'password';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Email
-	 */
-	public function addEmail($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Email.php';
-        $control = new Control\Email($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'email';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Select
-	 */
-	public function addSelect($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Select.php';
-        $control = new Control\Select($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'select';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Radio
-	 */
-	public function addRadio($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Radio.php';
-        $control = new Control\Radio($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'radio';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Checkbox
-	 */
-	public function addCheckbox($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Checkbox.php';
-        $control = new Control\Checkbox($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'checkbox';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Captcha
-	 */
-	public function addCaptcha($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Captcha.php';
-        $control = new Control\Captcha($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'captcha';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Date
-	 */
-	public function addDate($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Date.php';
-        $control = new Control\Date($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'date';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Datetime
-	 */
-	public function addDatetime($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Datetime.php';
-        $control = new Control\Datetime($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'datetime';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\File
-	 */
-	public function addFile($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/File.php';
-        $control = new Control\File($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'file';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Upload
-	 */
-	public function addUpload($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Upload.php';
-        $control = new Control\Upload($label, $name);
-        $control->setResource($this->resource);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'file_upload';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $name
-	 * @return Control\Hidden
-	 */
-	public function addHidden($name) {
-        require_once __DIR__ . '/classes/Control/Hidden.php';
-        $control = new Control\Hidden('', $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'hidden';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Textarea
-	 */
-	public function addTextarea($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Textarea.php';
-        $control = new Control\Textarea($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'textarea';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @param  string $config
-	 * @return Control\Wysiwyg\Ckeditor
-	 */
-	public function addWysiwygCkeditor($label, $name = '', $config = 'basic') {
-        require_once __DIR__ . '/classes/Control/Wysiwyg/Ckeditor.php';
-        $control = new Control\Wysiwyg\Ckeditor($label, $name, $config);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'wysiwyg_ckeditor';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Markdown
-	 */
-	public function addMarkdown($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Markdown.php';
-        $control = new Control\Markdown($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'markdown';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @param  string $title
-	 * @return Control\Modal
-	 */
-	public function addModal($label, $name = '', $title = '') {
-        require_once __DIR__ . '/classes/Control/Modal.php';
-        $control = new Control\Modal($label, $name, $title);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'modal';
-        }
-        return $control;
-    }
-
-
-	/**
-	 * @param  string $label
-	 * @param  string $name
-	 * @return Control\Number
-	 */
-	public function addNumber($label, $name = '') {
-        require_once __DIR__ . '/classes/Control/Number.php';
-        $control = new Control\Number($label, $name);
-        $this->positions[$this->current_position]['controls'][] = $control;
-        $this->current_position = 'default';
-        if ($name) {
-            $this->session->form->controls[$name] = 'number';
-        }
         return $control;
     }
 
@@ -626,6 +320,17 @@ class Form {
 					foreach ($position['controls'] as $control) {
                         if ($control instanceof Control) {
                             $controls_html .= $control->render();
+
+                            if ($control->isRequired() && $this->resource && $this->name && $this->token) {
+                                $this->session = new SessionNamespace($this->resource);
+                                if (isset($this->session->form) &&
+                                    isset($this->session->form->{$this->token}) &&
+                                    isset($this->session->form->{$this->token}->controls) &&
+                                    ! empty($this->session->form->{$this->token}->controls[$this->name])
+                                ) {
+                                    $this->session->form->{$this->token}->controls[$this->name]['required'] = true;
+                                }
+                            }
                         }
 					}
 				}

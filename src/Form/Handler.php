@@ -130,7 +130,8 @@ class Handler extends Handlers {
 
         $record_id = $session->form->{$this->token}->record_id;
         if ($record_id) {
-            $is_save = $this->db->update($table, $data, "{$primary_key} = {$record_id}");
+            $where   = $this->db->quoteInto("{$primary_key} = ?", $record_id);
+            $is_save = $this->db->update($table, $data, $where);
         } else {
             $is_save = $this->db->insert($table, $data);
             $record_id  = $this->db->lastInsertId($table);

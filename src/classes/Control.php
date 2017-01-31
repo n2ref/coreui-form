@@ -55,14 +55,6 @@ abstract class Control {
 
 
     /**
-     * @param string $token
-     */
-    public function setToken($token) {
-        $this->token = $token;
-    }
-
-
-    /**
      * @param  string     $name
      * @param  string     $value
      * @return self
@@ -169,18 +161,15 @@ abstract class Control {
         $this->required = true;
         $this->required_message = $message;
 
-        if ($this->resource && $this->name && $this->token) {
-            $this->session = new SessionNamespace($this->resource);
-            if (isset($this->session->form) &&
-                isset($this->session->form->{$this->token}) &&
-                isset($this->session->form->{$this->token}->controls) &&
-                ! empty($this->session->form->{$this->token}->controls[$this->name])
-            ) {
-                $this->session->form->{$this->token}->controls[$this->name]['required'] = true;
-            }
-        }
-
         return $this;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isRequired() {
+        return $this->required;
     }
 
 
