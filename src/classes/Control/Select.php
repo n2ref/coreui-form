@@ -1,6 +1,7 @@
 <?php
 namespace CoreUI\Form\Classes\Control;
 use CoreUI\Form\Classes\Control;
+use CoreUI\Utils\Mtpl;
 
 require_once __DIR__ . '/../Control.php';
 
@@ -17,38 +18,6 @@ class Select extends Control {
     protected $attributes = array(
         'class' => 'combine-form-control',
     );
-
-
-    /**
-     * @param  string     $type
-     * @param  array|bool $params
-     * @param  string     $message
-     * @return self
-     * @throws \Exception
-     */
-    public function addValidator($type, $params, $message) {
-
-        $type = strtolower($type);
-
-        switch ($type) {
-            case 'regex' :
-            case 'length' :
-            case 'email' :
-                $validator = new \stdClass();
-                $validator->type    = $type;
-                $validator->params  = $params;
-                $validator->message = $message;
-
-                $this->validators[] = $validator;
-                break;
-
-            default :
-                throw new \Exception("Validator type '{$type}' not found");
-                break;
-        };
-
-        return $this;
-    }
 
 
     /**
@@ -87,58 +56,88 @@ class Select extends Control {
      */
     protected function makeControl() {
 
-        $tpl = file_get_contents(__DIR__ . '/../../html/form/controls/select.html');
+        $tpl = new Mtpl(__DIR__ . '/../../html/form/controls/select.html');
 
-        $attributes = array();
+        if ($this->readonly) {
+            if ( ! empty($this->options)) {
+                foreach ($this->options as $value => $option) {
+                    if (is_array($option)) {
+                        foreach ($option as $val => $opt) {
+                            if ($this->selected !== null &&
+                                ((is_array($this->selected) &&
+                                in_array((string)$val, $this->selected)) ||
+                                (string)$val === $this->selected)
+                            ) {
+                                $tpl->readonly->assign('[OPTION]', $opt);
+                                $tpl->readonly->reassign();
+                            }
+                        }
 
-        if ( ! empty($this->attributes)) {
-            foreach ($this->attributes as $attr_name => $value) {
-                $attributes[] = "$attr_name=\"$value\"";
-            }
-        }
-
-        if ($this->required) {
-            $attributes[] = 'required="required"';
-
-            if ($this->required_message) {
-                $attributes[] = "data-required-message=\"{$this->required_message}\"";
-            }
-        }
-
-
-        // TODO сделать валидаторы
-        if ( ! empty($this->validators)) {
-            foreach ($this->validators as $validator) {
-
-            }
-        }
-
-        $options = '';
-        if ( ! empty($this->options)) {
-            foreach ($this->options as $value => $option) {
-                if (is_array($option)) {
-                    $options .= "<optgroup label=\"{$value}\">";
-                    foreach ($option as $val => $opt) {
-                        $sel = $this->selected !== null && ((is_array($this->selected) && in_array((string)$val, $this->selected)) || (string)$val === $this->selected)
-                            ? 'selected="selected" '
-                            : '';
-                        $options .= "<option {$sel}value=\"{$val}\">{$opt}</option>";
+                    } else {
+                        if ($this->selected !== null &&
+                            ((is_array($this->selected) &&
+                            in_array((string)$value, $this->selected)) ||
+                            (string)$value === $this->selected)
+                        ) {
+                            $tpl->readonly->assign('[OPTION]', $option);
+                            $tpl->readonly->reassign();
+                        }
                     }
-                    $options .= '</optgroup>';
-
-                } else {
-                    $sel = $this->selected !== null && ((is_array($this->selected) && in_array((string)$value, $this->selected)) || (string)$value === $this->selected)
-                        ? 'selected="selected" '
-                        : '';
-                    $options .= "<option {$sel}value=\"{$value}\">{$option}</option>";
                 }
             }
+
+        } else {
+            $attributes = [];
+
+            if ( ! empty($this->attributes)) {
+                foreach ($this->attributes as $attr_name => $value) {
+                    $attributes[] = "$attr_name=\"$value\"";
+                }
+            }
+
+            if ($this->required) {
+                $attributes[] = 'required="required"';
+            }
+
+            $options = '';
+            if ( ! empty($this->options)) {
+                foreach ($this->options as $value => $option) {
+                    if (is_array($option)) {
+                        $options .= "<optgroup label=\"{$value}\">";
+                        foreach ($option as $val => $opt) {
+                            if ($this->selected !== null &&
+                                ((is_array($this->selected) &&
+                                in_array((string)$val, $this->selected)) ||
+                                (string)$val === $this->selected)
+                            ) {
+                                $sel = 'selected="selected" ';
+                            } else {
+                                $sel = '';
+                            }
+                            $options .= "<option {$sel}value=\"{$val}\">{$opt}</option>";
+                        }
+                        $options .= '</optgroup>';
+
+                    } else {
+                        if ($this->selected !== null &&
+                            ((is_array($this->selected) &&
+                            in_array((string)$value, $this->selected)) ||
+                            (string)$value === $this->selected)
+                        ) {
+                            $sel = 'selected="selected" ';
+                        } else {
+                            $sel = '';
+                        }
+                        $options .= "<option {$sel}value=\"{$value}\">{$option}</option>";
+                    }
+                }
+            }
+
+
+            $tpl->control->assign('[OPTIONS]',    $options);
+            $tpl->control->assign('[ATTRIBUTES]', implode(' ', $attributes));
         }
 
-
-        $tpl = str_replace('[OPTIONS]',    $options, $tpl);
-        $tpl = str_replace('[ATTRIBUTES]', implode(' ', $attributes), $tpl);
-
-        return $tpl;
+        return $tpl->render();
     }
 }

@@ -1,3 +1,4 @@
+<!-- BEGIN control -->
 <div id="upload-[ID]-container" class="file-upload">
     <input [ATTRIBUTES]/>
     <input type="hidden" id="[ID]-del" name="[NAME]-del" value="">
@@ -47,9 +48,6 @@
         </div>
         <!-- END file -->
     </div>
-
-    <link href="[THEME_SRC]/css/uploadH5.css" rel="stylesheet" type="text/css"/>
-    <script src="[THEME_SRC]/js/uploadH5.js" type="text/javascript"></script>
     <script type="text/javascript">
         $('#upload-[ID]-queue .uploadH5-file .remove').click(function(){
             var file_id           = $(this).parent().parent().parent().data('file-id');
@@ -145,3 +143,30 @@
         });
     </script>
 </div>
+<!-- END control -->
+<!-- BEGIN readonly_file -->
+<div>
+    <div class="preview">
+        <!-- BEGIN img -->
+        <img src="[PREVIEW_URL]" alt="[ALT]"/>
+        <!-- END img -->
+    </div>
+    <div class="data">
+        <div class="description">
+            <!-- BEGIN text -->
+            <span class="file-name">[NAME]</span>
+            <!-- BEGIN size -->
+            (<span class="file-size">[SIZE_HUMAN]</span>)
+            <!-- END size -->
+            <!-- END text -->
+            <!-- BEGIN link -->
+            <a href="[DOWNLOAD_URL]" class="file-name" download="[NAME]">[NAME]</a>
+            <!-- BEGIN size -->
+            <span class="file-size">([SIZE_HUMAN])</span>
+            <!-- END size -->
+            <!-- END link -->
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<!-- END readonly_file -->

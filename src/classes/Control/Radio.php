@@ -14,44 +14,11 @@ require_once __DIR__ . '/../Control.php';
 class Radio extends Control {
 
     protected $options    = array();
-    protected $checked   = null;
+    protected $checked    = null;
     protected $position   = 'horizontal';
     protected $attributes = array(
         'type' => 'radio',
     );
-
-
-
-    /**
-     * @param  string     $type
-     * @param  array|bool $params
-     * @param  string     $message
-     * @return self
-     * @throws \Exception
-     */
-    public function addValidator($type, $params, $message) {
-
-        $type = strtolower($type);
-
-        switch ($type) {
-            case 'regex' :
-            case 'length' :
-            case 'email' :
-                $validator = new \stdClass();
-                $validator->type    = $type;
-                $validator->params  = $params;
-                $validator->message = $message;
-
-                $this->validators[] = $validator;
-                break;
-
-            default :
-                throw new \Exception("Validator type '{$type}' not found");
-                break;
-        };
-
-        return $this;
-    }
 
 
     /**
@@ -103,47 +70,52 @@ class Radio extends Control {
 
         if ( ! empty($this->options)) {
             foreach ($this->options as $key => $name) {
-                $attributes = array(
-                    "value=\"{$key}\""
-                );
-
-                if ($this->checked !== null) {
-                    if (is_array($this->checked) && in_array($key, $this->checked)) {
-                        $attributes[] = 'checked="checked"';
-
-                    } elseif ($this->checked === $key) {
-                        $attributes[] = 'checked="checked"';
-                    }
-                }
-
-                if ( ! empty($this->attributes)) {
-                    foreach ($this->attributes as $attr_name => $value) {
-                        if (trim($attr_name) != 'value') {
-                            $attributes[] = "$attr_name=\"$value\"";
+                if ($this->readonly) {
+                    if ($this->checked !== null) {
+                        if ((is_array($this->checked) && in_array($key, $this->checked)) ||
+                            $this->checked == $key
+                        ) {
+                            if ($this->position == 'vertical') {
+                                $tpl->readonly->vertical->assign('[NAME]', $name);
+                                $tpl->readonly->vertical->reassign();
+                            } else {
+                                $tpl->readonly->horizontal->assign('[NAME]', $name);
+                                $tpl->readonly->horizontal->reassign();
+                            }
                         }
                     }
-                }
 
-                if ($this->required) {
-                    $attributes[] = 'required="required"';
+                } else {
+                    $attributes = array(
+                        "value=\"{$key}\""
+                    );
 
-                    if ($this->required_message) {
-                        $attributes[] = "data-required-message=\"{$this->required_message}\"";
+                    if ($this->checked !== null) {
+                        if (is_array($this->checked) && in_array($key, $this->checked)) {
+                            $attributes[] = 'checked="checked"';
+
+                        } elseif ($this->checked === $key) {
+                            $attributes[] = 'checked="checked"';
+                        }
                     }
-                }
 
-
-                // TODO сделать валидаторы
-                if ( ! empty($this->validators)) {
-                    foreach ($this->validators as $validator) {
-
+                    if ( ! empty($this->attributes)) {
+                        foreach ($this->attributes as $attr_name => $value) {
+                            if (trim($attr_name) != 'value') {
+                                $attributes[] = "$attr_name=\"$value\"";
+                            }
+                        }
                     }
+
+                    if ($this->required) {
+                        $attributes[] = 'required="required"';
+                    }
+
+
+                    $tpl->radio->assign('[ATTRIBUTES]', implode(' ', $attributes));
+                    $tpl->radio->assign('[NAME]',       $name);
+                    $tpl->radio->reassign();
                 }
-
-
-                $tpl->radio->assign('[ATTRIBUTES]', implode(' ', $attributes));
-                $tpl->radio->assign('[NAME]',       $name);
-                $tpl->radio->reassign();
             }
         }
 

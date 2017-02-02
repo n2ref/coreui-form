@@ -12,8 +12,8 @@ use CoreUI\Registry;
 abstract class Button {
 
     protected $attributes   = array();
-    protected $html         = null;
-    protected $html_wrapper = null;
+    protected $control_html = null;
+    protected $readonly     = false;
     protected $theme_src    = '';
 
 
@@ -25,7 +25,17 @@ abstract class Button {
             $this->attributes['value'] = $title;
         }
 
-        $this->theme_src = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']));
+        $this->theme_src = substr(realpath(__DIR__ . '/../html'), strlen($_SERVER['DOCUMENT_ROOT']));
+    }
+
+
+    /**
+     * @param bool $readonly
+     * @return self
+     */
+    public function setReadonly($readonly) {
+        $this->readonly = (bool)$readonly;
+        return $this;
     }
 
 
@@ -43,6 +53,18 @@ abstract class Button {
             throw new Exception("Attribute not valid type. Need string");
         }
 
+        return $this;
+    }
+
+
+    /**
+     * @param  array $attributes
+     * @return Button\Button|Button\Submit|Button\Reset
+     */
+    public function setAttribs($attributes) {
+        foreach ($attributes as $name => $value) {
+            $this->setAttr($name, $value);
+        }
         return $this;
     }
 
@@ -96,30 +118,6 @@ abstract class Button {
      * @param  array $attributes
      * @return Button\Button|Button\Submit|Button\Reset
      */
-    public function setAttribs($attributes) {
-        foreach ($attributes as $name => $value) {
-            $this->setAttr($name, $value);
-        }
-        return $this;
-    }
-
-
-    /**
-     * @param  array $attributes
-     * @return Button\Button|Button\Submit|Button\Reset
-     */
-    public function setAppendAttribs($attributes) {
-        foreach ($attributes as $name => $value) {
-            $this->setAppendAttr($name, $value);
-        }
-        return $this;
-    }
-
-
-    /**
-     * @param  array $attributes
-     * @return Button\Button|Button\Submit|Button\Reset
-     */
     public function setPrependAttribs($attributes) {
         foreach ($attributes as $name => $value) {
             $this->setPrependAttr($name, $value);
@@ -132,18 +130,8 @@ abstract class Button {
      * @param  string $html
      * @return Button\Button|Button\Submit|Button\Reset
      */
-    public function setHtml($html) {
-        $this->html = $html;
-        return $this;
-    }
-
-
-    /**
-     * @param  string $html
-     * @return Button\Button|Button\Submit|Button\Reset
-     */
-    public function setHtmlWrapper($html) {
-        $this->html_wrapper = $html;
+    public function setControlHtml($html) {
+        $this->control_html = $html;
         return $this;
     }
 
@@ -162,13 +150,21 @@ abstract class Button {
 
 
     /**
+     * @return bool
+     */
+    public function isReadonly() {
+        return $this->readonly;
+    }
+
+
+    /**
      * Render form control
      * @return string
      */
     public function render() {
 
-        if ($this->html !== null) {
-            $control_html = $this->html;
+        if ($this->control_html !== null) {
+            $control_html = $this->control_html;
         } else {
             $control_html = $this->makeControl();
         }

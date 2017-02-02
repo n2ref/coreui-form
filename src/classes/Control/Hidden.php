@@ -18,15 +18,6 @@ class Hidden extends Control {
 
 
     /**
-     * @param string $label
-     * @param string $name
-     */
-    public function __construct($label, $name) {
-        parent::__construct($label, $name);
-    }
-
-
-    /**
      * @return string
      */
     protected function makeWrapper() {
@@ -51,10 +42,6 @@ class Hidden extends Control {
 
         if ($this->required) {
             $attributes[] = 'required="required"';
-
-            if ($this->required_message) {
-                $attributes[] = "data-required-message=\"{$this->required_message}\"";
-            }
         }
 
         $tpl = str_replace('[ATTRIBUTES]', implode(' ', $attributes), $tpl);

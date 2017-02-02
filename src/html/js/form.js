@@ -257,6 +257,37 @@ combine.form = {
         }
     },
 
+
+    jsToHead: function(src) {
+        var s = $('head').children();
+        for (var i = 0; i < s.length; i++) {
+            var host_length = (location.protocol + '//' + location.host).length;
+            if (s[i].href && s[i].href.substr(host_length) == src) {
+                return;
+            }
+        }
+        s = document.createElement("script");
+        s.src = src;
+        $('head').append(s);
+    },
+
+
+    cssToHead: function(src) {
+        var s = $('head').children();
+        for (var i = 0; i < s.length; i++) {
+            var host_length = (location.protocol + '//' + location.host).length;
+            if (s[i].href && s[i].href.substr(host_length) == src) {
+                return;
+            }
+        }
+        s = document.createElement("link");
+        s.href = src;
+        s.rel  = 'stylesheet';
+        s.type = 'text/css';
+        $('head').append(s);
+    },
+
+
     modal: {
         key: '',
 
@@ -266,14 +297,12 @@ combine.form = {
             var $body_container = $('#' + this.key + '-modal>.combine-modal-dialog>.combine-modal-content>.combine-modal-body');
             $body_container.html(
                 '<div style="text-align:center">' +
-                    '<img src="' + combine.form.theme_src + '/html/img/preloader_circle.gif" alt="loading">' +
+                    '<img src="' + combine.form.theme_src + '/img/preloader_circle.gif" alt="loading">' +
                     ' Загрузка' +
                 '</div>'
             );
 
             $body_container.load(url);
-
-
             $('#' + this.key + '-modal').modal('show');
         },
 
@@ -294,16 +323,19 @@ combine.form = {
     }
 };
 
-(function(){
-    var myTags = document.getElementsByTagName("script");
-    var src = myTags[myTags.length-1].src;
-    if (src.indexOf('theme_src=') != -1) {
-        combine.form.theme_src = encodeURI(src).split("theme_src=")[1].split("&")[0];
-    }
-}());
-
 
 $(document).ready(function(){
+
+    /**
+     * Получение пути до html компоненты
+     */
+    $('script').each(function() {
+        if (this.src.indexOf('coreui_theme_src=') != -1) {
+            combine.form.theme_src = encodeURI(this.src).split("coreui_theme_src=")[1].split("&")[0];
+            return false
+        }
+    });
+
     /**
      * Сткрытие открытых календарей
      */

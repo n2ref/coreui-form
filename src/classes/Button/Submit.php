@@ -33,6 +33,10 @@ class Submit extends Classes\Button {
             }
         }
 
+        if ($this->readonly) {
+            $attributes[] = 'disabled="disabled"';
+        }
+
 
         $tpl = str_replace('[ATTRIBUTES]', implode(' ', $attributes), $tpl);
 

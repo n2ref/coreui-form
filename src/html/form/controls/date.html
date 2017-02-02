@@ -1,3 +1,4 @@
+<!-- BEGIN control -->
 <div class="combine-datepicker" id="[ID]-datepicker-control">
     <div class="combine-input-group">
         <div class="value" style="display:none"><input [ATTRIBUTES]></div>
@@ -11,10 +12,10 @@
                autocomplete="off" type="number" onkeyup="combine.form.dateKeyUp('[ID]', this)"
                onkeypress="combine.form.dateKeyPress(event)">
         <button type="button" class="combine-btn combine-btn-default combine-add-on combine-datepicker-clear middle">
-            <img src="[TPL_DIR]/html/img/clear.png" alt="Очистить" title="Очистить">
+            <img src="[TPL_DIR]/img/clear.png" alt="Очистить" title="Очистить">
         </button>
         <button type="button" class="combine-btn combine-btn-default combine-add-on last combine-datepicker-trigger">
-            <img src="[TPL_DIR]/html/img/calendar.png" alt="..." title="...">
+            <img src="[TPL_DIR]/img/calendar.png" alt="..." title="...">
         </button>
         <div class="clearfix"></div>
     </div>
@@ -25,3 +26,7 @@
         combine.form.createCalendar(document.getElementById('[ID]-datepicker-control'));
     });
 </script>
+<!-- END control -->
+<!-- BEGIN readonly -->
+<div>[VALUE]</div>
+<!-- END readonly -->

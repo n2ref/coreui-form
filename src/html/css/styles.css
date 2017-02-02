@@ -93,7 +93,7 @@
 .combine-add-on {
     display: inline-block;
     width: auto;
-    height: 34px;
+    height: 35px;
     min-width: 29px;
     padding: 5px;
     font-size: 14px;
@@ -161,7 +161,7 @@
 .combine-datepicker-year {
     width: 64px;
     min-width: inherit;
-    padding: 5px 10px!important;
+    /*padding: 5px 10px!important;*/
     margin-right: -1px;
 }
 .datepicker-container,

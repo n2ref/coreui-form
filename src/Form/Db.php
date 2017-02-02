@@ -140,6 +140,18 @@ class Db extends Form {
             }
         }
 
+        // Стили
+        $main_css = "{$this->theme_src}/css/styles.css";
+        if ( ! isset(self::$scripts_css[$main_css])) {
+            self::$scripts_css[$main_css] = true;
+        }
+
+        // Скрипты
+        $main_js = "{$this->theme_src}/js/form.js?coreui_theme_src={$this->theme_src}";
+        if ( ! isset(self::$scripts_js[$main_js])) {
+            self::$scripts_js[$main_js] = true;
+        }
+
 
         if ( ! empty($this->positions)) {
             $template = $this->template;
@@ -148,6 +160,17 @@ class Db extends Form {
                 if ( ! empty($position['controls'])) {
                     foreach ($position['controls'] as $control) {
                         if ($control instanceof Control) {
+                            if ($this->readonly) {
+                                $control->setReadonly(true);
+                            }
+
+                            if ($control->isRequired()) {
+                                $control_name = $control->getName();
+                                if ( ! empty($this->session->form->{$this->token}->controls[$control_name])) {
+                                    $this->session->form->{$this->token}->controls[$control_name]['required'] = true;
+                                }
+                            }
+
                             if ($control instanceof Control\Text ||
                                 $control instanceof Control\Number ||
                                 $control instanceof Control\Date ||
@@ -182,7 +205,26 @@ class Db extends Form {
                                     $control->setChecked($explode_value);
                                 }
                             }
+
                             $controls_html .= $control->render();
+
+                            $control_css = $control->getCss();
+                            if ( ! empty($control_css)) {
+                                foreach ($control_css as $src => $is_cached) {
+                                    if ( ! isset(self::$scripts_css[$src]) || ! $is_cached) {
+                                        self::$scripts_css[$src] = true;
+                                    }
+                                }
+                            }
+
+                            $control_js = $control->getJs();
+                            if ( ! empty($control_js)) {
+                                foreach ($control_js as $src => $is_cached) {
+                                    if ( ! isset(self::$scripts_js[$src]) || ! $is_cached) {
+                                        self::$scripts_js[$src] = true;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -191,11 +233,14 @@ class Db extends Form {
                     $buttons_controls = array();
                     foreach ($position['buttons'] as $button) {
                         if ($button instanceof Button) {
-                            if ($button instanceof Button\Switched &&
-                                isset($data[$button->getAttr('name')])
-                            ) {
+                            if ($this->readonly) {
+                                $button->setReadonly(true);
+                            }
+
+                            if ($button instanceof Button\Switched && isset($data[$button->getAttr('name')])) {
                                 $button->setAttr('value', $data[$button->getAttr('name')]);
                             }
+
                             $buttons_controls[] = $button->render();
                         }
                     }
@@ -214,20 +259,21 @@ class Db extends Form {
         }
 
 
-        // Скрипты
+
         $scripts_js = array();
-        $main_js = "{$this->theme_src}/html/js/form.js?theme_src={$this->theme_src}";
-        if ( ! isset(self::$scripts_js[$main_js])) {
-            self::$scripts_js[$main_js] = false;
-            $scripts_js[] = "<script src=\"{$main_js}\"></script>";
+        foreach (self::$scripts_js as $src => $is_add) {
+            if ($is_add) {
+                $scripts_js[] = "<script type=\"text/javascript\" src=\"{$src}\"></script>";
+                self::$scripts_js[$src] = false;
+            }
         }
 
-        // Стили
         $scripts_css = array();
-        $main_css = "{$this->theme_src}/html/css/styles.css";
-        if ( ! isset(self::$scripts_css[$main_css])) {
-            self::$scripts_css[$main_css] = false;
-            $scripts_css[] = "<link href=\"{$main_css}\" rel=\"stylesheet\"/>";
+        foreach (self::$scripts_css as $src => $is_add) {
+            if ($is_add) {
+                $scripts_css[] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$src}\"/>";
+                self::$scripts_css[$src] = false;
+            }
         }
 
 

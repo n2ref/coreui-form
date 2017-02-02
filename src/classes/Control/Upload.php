@@ -108,87 +108,122 @@ class Upload extends Control {
 
         $tpl = new Mtpl(__DIR__ . '/../../html/form/controls/upload.html');
 
-        if ( ! empty($this->files)) {
-            foreach ($this->files as $file) {
+        if ($this->readonly) {
+            if ( ! empty($this->files)) {
+                foreach ($this->files as $file) {
 
-                if ( ! empty($file['download_url'])) {
-                    $tpl->file->link->assign('[DOWNLOAD_URL]', $file['download_url']);
-                    $tpl->file->link->assign('[NAME]',         $file['name']);
-                    if ( ! empty($file['size'])) {
-                        $tpl->file->link->size->assign('[SIZE_HUMAN]', $this->formatSizeHuman($file['size']));
+                    if ( ! empty($file['download_url'])) {
+                        $tpl->readonly_file->link->assign('[DOWNLOAD_URL]', $file['download_url']);
+                        $tpl->readonly_file->link->assign('[NAME]',         $file['name']);
+                        if ( ! empty($file['size'])) {
+                            $tpl->readonly_file->link->size->assign('[SIZE_HUMAN]', $this->formatSizeHuman($file['size']));
+                        }
+                    } else {
+                        $tpl->readonly_file->text->assign('[NAME]', $file['name']);
+                        if ( ! empty($file['size'])) {
+                            $tpl->readonly_file->text->size->assign('[SIZE_HUMAN]', $this->formatSizeHuman($file['size']));
+                        }
                     }
-                } else {
-                    $tpl->file->text->assign('[NAME]', $file['name']);
-                    if ( ! empty($file['size'])) {
-                        $tpl->file->text->size->assign('[SIZE_HUMAN]', $this->formatSizeHuman($file['size']));
+
+                    if ($file['preview_url']) {
+                        $tpl->readonly_file->img->assign('[PREVIEW_URL]', $file['preview_url']);
+                        $tpl->readonly_file->img->assign('[ALT]',         $file['name']);
                     }
+
+                    $file_type = ! empty($file['type']) && strpos($file['type'], 'image') !== false
+                        ? 'image'
+                        : 'doc';
+
+                    $tpl->readonly_file->assign('[ID]',   $file['id']);
+                    $tpl->readonly_file->assign('[KEY]',  uniqid());
+                    $tpl->readonly_file->assign('[TYPE]', $file_type);
+                    $tpl->readonly_file->reassign();
                 }
+            }
 
-                if ($file['preview_url']) {
-                    $tpl->file->img->assign('[PREVIEW_URL]', $file['preview_url']);
-                    $tpl->file->img->assign('[ALT]',         $file['name']);
+        } else {
+            if ( ! empty($this->files)) {
+                foreach ($this->files as $file) {
+
+                    if ( ! empty($file['download_url'])) {
+                        $tpl->control->file->link->assign('[DOWNLOAD_URL]', $file['download_url']);
+                        $tpl->control->file->link->assign('[NAME]',         $file['name']);
+                        if ( ! empty($file['size'])) {
+                            $tpl->control->file->link->size->assign('[SIZE_HUMAN]', $this->formatSizeHuman($file['size']));
+                        }
+                    } else {
+                        $tpl->control->file->text->assign('[NAME]', $file['name']);
+                        if ( ! empty($file['size'])) {
+                            $tpl->control->file->text->size->assign('[SIZE_HUMAN]', $this->formatSizeHuman($file['size']));
+                        }
+                    }
+
+                    if ($file['preview_url']) {
+                        $tpl->control->file->img->assign('[PREVIEW_URL]', $file['preview_url']);
+                        $tpl->control->file->img->assign('[ALT]',         $file['name']);
+                    }
+
+                    $file_type = ! empty($file['type']) && strpos($file['type'], 'image') !== false
+                        ? 'image'
+                        : 'doc';
+
+                    $tpl->control->file->assign('[ID]',   $file['id']);
+                    $tpl->control->file->assign('[KEY]',  uniqid());
+                    $tpl->control->file->assign('[TYPE]', $file_type);
+                    $tpl->control->file->reassign();
                 }
+            }
 
-                $file_type = ! empty($file['type']) && strpos($file['type'], 'image') !== false
-                    ? 'image'
-                    : 'doc';
+            if ( ! isset($this->attributes['id'])) {
+                $this->attributes['id'] = "control-" . uniqid();
+            }
 
-                $tpl->file->assign('[ID]',   $file['id']);
-                $tpl->file->assign('[KEY]',  uniqid());
-                $tpl->file->assign('[TYPE]', $file_type);
-                $tpl->file->reassign();
+
+            if ($this->required) {
+                $this->attributes['required'] = 'required';
+            }
+
+            $attributes = array();
+            if ( ! empty($this->attributes)) {
+                foreach ($this->attributes as $attr_name => $value) {
+                    $attributes[] = "$attr_name=\"$value\"";
+                }
+            }
+
+
+            $is_multiple = $this->file_limit == 0 || $this->file_limit > 1;
+
+            if ($this->size_limit == 0) {
+                $this->size_limit = $this->getMaxFileSize();
+            }
+
+            if ($is_multiple) {
+                $tpl->control->touchBlock('control_buttons');
+            }
+
+            $this->addCss($this->theme_src . '/css/uploadH5.css', true);
+            $this->addJs($this->theme_src . '/js/uploadH5.js', true);
+
+            $tpl->control->assign('[ATTRIBUTES]', implode(' ', $attributes));
+            $tpl->control->assign('[THEME_SRC]',  $this->theme_src);
+            $tpl->control->assign('[ID]',         $this->attributes['id']);
+            $tpl->control->assign('[NAME]',       $this->attributes['name']);
+            $tpl->control->assign('[LANG]',       $this->lang);
+            $tpl->control->assign('[ACCEPT]',     $this->accept);
+            $tpl->control->assign('[SIZE_LIMIT]', $this->size_limit);
+            $tpl->control->assign('[FILE_LIMIT]', $this->file_limit);
+            $tpl->control->assign('[AUTOSTART]',  $this->autostart ? 'true' : 'false');
+            $tpl->control->assign('[MULTIPLE]',   $is_multiple ? 'multiple' : '');
+
+
+            // Перевод
+            if ( ! empty($this->locutions[$this->lang])) {
+                foreach ($this->locutions[$this->lang] as $locution => $translate) {
+                    $tpl->control->assign("[#{$locution}#]", $translate);
+                }
             }
         }
 
-        if ( ! isset($this->attributes['id'])) {
-            $this->attributes['id'] = "control-" . uniqid();
-        }
-
-
-        if ($this->required) {
-            $this->attributes['required'] = 'required';
-
-            if ($this->required_message) {
-                $this->attributes['data-required-message'] = $this->required_message;
-            }
-        }
-
-        $attributes = array();
-        if ( ! empty($this->attributes)) {
-            foreach ($this->attributes as $attr_name => $value) {
-                $attributes[] = "$attr_name=\"$value\"";
-            }
-        }
-
-
-        $is_multiple = $this->file_limit == 0 || $this->file_limit > 1;
-
-        if ($this->size_limit == 0) {
-            $this->size_limit = $this->getMaxFileSize();
-        }
-
-        if ($is_multiple) {
-            $tpl->touchBlock('control_buttons');
-        }
-
-        $tpl->assign('[ATTRIBUTES]', implode(' ', $attributes));
-        $tpl->assign('[THEME_SRC]',  $this->theme_src);
-        $tpl->assign('[ID]',         $this->attributes['id']);
-        $tpl->assign('[NAME]',       $this->attributes['name']);
-        $tpl->assign('[LANG]',       $this->lang);
-        $tpl->assign('[ACCEPT]',     $this->accept);
-        $tpl->assign('[SIZE_LIMIT]', $this->size_limit);
-        $tpl->assign('[FILE_LIMIT]', $this->file_limit);
-        $tpl->assign('[AUTOSTART]',  $this->autostart ? 'true' : 'false');
-        $tpl->assign('[MULTIPLE]',   $is_multiple ? 'multiple' : '');
-
-
-        // Перевод
-        if ( ! empty($this->locutions[$this->lang])) {
-            foreach ($this->locutions[$this->lang] as $locution => $translate) {
-                $tpl->assign("[#{$locution}#]", $translate);
-            }
-        }
         return $tpl->render();
     }
 

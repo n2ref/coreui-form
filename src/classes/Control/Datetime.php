@@ -1,6 +1,7 @@
 <?php
 namespace CoreUI\Form\Classes\Control;
 use CoreUI\Form\Classes\Control;
+use CoreUI\Utils\Mtpl;
 
 require_once __DIR__ . '/../Control.php';
 
@@ -21,34 +22,38 @@ class Datetime extends Control {
      */
     protected function makeControl() {
 
-        $tpl = file_get_contents(__DIR__ . '/../../html/form/controls/datetime.html');
+        $tpl = new Mtpl(__DIR__ . '/../../html/form/controls/datetime.html');
 
-        $id = uniqid('ck');
-        $attributes = array(
-            "id=\"{$id}\""
-        );
+        if ($this->readonly) {
+            $text = '';
+            if ( ! empty($this->attributes['value'])) {
+                $text = $this->attributes['value'];
+            }
 
-        if ( ! empty($this->attributes)) {
-            foreach ($this->attributes as $attr_name => $value) {
-                if (trim($attr_name) != 'id') {
+            $tpl->readonly->assign('[VALUE]', $text);
+
+        } else {
+            $id = uniqid('ck');
+            $attributes = array(
+                "id=\"{$id}\""
+            );
+
+            if ( ! empty($this->attributes)) {
+                foreach ($this->attributes as $attr_name => $value) {
                     $attributes[] = "$attr_name=\"$value\"";
                 }
             }
-        }
 
-        if ($this->required) {
-            $attributes[] = 'required="required"';
-
-            if ($this->required_message) {
-                $attributes[] = "data-required-message=\"{$this->required_message}\"";
+            if ($this->required) {
+                $attributes[] = 'required="required"';
             }
+
+
+            $tpl->control->assign('[ATTRIBUTES]', implode(' ', $attributes));
+            $tpl->control->assign('[TPL_DIR]',    $this->theme_src);
+            $tpl->control->assign('[ID]',         $id);
         }
 
-
-        $tpl = str_replace('[ATTRIBUTES]', implode(' ', $attributes), $tpl);
-        $tpl = str_replace('[TPL_DIR]',    $this->theme_src,          $tpl);
-        $tpl = str_replace('[ID]',         $id,                       $tpl);
-
-        return $tpl;
+        return $tpl->render();
     }
 }

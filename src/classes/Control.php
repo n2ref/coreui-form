@@ -13,21 +13,20 @@ use CoreUI\Utils\Session\SessionNamespace;
  */
 abstract class Control {
 
-    protected $label            = '';
-    protected $name             = '';
-    protected $resource         = '';
-    protected $token            = '';
-    protected $attributes       = array();
-    protected $validators       = array();
-    protected $out              = '';
-    protected $is_readonly      = false;
-    protected $required         = false;
-    protected $required_message = '';
-    protected $data             = null;
-    protected $html             = null;
-    protected $html_wrapper     = null;
-    protected $lang             = 'en';
-    protected $theme_src        = '';
+    protected $label        = '';
+    protected $name         = '';
+    protected $resource     = '';
+    protected $attributes   = array();
+    protected $out          = '';
+    protected $readonly     = false;
+    protected $required     = false;
+    protected $control_html = null;
+    protected $wrapper_html = null;
+    protected $lang         = 'en';
+    protected $theme_src    = '';
+    protected $scripts_js  = array();
+    protected $scripts_css = array();
+
 
     /**
      * @param string $label
@@ -42,15 +41,17 @@ abstract class Control {
         }
 
         $this->lang      = Registry::getLanguage();
-        $this->theme_src = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']));
+        $this->theme_src = substr(realpath(__DIR__ . '/../html'), strlen($_SERVER['DOCUMENT_ROOT']));
     }
 
 
     /**
      * @param string $resource
+     * @return self
      */
     public function setResource($resource) {
         $this->resource = $resource;
+        return $this;
     }
 
 
@@ -155,21 +156,11 @@ abstract class Control {
 
     /**
      * @param  string $message
-     * @return Control\Text|Control\Select|Control\Password|Control\Radio|Control\Upload
+     * @return self
      */
-    public function setRequired($message = '') {
+    public function setRequired() {
         $this->required = true;
-        $this->required_message = $message;
-
         return $this;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isRequired() {
-        return $this->required;
     }
 
 
@@ -197,22 +188,32 @@ abstract class Control {
      * @param  string     $html
      * @return self
      */
-    public function setHtml($html) {
-        $this->html = $html;
+    public function setControlHtml($html) {
+        $this->control_html = $html;
         return $this;
     }
 
 
     /**
-     * @param  string     $html
+     * @param  string $html
      * @return self
      */
-    public function setHtmlWrapper($html) {
-        $this->html_wrapper = $html;
+    public function setWrapperHtml($html) {
+        $this->wrapper_html = $html;
         return $this;
     }
 
-    
+
+    /**
+     * @param bool $readonly
+     * @return self
+     */
+    public function setReadonly($readonly = true) {
+        $this->readonly = (bool)$readonly;
+        return $this;
+    }
+
+
     /**
      * @param  string $name
      * @return mixed
@@ -227,18 +228,60 @@ abstract class Control {
 
 
     /**
-     * @param bool $is_readonly
+     * @return string
      */
-    public function setReadonly($is_readonly) {
-        $this->is_readonly = (bool)$is_readonly;
+    public function getName() {
+        return $this->name;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getJs() {
+        return $this->scripts_js;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getCss() {
+        return $this->scripts_css;
     }
 
 
     /**
      * @return bool
      */
-    public function getReadonly() {
-        return $this->is_readonly;
+    public function isRequired() {
+        return $this->required;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isReadonly() {
+        return $this->readonly;
+    }
+
+
+    /**
+     * @param string $src
+     * @param bool   $is_cached
+     */
+    public function addCss($src, $is_cached = false) {
+        $this->scripts_css[$src] = $is_cached;
+    }
+
+
+    /**
+     * @param string $src
+     * @param bool   $is_cached
+     */
+    public function addJs($src, $is_cached = false) {
+        $this->scripts_js[$src] = $is_cached;
     }
 
 
@@ -248,14 +291,14 @@ abstract class Control {
      */
     public function render() {
 
-        if ($this->html !== null) {
-            $control_html = $this->html;
+        if ($this->control_html !== null) {
+            $control_html = $this->control_html;
         } else {
             $control_html = $this->makeControl();
         }
 
-        if ($this->html_wrapper !== null) {
-            $wrapper_html = $this->html_wrapper;
+        if ($this->control_html !== null) {
+            $wrapper_html = $this->control_html;
         } else {
             $wrapper_html = $this->makeWrapper();
         }

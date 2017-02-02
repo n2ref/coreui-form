@@ -1,6 +1,7 @@
 <?php
 namespace CoreUI\Form\Classes\Control;
 use CoreUI\Form\Classes\Control;
+use CoreUI\Utils\Mtpl;
 
 require_once __DIR__ . '/../Control.php';
 
@@ -18,38 +19,6 @@ class Textarea extends Control {
 
 
     /**
-     * @param  string     $type
-     * @param  array|bool $params
-     * @param  string     $message
-     * @return self
-     * @throws \Exception
-     */
-    public function addValidator($type, $params, $message) {
-
-        $type = strtolower($type);
-
-        switch ($type) {
-            case 'regex' :
-            case 'length' :
-            case 'email' :
-                $validator = new \stdClass();
-                $validator->type    = $type;
-                $validator->params  = $params;
-                $validator->message = $message;
-
-                $this->validators[] = $validator;
-                break;
-
-            default :
-                throw new \Exception("Validator type '{$type}' not found");
-                break;
-        };
-
-        return $this;
-    }
-
-
-    /**
      * @param  string $string
      * @return $this
      */
@@ -64,36 +33,29 @@ class Textarea extends Control {
      */
     protected function makeControl() {
 
-        $tpl = file_get_contents(__DIR__ . '/../../html/form/controls/textarea.html');
+        $tpl = new Mtpl(__DIR__ . '/../../html/form/controls/textarea.html');
 
-        $attributes = array();
+        if ($this->readonly) {
+            $tpl->readonly->assign('[VALUE]', $this->value);
 
-        if ( ! empty($this->attributes)) {
-            foreach ($this->attributes as $attr_name => $value) {
-                $attributes[] = "$attr_name=\"$value\"";
+        } else {
+            $attributes = array();
+
+            if ( ! empty($this->attributes)) {
+                foreach ($this->attributes as $attr_name => $value) {
+                    $attributes[] = "$attr_name=\"$value\"";
+                }
             }
+
+            if ($this->required) {
+                $attributes[] = 'required="required"';
+            }
+
+
+            $tpl->control->assign('[ATTRIBUTES]', implode(' ', $attributes));
+            $tpl->control->assign('[VALUE]',      $this->value);
         }
 
-        if ($this->required) {
-            $attributes[] = 'required="required"';
-
-            if ($this->required_message) {
-                $attributes[] = "data-required-message=\"{$this->required_message}\"";
-            }
-        }
-
-
-        // TODO сделать валидаторы
-        if ( ! empty($this->validators)) {
-            foreach ($this->validators as $validator) {
-
-            }
-        }
-
-
-        $tpl = str_replace('[ATTRIBUTES]', implode(' ', $attributes), $tpl);
-        $tpl = str_replace('[VALUE]',      $this->value, $tpl);
-
-        return $tpl;
+        return $tpl->render();
     }
 }

@@ -17,6 +17,7 @@ class Form {
 	protected $current_position = 'default';
 	protected $positions 	    = array();
 	protected $ajax_request		= true;
+	protected $readonly	        = false;
 	protected $theme_src        = '';
     protected $theme_location   = '';
     protected $buttons_wrapper  = null;
@@ -25,7 +26,7 @@ class Form {
     /**
      * @var SessionNamespace|null
      */
-    protected $session          = null;
+    protected $session = null;
 
 	protected static $scripts_js  = array();
 	protected static $scripts_css = array();
@@ -46,7 +47,7 @@ class Form {
 
         $this->resource  = $resource;
         $this->lang      = Registry::getLanguage();
-        $this->theme_src = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']));
+        $this->theme_src = substr(__DIR__ . '/html', strlen($_SERVER['DOCUMENT_ROOT']));
         $this->token     = sha1(uniqid('coreui', true));
 
         $this->attributes['action'] = $_SERVER['REQUEST_URI'];
@@ -115,6 +116,22 @@ class Form {
      */
     public function setBackUrl($url) {
         $this->setSessData('back_url', $url);
+    }
+
+
+    /**
+     * @param bool $readonly
+     */
+    public function setReadonly($readonly = true) {
+        $this->readonly = (bool)$readonly;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isReadonly() {
+        return $this->readonly;
     }
 
 
@@ -312,6 +329,19 @@ class Form {
 		}
 
 
+        // Стили
+        $main_css = "{$this->theme_src}/css/styles.css";
+        if ( ! isset(self::$scripts_css[$main_css])) {
+            self::$scripts_css[$main_css] = true;
+        }
+
+        // Скрипты
+        $main_js = "{$this->theme_src}/js/form.js?coreui_theme_src={$this->theme_src}";
+        if ( ! isset(self::$scripts_js[$main_js])) {
+            self::$scripts_js[$main_js] = true;
+        }
+
+
 		if ( ! empty($this->positions)) {
             $template = $this->template;
 			foreach ($this->positions as $name => $position) {
@@ -319,16 +349,34 @@ class Form {
 				if ( ! empty($position['controls'])) {
 					foreach ($position['controls'] as $control) {
                         if ($control instanceof Control) {
+                            if ($this->readonly) {
+                                $control->setReadonly(true);
+                            }
+
+                            if ($control->isRequired()) {
+                                $control_name = $control->getName();
+                                if ( ! empty($this->session->form->{$this->token}->controls[$control_name])) {
+                                    $this->session->form->{$this->token}->controls[$control_name]['required'] = true;
+                                }
+                            }
+
                             $controls_html .= $control->render();
 
-                            if ($control->isRequired() && $this->resource && $this->name && $this->token) {
-                                $this->session = new SessionNamespace($this->resource);
-                                if (isset($this->session->form) &&
-                                    isset($this->session->form->{$this->token}) &&
-                                    isset($this->session->form->{$this->token}->controls) &&
-                                    ! empty($this->session->form->{$this->token}->controls[$this->name])
-                                ) {
-                                    $this->session->form->{$this->token}->controls[$this->name]['required'] = true;
+                            $control_css = $control->getCss();
+                            if ( ! empty($control_css)) {
+                                foreach ($control_css as $src => $is_cached) {
+                                    if ( ! isset(self::$scripts_css[$src]) || ! $is_cached) {
+                                        self::$scripts_css[$src] = true;
+                                    }
+                                }
+                            }
+
+                            $control_js = $control->getJs();
+                            if ( ! empty($control_js)) {
+                                foreach ($control_js as $src => $is_cached) {
+                                    if ( ! isset(self::$scripts_js[$src]) || ! $is_cached) {
+                                        self::$scripts_js[$src] = true;
+                                    }
                                 }
                             }
                         }
@@ -339,6 +387,10 @@ class Form {
                     $buttons_controls = array();
 					foreach ($position['buttons'] as $button) {
                         if ($button instanceof Button) {
+                            if ($this->readonly) {
+                                $button->setReadonly(true);
+                            }
+
                             $buttons_controls[] = $button->render();
                         }
 					}
@@ -358,30 +410,32 @@ class Form {
 		}
 
 
-        // Скрипты
+
         $scripts_js = array();
-        $main_js = "{$this->theme_src}/html/js/form.js?theme_src={$this->theme_src}";
-        if ( ! isset(self::$scripts_js[$main_js])) {
-            self::$scripts_js[$main_js] = false;
-            $scripts_js[] = "<script src=\"{$main_js}\"></script>";
+        foreach (self::$scripts_js as $src => $is_add) {
+            if ($is_add) {
+                $scripts_js[] = "<script type=\"text/javascript\" src=\"{$src}\"></script>";
+                self::$scripts_js[$src] = false;
+            }
         }
 
-        // Стили
         $scripts_css = array();
-        $main_css = "{$this->theme_src}/html/css/styles.css";
-        if ( ! isset(self::$scripts_css[$main_css])) {
-            self::$scripts_css[$main_css] = false;
-            $scripts_css[] = "<link href=\"{$main_css}\" rel=\"stylesheet\"/>";
+        foreach (self::$scripts_css as $src => $is_add) {
+            if ($is_add) {
+                $scripts_css[] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$src}\"/>";
+                self::$scripts_css[$src] = false;
+            }
         }
+
 
 
         $form = file_get_contents(__DIR__ . '/html/template.html');
 
 		$form = str_replace('[ATTRIBUTES]', implode(' ', $attributes), $form);
-		$form = str_replace('[CONTROLS]',   $template, $form);
-        $form = str_replace('[RESOURCE]',   $this->resource, $form);
+		$form = str_replace('[CONTROLS]',   $template,                 $form);
+        $form = str_replace('[RESOURCE]',   $this->resource,           $form);
         $form = str_replace('[CSS]',        implode('', $scripts_css), $form);
-        $form = str_replace('[JS]',         implode('', $scripts_js), $form);
+        $form = str_replace('[JS]',         implode('', $scripts_js),  $form);
 
 
 		return $form;
