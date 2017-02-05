@@ -42,7 +42,7 @@ class Markdown extends Control {
             $tpl->readonly->assign('[VALUE]', $this->value);
 
         } else {
-            $id = uniqid('mk');
+            $id = crc32(uniqid('mk', true));
             $attributes = array(
                 "id=\"{$id}\""
             );

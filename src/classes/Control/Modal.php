@@ -92,7 +92,7 @@ class Modal extends Control {
             $tpl->readonly->assign('[TEXT]', $this->text);
 
         } else {
-            $id = uniqid('m');
+            $id = crc32(uniqid('mod', true));
             $attributes = array(
                 "id=\"{$id}\""
             );

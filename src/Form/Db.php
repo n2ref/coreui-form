@@ -175,6 +175,7 @@ class Db extends Form {
                                 $control instanceof Control\Number ||
                                 $control instanceof Control\Date ||
                                 $control instanceof Control\Datetime ||
+                                $control instanceof Control\Toggle ||
                                 $control instanceof Control\Hidden ||
                                 $control instanceof Control\Email ||
                                 $control instanceof Control\Password

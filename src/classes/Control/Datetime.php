@@ -33,14 +33,16 @@ class Datetime extends Control {
             $tpl->readonly->assign('[VALUE]', $text);
 
         } else {
-            $id = uniqid('ck');
+            $id = crc32(uniqid('dt', true));
             $attributes = array(
                 "id=\"{$id}\""
             );
 
             if ( ! empty($this->attributes)) {
                 foreach ($this->attributes as $attr_name => $value) {
-                    $attributes[] = "$attr_name=\"$value\"";
+                    if (trim($attr_name) != 'id') {
+                        $attributes[] = "$attr_name=\"$value\"";
+                    }
                 }
             }
 

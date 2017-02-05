@@ -1,0 +1,34 @@
+<!-- BEGIN control -->
+<input [ATTRIBUTES]/>
+<input id="ID-toggle" type="checkbox" style="display: none"/>
+<label class="coreui-form-toggle" for="ID-toggle"></label>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#ID-toggle').change(function () {
+            if ($(this).is(':checked')) {
+                $('#ID').val('[ACTIVE_VALUE]');
+            } else {
+                $('#ID').val('[INACTIVE_VALUE]');
+            }
+        });
+
+        var value = $('#ID').val();
+        if (value == '') {
+            if ('[DEFAULT_VALUE]' == '1') {
+                $('#ID').val('[ACTIVE_VALUE]');
+                $('#ID-toggle').prop('checked','checked');
+            } else {
+                $('#ID').val('[INACTIVE_VALUE]');
+                $('#ID-toggle').removeAttr('checked');
+            }
+        } else if (value == '[ACTIVE_VALUE]') {
+            $('#ID-toggle').attr('checked','checked');
+        } else if (value == '[INACTIVE_VALUE]') {
+            $('#ID-toggle').removeAttr('checked');
+        }
+    });
+</script>
+<!-- END control -->
+<!-- BEGIN readonly -->
+<div>[VALUE]</div>
+<!-- END readonly -->

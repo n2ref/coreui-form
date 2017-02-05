@@ -74,7 +74,7 @@ class Wysiwyg extends Control {
             $tpl->readonly->assign('[VALUE]', $this->value);
 
         } else {
-            $id = uniqid('ck');
+            $id = crc32(uniqid('w', true));
             $attributes = array(
                 "id=\"{$id}\""
             );
