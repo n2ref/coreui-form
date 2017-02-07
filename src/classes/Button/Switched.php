@@ -26,7 +26,7 @@ class Switched extends Classes\Button {
      * @param string $inactive_value
      * @param bool   $default
      */
-    public function __construct($name, $value, $active_value, $inactive_value, $default = true) {
+    public function __construct($name, $value, $active_value = 'Y', $inactive_value = 'N', $default = true) {
         parent::__construct($name);
         $this->setAttr('name',  $name);
         $this->setAttr('value', $value);

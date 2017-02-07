@@ -279,7 +279,7 @@ class Form {
      * @param  bool   $default
      * @return Button\Switched
      */
-	public function addButtonSwitched($name, $value, $active_value, $inactive_value, $default = true) {
+	public function addButtonSwitched($name, $value, $active_value = 'Y', $inactive_value = 'N', $default = true) {
         require_once __DIR__ . '/classes/Button/Switched.php';
         $control = new Button\Switched($name, $value, $active_value, $inactive_value, $default);
         $this->positions[$this->current_position]['buttons'][] = $control;

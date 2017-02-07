@@ -195,7 +195,7 @@ class Handler extends Handlers {
                     $field[] = $control['type'];
 
                 } elseif ($control['type'] == 'number') {
-                    $field[] = 'float';
+                    $field[] = 'numeric';
                 }
 
                 if ( ! empty($field)) {
@@ -269,6 +269,15 @@ class Handler extends Handlers {
                             }
                         }
 
+                    } elseif (in_array("numeric", $params)) {
+                        if ( ! is_numeric($data[$field])) {
+                            $is_valid = false;
+                            $message = $label
+                                ? sprintf($this->_('В поле "%s" введено некорректное число'), $label)
+                                : $this->_('Введено некорректное число');
+                            $this->addError(['field' => $field, 'message' => $message]);
+                        }
+
                     } elseif (in_array("float", $params)) {
                         if ( ! filter_input($data[$field], FILTER_VALIDATE_FLOAT)) {
                             $is_valid = false;
@@ -286,7 +295,6 @@ class Handler extends Handlers {
                                 : $this->_('Введено некорректное число');
                             $this->addError(['field' => $field, 'message' => $message]);
                         }
-
                     }
                 }
             }

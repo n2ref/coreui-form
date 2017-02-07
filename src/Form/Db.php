@@ -99,6 +99,18 @@ class Db extends Form {
                 throw new Exception('Empty query');
             }
             $this->data = $this->db->fetchRow($this->query, $this->query_params);
+
+            if (isset($this->data['id'])) {
+                if (empty($this->primary_key)) {
+                    $this->primary_key = 'id';
+                    $this->setSessData('primary_key', 'id');
+                }
+
+                if ($this->data['id']) {
+                    $this->record_id = $this->data['id'];
+                    $this->setSessData('record_id', $this->data['id']);
+                }
+            }
         }
 
         return $this->data;
@@ -164,7 +176,7 @@ class Db extends Form {
                                 $control->setReadonly(true);
                             }
 
-                            if ($control->isRequired()) {
+                            if ($control->isRequired() && ! $control->isReadonly()) {
                                 $control_name = $control->getName();
                                 if ( ! empty($this->session->form->{$this->token}->controls[$control_name])) {
                                     $this->session->form->{$this->token}->controls[$control_name]['required'] = true;
