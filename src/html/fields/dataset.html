@@ -1,0 +1,35 @@
+<% if (field.readonly) { %>
+    <table class="coreui-form__field-dataset-container" <% if (render.rows.length == 0) { %> style="display:none"<% } %>>
+        <thead>
+            <tr>
+                <% $.each(render.headers, function(key, item) { %>
+                <td class="text-muted pe-2"><small><%= item.title %></small></td>
+                <% }); %>
+            </tr>
+        </thead>
+        <tbody class="coreui-form__field-dataset-list">
+            <% $.each(render.rows, function(key, row) { %>
+            <%- row %>
+            <% }); %>
+        </tbody>
+    </table>
+
+<% } else { %>
+    <table class="coreui-form__field-dataset-container" <% if (render.rows.length == 0) { %> style="display:none"<% } %>>
+        <thead>
+            <tr>
+                <% $.each(render.headers, function(key, item) { %>
+                <td class="text-muted"><small><%= item.title %></small></td>
+                <% }); %>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody class="coreui-form__field-dataset-list">
+            <% $.each(render.rows, function(key, row) { %>
+                <%- row %>
+            <% }); %>
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-sm btn-link btn-dataset-add"><%= lang.dataset_add %></button>
+<% } %>

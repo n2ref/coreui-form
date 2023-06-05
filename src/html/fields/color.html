@@ -1,0 +1,13 @@
+<% if (field.readonly) { %>
+    <div class="rounded-1" style="width: 14px;height: 14px;background-color: <%= value %>"></div>
+<% } else { %>
+    <input <%- render.attr %>/>
+
+    <% if (render.datalist.length > 0) { %>
+    <datalist id="<%= datalistId %>">
+        <% $.each(render.datalist, function(key, item) { %>
+        <option <%- item.attr %>/>
+        <% }); %>
+    </datalist>
+    <% } %>
+<% } %>

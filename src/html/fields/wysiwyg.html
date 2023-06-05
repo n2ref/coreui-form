@@ -1,0 +1,5 @@
+<% if (field.readonly) { %>
+    <%- value %>
+<% } else { %>
+    <textarea name="<%= field.name %>" id="editor-<%= editorHash %>"><%- value %></textarea>
+<% } %>

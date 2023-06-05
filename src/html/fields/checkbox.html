@@ -1,0 +1,10 @@
+<% if (field.readonly) { %>
+    <%- render.selectedItems.join(', ') %>
+<% } else { %>
+    <% $.each(render.options, function(key, option) { %>
+    <div class="form-check<% if (field.inline) { %> form-check-inline<% } %>">
+        <input <%- option.attr %>/>
+        <label class="form-check-label" for="<%= option.id %>"><%= option.text %></label>
+    </div>
+    <% }); %>
+<% } %>

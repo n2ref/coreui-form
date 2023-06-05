@@ -1,0 +1,13 @@
+<% if (field.readonly) { %>
+    <%- value %>
+<% } else { %>
+    <input <%- render.attr %>/>
+
+    <% if (render.datalist.length > 0) { %>
+    <datalist id="<%= datalistId %>">
+        <% $.each(render.datalist, function(key, item) { %>
+        <option <%- item.attr %>/>
+        <% }); %>
+    </datalist>
+    <% } %>
+<% } %>

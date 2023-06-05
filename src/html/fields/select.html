@@ -1,0 +1,17 @@
+<% if (field.readonly) { %>
+    <%= render.selectedOptions.join(', ') %>
+<% } else { %>
+    <select <%- render.attr %>>
+        <% $.each(render.options, function(key, option) { %>
+            <% if (option.type === 'group') { %>
+                <optgroup<%- option.attr %>/>
+                <% $.each(option.options, function(key, groupOption) { %>
+                    <option <%- groupOption.attr %>/><%= groupOption.text %></option>
+                <% }); %>
+                </optgroup>
+            <% } else { %>
+            <option <%- option.attr %>/><%= option.text %></option>
+            <% } %>
+        <% }); %>
+    </select>
+<% } %>

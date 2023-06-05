@@ -1,0 +1,7 @@
+<% if (field.readonly) { %>
+    <%= field.valueY == value ? lang.switch_yes : lang.switch_no %>
+<% } else { %>
+    <div class="form-check form-switch">
+        <input <%- render.attr %>/>
+    </div>
+<% } %>

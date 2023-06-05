@@ -1,0 +1,38 @@
+<div id="coreui-form-<%= id %>" class="coreui-form__field_container d-flex flex-column flex-md-row mb-3"
+     <% if ( ! field.show) { %> style="display:none"<% } %>>
+    <% if (field.labelWidth !== 0 && field.labelWidth !== '0px') { %>
+    <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>>
+        <div class="coreui-form__field_label_text col-form-label-sm">
+            <% if (field.required) { %>
+            <span class="coreui-form__field_label_req text-danger">*</span>
+            <% } %>
+            <span><%- field.label %></span>
+        </div>
+
+        <% if (field.description) { %>
+        <div class="coreui-form__field_label_description text-muted">
+            <small><%- field.description %></small>
+        </div>
+        <% } %>
+    </div>
+    <% } %>
+    <div class="coreui-form__field_content flex-fill pt-1">
+        <div class="d-inline-block content-<%= hash %>">
+            <%- content %>
+        </div>
+
+        <% if (field.outContent) { %>
+        <span class="coreui-form__field-content-out d-inline-block align-top pt-1 ps-1">
+            <%- field.outContent %>
+        </span>
+        <% } %>
+
+        <% if (attachFields && attachFields.length > 0) { %>
+            <% $.each(attachFields, function(key, attachField) { %>
+                <div class="<% if (attachField.hasOwnProperty('direction') && attachField.direction === 'column') { %>d-block mt-2<% } else { %>d-inline-block<% } %> content-<%= attachField.hash %>">
+                    <%- attachField.content %>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+</div>

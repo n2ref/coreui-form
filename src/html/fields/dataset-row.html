@@ -1,0 +1,25 @@
+<tr class="coreui-form__field-dataset-item" id="dataset-item-<%= hashItem %>">
+    <% $.each(options, function(key, option) { %>
+        <td class="pe-1 pb-1">
+        <% if (option.type === 'select') { %>
+            <select <%- option.attr %>>
+                <% $.each(option.items, function(key, item) { %>
+                <option <%- item.attr %>><%- item.title %></option>
+                <% }); %>
+            </select>
+        <% } else if (option.type === 'switch') { %>
+            <div class="form-check form-switch">
+                <input <%- option.attr %>/>
+            </div>
+        <% } else { %>
+            <input <%- option.attr %>>
+        <% } %>
+        </td>
+    <% }); %>
+
+    <td class="pb-1">
+        <button type="button" class="btn btn-sm btn-link btn-dataset-remove" data-item-id="dataset-item-<%= hashItem %>">
+            <i class="bi bi-x text-muted"></i>
+        </button>
+    </td>
+</tr>

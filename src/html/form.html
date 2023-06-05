@@ -1,0 +1,29 @@
+<div id="coreui-form-<%= form.id %>" class="coreui-form mb-2"
+    <% if (widthSizes) { %>style="<%= widthSizes.join(';') %>"<% } %>>
+    <% if (form.title) { %>
+    <h5 class="mb-4"><%- form.title %></h5>
+    <% } %>
+
+    <form action="<%= form.save.url %>" method="<%= form.save.method %>"<%- formAttr %>>
+        <div class="coreui-form__fields d-flex justify-content-start flex-column flex-wrap">
+            <%- layout %>
+        </div>
+
+        <% if (controls) { %>
+        <div class="coreui-form__controls d-flex justify-content-start flex-sm-wrap flex-md-nowrap">
+            <% if (form.controlsOffset !== 0 && form.controlsOffset !== '0px') { %>
+            <div class="d-none d-md-block" style="width:<%= form.controlsOffset %>;min-width:<%= form.controlsOffset %>"></div>
+            <% } %>
+
+            <div class="d-flex justify-content-start flex-wrap gap-2">
+                <% $.each(controls, function(key, control) { %>
+                <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container"
+                     <% if ( ! control.show) { %>style="display:none"<% } %>>
+                    <%- control.content %>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+        <% } %>
+    </form>
+</div>
