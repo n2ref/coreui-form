@@ -16,6 +16,7 @@ var conf = {
         src: [
             'src/js/coreui.form.js',
             'src/js/coreui.form.ejs.js',
+            'src/js/coreui.form.mask.js',
             'src/js/coreui.form.utils.js',
             'src/js/coreui.form.instance.js',
             'src/js/coreui.form.templates.js',
@@ -27,10 +28,12 @@ var conf = {
     js_dependents: {
         dist: './src/js',
         src: [
-            'node_modules/ejs/ejs.min.js'
+            'node_modules/ejs/ejs.min.js',
+            'node_modules/jquery-mask-plugin/dist/jquery.mask.min.js'
         ],
         rename: {
-            'ejs.min' : 'coreui.form.ejs'
+            'ejs.min' : 'coreui.form.ejs',
+            'jquery.mask.min' : 'coreui.form.mask'
         },
         wrapper: function(content, file) {
             if (file.path.indexOf('ejs.min.js') >= 0) {
@@ -38,6 +41,11 @@ var conf = {
                     "\"use strict\";" +
                     content + ";" +
                     "CoreUI.form.ejs = ejs;" +
+                    "})();"
+
+            } else if (file.path.indexOf('jquery.mask.min.js') >= 0) {
+                return "(function() {" +
+                    content + ";" +
                     "})();"
             }
 

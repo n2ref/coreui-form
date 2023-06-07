@@ -1,5 +1,5 @@
 
-CoreUI.form.fields.alphanumeric = {
+CoreUI.form.fields.mask = {
 
     _id: '',
     _hash: '',
@@ -7,7 +7,7 @@ CoreUI.form.fields.alphanumeric = {
     _index: 0,
     _value: '',
     _options: {
-        type: 'alphanumeric',
+        type: 'mask',
         name: null,
         label: null,
         labelWidth: null,
@@ -327,23 +327,7 @@ CoreUI.form.fields.alphanumeric = {
      */
     _initEvents: function () {
 
-        $('#coreui-form-' + this._id + ' .content-' + this._hash + ' input').keydown(function (e) {
-            let k = e.keyCode || e.which;
-            let ok = k >= 65 && k <= 90 || // A-Z
-                k >= 96 && k <= 105 || // 0-9
-                k >= 35 && k <= 40 || // arrows
-                k === 9 || //tab
-                k === 46 || //del
-                k === 8 || // backspaces
-                ( ! e.shiftKey && k >= 48 && k <= 57); // only 0-9 (ignore SHIFT options)
-
-            if ( ! ok || (e.ctrlKey && e.altKey)) {
-                e.preventDefault();
-            }
-        });
-
-        $('#coreui-form-' + this._id + ' .content-' + this._hash + ' input').change(function (e) {
-            $(this).val($(this).val().replace(/[^\d\w]/g, ''))
-        });
+        $('#coreui-form-' + this._id + ' .content-' + this._hash + ' input')
+            .mask(this._options.mask, this._options.options)
     }
 }

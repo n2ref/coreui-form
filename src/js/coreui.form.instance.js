@@ -3,7 +3,6 @@ CoreUI.form.instance = {
 
     _options: {
         id: null,
-        errorClass: '',
         title: '',
         lang: 'en',
         save: {
@@ -17,6 +16,7 @@ CoreUI.form.instance = {
         controlsOffset: null,
         readonly: false,
         validate: false,
+        errorClass: '',
         layout: '[column_default]',
         onSubmit: null,
         record: {},
@@ -504,7 +504,7 @@ CoreUI.form.instance = {
 
 
     /**
-     * Показ контролов
+     * Показ всех элементов управления
      */
     showControls: function () {
 
@@ -515,7 +515,7 @@ CoreUI.form.instance = {
 
 
     /**
-     * Скрытие контролов
+     * Скрытие всех элементов управления
      */
     hideControls: function () {
 
