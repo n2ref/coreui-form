@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html id="page-content">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreUI Form</title>
+
+    <link href="dist/page.min.css" rel="stylesheet"/>
+    <script src="dist/page.min.js"></script>
+    <script src="dist/tinymce/tinymce.min.js"></script>
+
+    <script src="../coreui-form/dist/coreui-form.min.js"></script>
+
+    <script src="src/js/examples.js"></script>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#docs-sidenav">
+
+    <section class="text-left">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mb-5">
+                    <header>
+                        <nav class="navbar navbar-expand-lg navbar-default">
+                            <div class="container-fluid">
+                                <a class="navbar-brand" href="#">CoreUI</a>
+                                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+                                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-panel">Panel</a></li>
+                                        <li class="nav-item"><span class="nav-link active">Form</span></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-tabs">Tabs</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-layout">Layout</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-table">Table</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-info">Info</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-modal">Modal</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-notice">Notice</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-alert">Alert</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-confirm">Confirm</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="https://shabuninil.github.io/coreui-chart">Chart</a></li>
+                                    </ul>
+
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <li class="nav-item"><a class="nav-link" href="https://github.com/shabuninil/coreui-form">GitHub</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+                    </header>
+                </div>
+                <div class="col-lg-2">
+                    <div id="docs-sidenav" class="hidden-xs hidden-sm hidden-md d-none d-lg-block"
+                         data-bs-spy="affix" data-bs-offset-top="90" data-bs-offset-bottom="70">
+                        <ul class="nav">
+                            <li><a href="#download">Download</a></li>
+                            <li>
+                                <a href="#examples">Examples</a>
+                                <ul class="nav">
+                                    <li><a href="#example-simple">Simple form</a></li>
+                                    <li><a href="#example-groups">Groups</a></li>
+                                    <li><a href="#example-controls">Control types</a></li>
+                                    <li><a href="#example-attache">Attach fields</a></li>
+                                    <li><a href="#example-layout">Layout</a></li>
+                                    <li><a href="#example-readonly">Readonly</a></li>
+                                    <li><a href="#example-validation">Validation</a></li>
+                                    <li><a href="#example-methods">Other methods</a></li>
+                                    <li><a href="#example-events">Events</a></li>
+                                    <li><a href="#example-all">All options</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#options">Options</a></li>
+                            <li><a href="#methods">Methods</a></li>
+                            <li><a href="#methods-field">Field methods</a></li>
+                            <li><a href="#methods-group">Group methods</a></li>
+                            <li><a href="#methods-control">Control methods</a></li>
+                            <li><a href="#events">Events</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-10">
+                    <h2 id="download">Download</h2>
+                    <div>
+                        <p>
+                            You can download a minimized version of the library or get the full source code at github.com.
+                        </p>
+                        <a class="btn btn-secondary" href="https://github.com/shabuninil/coreui-form/archive/master.zip">Download source</a>
+                    </div>
+
+
+                    <h2 class="section-margin">Install with npm</h2>
+                    <pre><code class="bash">$ npm install coreui-form</code></pre>
+
+
+                    <h2 class="section-margin">Требования</h2>
+                    <p>
+                        Для корректной работы на странице необходимо наличие:
+                        <a href="https://getbootstrap.com/docs/5.3" target="_blank">Bootstrap 5</a>,
+                        <a href="https://jquery.com" target="_blank">jquery</a>
+                    </p>
+
+                    <h2 id="examples" class="section-margin">Examples</h2>
+                    <div>
+                        <h3 id="example-simple">Simple form</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-simple"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-simple"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let simpleOptions = {
+            save: {
+                url: '/path/to/object/1',
+                method: 'post'
+            },
+            record: {
+                text: 'default text value',
+                textarea: "123",
+                date: "2023-01-01"
+            },
+            fields: [
+                { type: 'text',     name: 'text',     label: 'Text',      width: 180 },
+                { type: 'date',     name: 'date',     label: 'Date',      width: 180 },
+                { type: 'textarea', name: 'textarea', label: 'Text Area', width: 180, attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' }
+            ],
+            onSubmit: function() { return false; },
+            controls: [
+                { type: "submit", content: "Save" },
+            ],
+        };
+
+        let formSimple = CoreUI.form.create(simpleOptions);
+        formSimple.render('form-simple');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-groups">Groups</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-groups"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-groups"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let groupOptions = {
+            fields: [
+                { type: 'group', label: 'Group collapsible', show: false,
+                    fields: [
+                        { type: 'text',     name: 'text',     label: 'Text',      width: 180 },
+                        { type: 'number',   name: 'float',    label: 'Float',     width: 180, attr: { min: -2, max: 50, step: 0.1 }, precision: 2 },
+                        { type: 'date',     name: 'date',     label: 'Date',      width: 180 },
+                    ]
+                },
+                { type: 'group', label: 'Group 2', show: true, showCollapsible: false,
+                    fields: [
+                        { type: 'textarea', name: 'textarea', label: 'Text Area', width: 180, attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' }
+                    ]
+                }
+            ]
+        };
+
+        let formGroups = CoreUI.form.create(groupOptions);
+        formGroups.render('form-groups');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-controls">Control types</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-controls"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-controls"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let controlsOptions = {
+            fields: [
+                { type: 'text', name: 'text', label: 'Text', width: 180}
+            ],
+            onSubmit: function() { return false; },
+            controls: [
+                { type: "submit", content: "Submit", onClick: function (form, e) { console.log('submit click') } },
+                { type: "button", content: "Button", onClick: function (form, e) { console.log('button click') } },
+                { type: "link",   content: "Link",   href: "#link-url", onClick: function (form, e) { console.log('link click') } },
+                { type: "custom", content:
+                    '&lt;div class="form-check"&gt;' +
+                        '&lt;label class="form-check-label"&gt;' +
+                            '&lt;input class="form-check-input" type="checkbox"&gt;Custom control' +
+                        '&lt;/label&gt;' +
+                    '&lt;/div&gt;'
+                }
+            ],
+        };
+
+        let formControls = CoreUI.form.create(controlsOptions);
+        formControls.render('form-controls');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-attache">Attache fields</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-attache"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-attache"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let attachOptions = {
+            save: {
+                url: '/path/to/object/1',
+                method: 'post'
+            },
+            record: {
+                text: 'Text value',
+                date1: "2023-01-01",
+                number0: 0,
+                number1: 1,
+                number2: 2,
+                number3: 3,
+                phone1: '+1-234-567',
+                phone2: '+1-234-567',
+                email1: 'example@mail.com',
+                email2: 'example@mail.com'
+            },
+            fields: [
+                { type: 'text', name: 'text',  label: 'Text', width: 180,
+                    fields: [
+                        { type: 'number', name: 'number0', width: 90 }
+                    ]
+                },
+                { type: 'date', name: 'date1', label: 'Date range', width: 135,
+                    fields: [
+                        { type: 'date', name: 'date2', width: 135 }
+                    ]
+                },
+                { type: 'number', name: 'number1', label: 'Numbers', width: 89,
+                    fields: [
+                        { type: 'number', name: 'number2', width: 89 },
+                        { type: 'range',  name: 'number3', width: 89, attr: { min: 0, max: 10, step: 1 } }
+                    ]
+                },
+                { type: 'tel', name: 'phone1', label: 'Contacts', width: 200, fieldsDirection: 'column',
+                    fields: [
+                        { type: 'tel',   name: 'phone2', width: 200 },
+                        { type: 'email', name: 'email1', width: 200 },
+                        { type: 'email', name: 'email2', width: 200 }
+                    ]
+                }
+            ]
+        };
+
+        let formAttach = CoreUI.form.create(attachOptions);
+        formAttach.render('form-attache');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-layout">Layout</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-layout"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-layout"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let layoutOptions = {
+            save: {
+                url: '/path/to/object/1',
+                method: 'post'
+            },
+            controlsOffset: 0,
+            layout:
+                '&lt;div class="d-flex flex-wrap"&gt;' +
+                    '&lt;div class="rounded-3 border border-1 shadow-sm p-2 me-3 mb-3" style="width: 315px"&gt;' +
+                        '&lt;h6&gt;Column left&lt;/h6&gt;' +
+                        '[column_left]' +
+                    '&lt;/div&gt;' +
+
+                    '&lt;div class="flex-fill rounded-3 border border-1 shadow-sm p-2 mb-3"&gt;' +
+                        '&lt;h6&gt;Column right&lt;/h6&gt;' +
+                        '[column_right]' +
+                    '&lt;/div&gt;' +
+
+                    '&lt;div class="w-100 text-center text-success m-3"&gt;custom html content&lt;/div&gt;' +
+
+                    '&lt;div class="w-100 rounded-3 border border-1 shadow-sm p-2 mb-3"&gt;' +
+                        '&lt;h6&gt;Column default&lt;/h6&gt;' +
+                        '[column_default]' +
+                    '&lt;/div&gt;' +
+                '&lt;/div&gt;',
+            fields: [
+                { type: 'text',   column: 'left',  name: 'text',   label: 'Text',   labelWidth: 100, width: 180 },
+                { type: 'number', column: 'left',  name: 'number', label: 'Number', labelWidth: 100, width: 180 },
+                { type: 'date',   column: 'right', name: 'date',   label: 'Date',   labelWidth: 100, width: 180 },
+                { type: 'group',  label: 'Group 2', show: true,
+                    fields: [
+                        { type: 'textarea', name: 'textarea', label: 'Text Area', labelWidth: 150, width: 180, attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' }
+                    ]
+                }
+            ],
+            onSubmit: function() { return false; },
+            controls: [
+                { type: "submit", content: "Save" },
+            ],
+        };
+
+        let formLayout = CoreUI.form.create(layoutOptions);
+        formLayout.render('form-layout');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-readonly">Readonly</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-readonly"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-readonly"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let readonlyOptions = {
+            readonly: true,
+            record: {
+                text: 'Text value',
+                textarea: "123",
+                date: "2023-01-01",
+                select: 2,
+                checkbox: [1, 3],
+            },
+            fields: [
+                { type: 'text',     name: 'text',     label: 'Text',      width: 180 },
+                { type: 'date',     name: 'date',     label: 'Date',      width: 180 },
+                { type: 'textarea', name: 'textarea', label: 'Text Area', width: 180, attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' },
+                { type: 'checkbox', name: 'checkbox', label: 'Check box',
+                    options: [
+                        { value: 1, text: 'Check 1' },
+                        { value: 2, text: 'Check 2' },
+                        { value: 3, text: 'Check 3' }
+                    ]
+                },
+            ],
+            controls: [
+                { type: "button", content: "Writable all",  onClick: function (form, e) { form.readonly(false); } },
+                { type: "button", content: "Readonly all",  onClick: function (form, e) { form.readonly(true); } },
+                { type: "button", content: "Text writable", onClick: function (form, e) { form.getField('text').readonly(false); }, attr: { class: 'btn btn-sm btn-success' } },
+                { type: "button", content: "Text readonly", onClick: function (form, e) { form.getField('text').readonly(true); },  attr: { class: 'btn btn-sm btn-success' } }
+            ]
+        };
+
+        let formReadonly = CoreUI.form.create(readonlyOptions);
+        formReadonly.render('form-readonly');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-validation">Validation</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-validation"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-validation"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let validationOptions = {
+            validate: true,
+            record: {
+                phone: "abc",
+                email: "example",
+                date: "2023-06-01",
+            },
+            fields: [
+                { type: 'text',     name: 'text',     label: 'Text',      width: 180, required: true, description: "Required field" },
+                { type: 'tel',      name: 'phone',    label: 'Phone',     width: 180, attr: { pattern: '\\+[\\d\\-]+' }, description: "Phone format", invalidText: "format +1234" },
+                { type: 'email',    name: 'email',    label: 'Email',     width: 180 },
+                { type: 'date',     name: 'date',     label: 'Date',      width: 180, attr: { min: "2023-06-06", max: "2023-06-14" }, description: "Date range validation" },
+                { type: 'textarea', name: 'textarea', label: 'Text area', width: 180, attr: { style: 'height:60px; resize: vertical' }, invalidText: "Invalid field text", validText: "Valid field text" }
+            ],
+            controls: [
+                { type: "submit", content: "Save" },
+                { type: "button", content: "Is valid text field", onClick: function (form, e) { alert(form.getField('text').isValid()); } },
+                { type: "button", content: "Invalid text",        onClick: function (form, e) { form.getField('textarea').validate(false); } },
+                { type: "button", content: "Valid text",          onClick: function (form, e) { form.getField('textarea').validate(true); } },
+                { type: "button", content: "Custom validate",     onClick: function (form, e) { form.getField('textarea').validate(false, "Custom invalid text"); } },
+                { type: "button", content: "Hide validate",       onClick: function (form, e) { form.getField('textarea').validate(null); } }
+            ]
+        };
+
+        let formValidation = CoreUI.form.create(validationOptions);
+        formValidation.render('form-validation');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-methods">Other methods</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-methods"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-methods"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let methodsOptions = {
+            record: {
+                text: "Text value",
+                textarea: "Textarea value"
+            },
+            fields: [
+                { type: 'text',  name: 'text',  label: 'Text', labelWidth: 100, width: 180, required: true },
+                { type: 'group', label: 'Group fields', show: true,
+                    fields: [
+                        { type: 'textarea', name: 'textarea', label: 'Text area', labelWidth: 100, width: 180, attr: { style: 'height:60px' }}
+                    ]
+                }
+            ],
+            controlsOffset: 100,
+            controls: [
+                { type: "submit", content: "Save" },
+                { type: "button", content: "Lock",              onClick: function (form) { form.lock(); } },
+                { type: "button", content: "Unlock",            onClick: function (form) { form.unlock(); } },
+                { type: "button", content: "getOptions",        onClick: function (form) { alert(JSON.stringify(form.getOptions())); } },
+                { type: "button", content: "getRecord",         onClick: function (form) { alert(JSON.stringify(form.getRecord())) } },
+                { type: "button", content: "getData",           onClick: function (form) { alert(JSON.stringify(form.getData())) } },
+                { type: "button", content: "showError",         onClick: function (form) { form.showError('Text error') } },
+                { type: "button", content: "hideError",         onClick: function (form) { form.hideError() } },
+                { type: "button", content: "getFields (log)",   onClick: function (form) { console.log(form.getFields()) }, attr: { class: 'btn btn-sm btn-dark' } },
+                { type: "button", content: "getField (log)",    onClick: function (form) { console.log(form.getField('text')) }, attr: { class: 'btn btn-sm btn-dark' } },
+                { type: "button", content: "getControls (log)", onClick: function (form) { console.log(form.getControls()) }, attr: { class: 'btn btn-sm btn-dark' } },
+                { type: "button", content: "getGroups (log)",   onClick: function (form) { console.log(form.getGroups()) }, attr: { class: 'btn btn-sm btn-dark' } },
+            ]
+        };
+
+        let formMethods = CoreUI.form.create(methodsOptions);
+        formMethods.render('form-methods');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-events">Events</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-events"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-events"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let eventsOptions = {
+            save: {
+                url: '/path/to/object/1',
+                method: 'post'
+            },
+            record: {
+                text: "Text value",
+                modal: { value: "1", text: "text modal" }
+            },
+            labelWidth: 100,
+            fields: [
+                { type: 'text',  name: 'text',  label: 'Text',  width: 250 },
+                { type: 'modal', name: 'modal', label: 'Modal', width: 250,
+                    options: {
+                        title: 'Modal title',
+                        size: 'md',
+                        url: 'data/modal.html',
+                        onShow:   function () { console.log('modal onShow') },
+                        onHidden: function () { console.log('modal onHidden') },
+                        onClear:  function () { console.log('modal onClear') },
+                        onChange: function () { console.log('modal onChange') },
+                    }
+                },
+            ],
+            onSubmit: function() { console.log('form onSubmit'); },
+            controls: [
+                { type: "submit", content: "Submit" },
+                { type: "button", content: "Button", onClick: function () { console.log('button onClick') } },
+            ]
+        };
+
+        let formEvents = CoreUI.form.create(eventsOptions);
+
+        formEvents.on('before-load-modal.coreui.form',   function(modal, xhr) {                          console.log('modal before-load-modal') } );
+        formEvents.on('success-load-modal.coreui.form',  function(modal, result) {                       console.log('modal success-load-modal') } );
+        formEvents.on('error-load-modal.coreui.form',    function(modal, xhr, textStatus, errorThrown) { console.log('modal error-load-modal') } );
+        formEvents.on('complete-load-modal.coreui.form', function(modal, xhr, textStatus) {              console.log('modal complete-load-modal') } );
+        formEvents.on('select-modal.coreui.form',        function(modal, xhr, textStatus) {              console.log('modal select-modal') } );
+
+        formEvents.on('shown.coreui.form',        function() {                                   console.log('form shown') } );
+        formEvents.on('send.coreui.form',         function(form, data) {                         console.log('form send') } );
+        formEvents.on('start-send.coreui.form',   function(form, xhr) {                          console.log('form start-send') } );
+        formEvents.on('success-send.coreui.form', function(form, result) {                       console.log('form success-send') } );
+        formEvents.on('error-send.coreui.form',   function(form, xhr, textStatus, errorThrown) { console.log('form error-send') } );
+        formEvents.on('end-send.coreui.form',     function(form, xhr, textStatus) {              console.log('form end-send') } );
+
+        formEvents.render('form-events');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+
+
+                        <h3 id="example-all">All options</h3>
+                        <div>
+                            <div class="content-example">
+                                <div id="form-all"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-all"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let allOptions = {
+            id: "myform",
+            lang: 'en',
+            title: 'Form title',
+            save: {
+                url: '/path/to/object/1',
+                method: 'post'
+            },
+            width: '100%',
+            minWidth: 500,
+            maxWidth: '100%',
+            controlsWidth: 150,
+            labelWidth: 150,
+            fieldWidth: 200,
+            readonly: false,
+            validate: true,
+            errorClass: 'error1 error2',
+            onSubmit: function() { return false; },
+            layout:
+                '&lt;div class="d-flex flex-wrap"&gt;' +
+                    '&lt;div style="width: 500px"&gt;[column_left]&lt;/div&gt;' +
+                    '&lt;div class="flex-fill"&gt;[column_right]&lt;/div&gt;' +
+                    '&lt;div class="border-bottom w-100 my-4"&gt;&lt;/div&gt;' +
+                    '&lt;div class="w-100"&gt;[column_default]&lt;/div&gt;' +
+                '&lt;/div&gt;',
+            record: {
+                text: 'default text value',
+                mask: '1234 AB-7',
+                int: 10,
+                float: -1.1,
+                range: 40,
+                email: 'example@mail.com',
+                tel: '123-456-7890',
+                url: 'https://www.example.com',
+                color: '#695D98',
+                password: 123,
+                textarea: "123",
+
+                date: "2023-01-01",
+                time: "12:00",
+                datetime: "2023-06-12 19:30:00",
+                date_month: "2023-01",
+                date_week: "2023-W18",
+
+                select: 2,
+                select_multiple: [ 2, 3 ],
+                modal: { value: 1, text: "text" },
+                dataset: [
+                    { nmbr: 123,   date_order: "2023-01-01" },
+                    { nmbr: "234", date_order: "2023-02-01" },
+                ],
+                checkbox: [ 1, 3 ],
+                radio: 2,
+                is_active_sw: 'Y',
+                hidden: 'value',
+                wysiwyg: 'Simple wysiwyg editor'
+            },
+            fields: [
+                { type: 'group', label: 'Text and numbers', show: true, showCollapsible: true, column: 'left',
+                    fields: [
+                        { type: 'text', name: 'text', label: 'Text', attr: { minlength: 3, maxlength: 255 }, required: true, invalidText: 'Required field',
+                            datalist: [
+                                { value: 'Adams, John',    label: 'Group 1' },
+                                { value: 'Johnson, Peter', label: 'Group 1' },
+                                { value: 'Lewis, Frank',   label: 'Group 2' },
+                                { value: 'Cruz, Steve',    label: 'Group 2' },
+                                { value: 'Donnun, Nick',   label: 'Group 2' }
+                            ]
+                        },
+                        { type: 'mask',     name: 'mask',     label: 'Mask',      mask: '0000 AA-0', options: { translation: { A: {pattern: /[A-Z]/}, } } },
+                        { type: 'number',   name: 'float',    label: 'Float',     width: 100, attr: { min: -2, max: 50, step: 0.1 }, precision: 2 },
+                        { type: 'number',   name: 'int',      label: 'Int',       width: 100, attr: { min: -2, max: 50 }, },
+                        { type: 'email',    name: 'email',    label: 'Email'},
+                        { type: 'tel',      name: 'tel',      label: 'Phone',     attr: { pattern: "[0-9]{3}-[0-9]{3}-[0-9]{4}" } },
+                        { type: 'url',      name: 'url',      label: 'Url',       attr: { pattern: "https://.*" } },
+                        { type: 'password', name: 'password', label: 'Password',  attr: { minlength: 8 }, outContent: ' &lt;i&gt;min length 8&lt;/i&gt;' },
+                        { type: 'textarea', name: 'textarea', label: 'Text Area', attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' },
+                        { type: 'hidden',   name: 'hidden' }
+                    ]
+                },
+
+                { type: 'group', label: 'Date and time', column: 'right', id: 'group_id',
+                    fields: [
+                        { type: 'date',           name: 'date',       label: 'Date',       width: 110, },
+                        { type: 'time',           name: 'time',       label: 'time',       width: 110, },
+                        { type: 'datetime-local', name: 'datetime',   label: 'Date time',  attr: { min: "2023-06-06 00:00:00", max: "2023-06-14 00:00:00" } },
+                        { type: 'month',          name: 'date_month', label: 'Date month', },
+                        { type: 'week',           name: 'date_week',  label: 'Date week', },
+                        { type: 'date',           name: 'date_rage1', label: 'Date range', width: 110,
+                            fields: [
+                                { type: 'date', name: 'date_rage2', width: 110 }
+                            ]
+                        },
+                    ]
+                },
+
+                { type: 'color', name: 'color', label: 'Color' },
+                { type: 'range', name: 'range', label: 'Range',  width: 200, attr: { min: 0, max: 100, step: 1 },
+                    datalist: [
+                        { value: '10' },
+                        { value: '20' },
+                        { value: '30' },
+                    ]
+                },
+
+                { type: 'select', name: 'select', label: 'Select', width: 200, column: 'default',
+                    options: [
+                        { value: '', text: 'No value' },
+                        { type: "group", label: 'Group 1',
+                            options : [
+                                { value: 1, text: 'Adams John' },
+                                { value: 2, text: 'Johnson Peter' },
+                            ]
+                        },
+                        { type: "group", label: 'Group 2', attr: { class: "group-class"  },
+                            options : [
+                                { value: 3, text: 'Lewis Frank' },
+                                { value: 4, text: 'Cruz Steve' },
+                                { value: 5, text: 'Donnun Nick' }
+                            ]
+                        }
+                    ]
+                },
+                { type: 'select', name: 'select_multiple', label: 'Multiple', width: 200, attr: { multiple: "multiple" },
+                    options: [
+                        { value: 1, text: 'Adams John' },
+                        { value: 2, text: 'Johnson Peter' },
+                        { value: 3, text: 'Lewis Frank' },
+                        { value: 4, text: 'Cruz Steve' },
+                        { value: 5, text: 'Donnun Nick' },
+                    ]
+                },
+                { type: 'checkbox', name: 'checkbox', label: 'Check box',
+                    options: [
+                        { value: 1, text: 'Check 1' },
+                        { value: 2, text: 'Check 2' },
+                        { value: 3, text: 'Check 3' }
+                    ]
+                },
+                { type: 'radio', name: 'radio', label: 'Radio Box', invalidText: 'Required field',
+                    options: [
+                        { value: 1, text: 'Radio 1' },
+                        { value: 2, text: 'Radio 2' },
+                        { value: 3, text: 'Radio 3' }
+                    ]
+                },
+                { type: 'switch', name: 'is_active_sw', label: 'Switch', valueY: 'Y', valueN: 'N' },
+                { type: 'file',   name: 'file',         label: 'Files',  width: 300 },
+                { type: 'modal',  name: 'modal',        label: 'Modal',  width: 300,
+                    options: {
+                        title: 'Modal title',
+                        size: 'lg',
+                        url: 'data/modal.html',
+                        onHidden: function () { console.log('onHidden') },
+                        onClear:  function () { console.log('onClear') },
+                        onChange: function () { console.log('onChange') },
+                    }
+                },
+                { type: 'dataset', name: 'dataset', label: 'Dataset',
+                    options: [
+                        {
+                            type:  'text',
+                            title: 'Номер',
+                            name:  'nmbr',
+                            attr:  { style: 'width: 200px' }
+                        },
+                        {
+                            type:  'date',
+                            title: 'Дата',
+                            name:  'date_order',
+                            attr:  { style: 'width: 140px' }
+                        }
+                    ]
+                },
+
+                { type: 'custom',  label: 'Custom', content: "&lt;i&gt;html&lt;/i&gt;" },
+                { type: 'wysiwyg', name: 'wysiwyg', label: 'Wysiwyg', width: 600, height: 300, options: 'simple' }
+            ],
+            controls: [
+                { type: "submit", content: "Save",   onClick: function (e) { } },
+                { type: "button", content: "Button", onClick: function (e) { } },
+                { type: "link",   content: "Link", href: "#" },
+                { type: "custom", content:
+                    '&lt;div class="form-check"&gt;' +
+                        '&lt;label class="form-check-label"&gt;' +
+                        '&lt;input class="form-check-input" type="checkbox"&gt;' +
+                        'Check me&lt;/label&gt;' +
+                    '&lt;/div&gt;'
+                }
+            ]
+        };
+
+        let form = CoreUI.form.create(allOptions);
+        $('#form-all').html(form.render());
+        form.initEvents();
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <br><br>
+                    </div>
+
+
+                    <h2 id="options" class="section-margin">Options</h2>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped js-options-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>type</th>
+                                <th>default</th>
+                                <th>description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th>id</th> <td>string</td> <td><code>crc32b</code></td>
+                                <td>Идентификатор формы. Этот id будет указан вместо уникального значения</td>
+                            </tr>
+                            <tr>
+                                <th>lang</th> <td>string</td> <td>en</td>
+                                <td>Язык формы</td>
+                            </tr>
+                            <tr>
+                                <th>title</th> <td>string</td> <td></td>
+                                <td>Заголовок формы</td>
+                            </tr>
+                            <tr>
+                                <th>save</th> <td>object</td> <td></td>
+                                <td>Адрес и Http метод используемые для отправки данных с формы. <code>{url: '/path', method: 'post'}</code></td>
+                            </tr>
+                            <tr>
+                                <th>width</th> <td>string|number</td> <td></td>
+                                <td>Ширина занимаемая формой</td>
+                            </tr>
+                            <tr>
+                                <th>minWidth</th> <td>string|number</td> <td></td>
+                                <td>Минимальная ширина занимаемая формой</td>
+                            </tr>
+                            <tr>
+                                <th>maxWidth</th> <td>string|number</td> <td></td>
+                                <td>Максимальная ширина занимаемая формой</td>
+                            </tr>
+                            <tr>
+                                <th>labelWidth</th> <td>string|number</td> <td></td>
+                                <td>Ширина для названий полей формы по умолчанию</td>
+                            </tr>
+                            <tr>
+                                <th>controlsWidth</th> <td>string|number</td> <td></td>
+                                <td>Ширина отступа для элементов управления. По умолчанию равна значения заданному в <code>labelWidth</code></td>
+                            </tr>
+                            <tr>
+                                <th>fieldWidth</th> <td>string|number</td> <td></td>
+                                <td>Ширина для полей формы по умолчанию</td>
+                            </tr>
+                            <tr>
+                                <th>readonly</th> <td>bool</td> <td>false</td>
+                                <td>Признак для отображения формы в виде только для чтения</td>
+                            </tr>
+                            <tr>
+                                <th>validate</th> <td>bool</td> <td>false</td>
+                                <td>Признак для необходимости валидации полей формы перед ее отправкой</td>
+                            </tr>
+                            <tr>
+                                <th>errorClass</th> <td>string</td> <td></td>
+                                <td>Css классы которые будут добавлены в сообщение об ошибке</td>
+                            </tr>
+                            <tr>
+                                <th>layout</th> <td>string</td> <td><code>[column_default]</code></td>
+                                <td>Макет с html разметкой для настройки внешнего вида формы</td>
+                            </tr>
+                            <tr>
+                                <th>record</th> <td>object</td> <td></td>
+                                <td>Объект с данными которые будут помещены в поля формы для их изменения и сохранения</td>
+                            </tr>
+                            <tr>
+                                <th>fields</th> <td>array</td> <td></td>
+                                <td>Массив полей для отображения их на форме</td>
+                            </tr>
+                            <tr>
+                                <th>controls</th> <td>array</td> <td></td>
+                                <td>Массив элементов управления для отображения их на форме</td>
+                            </tr>
+                            <tr>
+                                <th>onSubmit</th> <td>function</td> <td></td>
+                                <td>Событие выполняемое при отправке формы</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <h2 id="methods" class="section-margin">Methods</h2>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped js-options-table">
+                            <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Return</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">let form = CoreUI.form.create( options )</code></pre>
+                                </td>
+                                <td>CoreUI.form.instance</td>
+                                <td>Метод для создания экземпляра формы</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">let form = CoreUI.form.get( formId )</code></pre>
+                                </td>
+                                <td>CoreUI.form.instance</td>
+                                <td>Получение ранее созданного экземпляра формы</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">CoreUI.form.setSettings( settings )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Установка некоторых настроек по умолчанию для создаваемых форм
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">CoreUI.form.getSetting( name )</code></pre>
+                                </td>
+                                <td>mixed</td>
+                                <td>
+                                    Получение значения установленной настройки по умолчанию для создаваемых форм
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.render( elementId )</code></pre>
+                                </td>
+                                <td>string|void</td>
+                                <td>
+                                    Формирование html таблицы и размещение его если указан dom элемент.
+                                    Если элемент не указан, то метод возвращает сформированный html
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.initEvents()</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Инициализирует события необходимые для корректной работы формы.
+                                    Требует обязательного вызова, если при рендере формы не был указан элемент для вставки (elementId)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.getId()</code></pre>
+                                </td>
+                                <td>string</td>
+                                <td>
+                                    Получение id формы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.getOptions()</code></pre>
+                                </td>
+                                <td>object</td>
+                                <td>
+                                    Получение настроек формы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.getRecord()</code></pre>
+                                </td>
+                                <td>object</td>
+                                <td>
+                                    Получение исходных данных редактируемой записи
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.getData()</code></pre>
+                                </td>
+                                <td>object</td>
+                                <td>
+                                    Получение данных полученных при редактировании формы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.getFields()</code></pre>
+                                </td>
+                                <td>array</td>
+                                <td>
+                                    Получение всех проинициализированных экземпляров полей формы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.getControls()</code></pre>
+                                </td>
+                                <td>array</td>
+                                <td>
+                                    Получение всех проинициализированных экземпляров элементов управления формой
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.getGroups()</code></pre>
+                                </td>
+                                <td>array</td>
+                                <td>
+                                    Получение всех проинициализированных экземпляров групп полей формой
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.getField( name )</code></pre>
+                                </td>
+                                <td>object</td>
+                                <td>
+                                    Получение проинициализированного экземпляра поля формы по его названию
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.readonly( isReadonly )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Смена состояния "только для чтения" для всех полей формы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.validate()</code></pre>
+                                </td>
+                                <td>bool</td>
+                                <td>
+                                    Проведение проверки на корректность во всех полях формы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.showControls()</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Показ всех элементов управления
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.hideControls()</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Скрытие всех элементов управления
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.showError( message, options )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Показ сообщения с ошибкой над формой
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.hideError()</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Скрытие сообщения с ошибкой над формой
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.on( name, callback )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Регистрация функции вызываемой при наступлении указанного события
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.lock()</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Блокирование отправки формы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.unlock()</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Разблокирование отправки формы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.send()</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Отправка данных формы по указанному адресу
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">form.destruct()</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Уничтожение формы
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <h2 id="methods-field" class="section-margin">Field methods</h2>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped js-options-table">
+                            <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Return</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">field.readonly( isReadonly )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Смена состояния "только для чтения" для поля
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">field.validate( isValid, message)</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Установка состояния валидности поля. При необходимости можно указать сообщение с деталями ошибки или успешного состояния
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">field.isValid()</code></pre>
+                                </td>
+                                <td>bool</td>
+                                <td>
+                                    Проверка поля на валидность
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">field.getOptions()</code></pre>
+                                </td>
+                                <td>object</td>
+                                <td>
+                                    Получение исходных настроек поля
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">field.show( duration )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Показ поля
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">field.hide( duration )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Скрытие поля
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">field.getValue()</code></pre>
+                                </td>
+                                <td>mixed</td>
+                                <td>
+                                    Получение значения поля
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">field.setValue( value )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Установка значения поля
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <h2 id="methods-group" class="section-margin">Group methods</h2>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped js-options-table">
+                            <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Return</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">group.getOptions()</code></pre>
+                                </td>
+                                <td>object</td>
+                                <td>
+                                    Получение исходных настроек группы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">group.expand( duration )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Показ содержимого группы
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">group.collapse( duration )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Скрытие содержимого группы
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <h2 id="methods-control" class="section-margin">Control methods</h2>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped js-options-table">
+                            <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Return</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">control.getOptions()</code></pre>
+                                </td>
+                                <td>object</td>
+                                <td>
+                                    Получение исходных настроек элемента управления
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">control.show( duration )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Показ элемента управления
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <pre class="m-0 p-0"><code class="js">control.hide( duration )</code></pre>
+                                </td>
+                                <td></td>
+                                <td>
+                                    Скрытие элемента управления
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <h2 id="events" class="section-margin">Events</h2>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped js-options-table">
+                            <thead>
+                            <tr>
+                                <th>Event Type</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="text-nowrap">shown.coreui.form</td>
+                                <td>Показ формы на странице. Происходит один раз при отображении</td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">send.coreui.form</td>
+                                <td>
+                                    Выполняется перед отправкой данных формы.<br>
+                                    В качестве параметров передаются <code>form.on('send.coreui.form', function (form, data).</code><br>
+                                    Если функция вернет false, то отправка будет прекращена</td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">start-send.coreui.form</td>
+                                <td>
+                                    Выполняется перед началом запроса для отправки данных формы.<br>
+                                    В качестве параметров передаются <code>form.on('start-send.coreui.form', function (form, xhr)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">success-send.coreui.form</td>
+                                <td>
+                                    Выполняется после успешного запроса для отправки данных формы.<br>
+                                    В качестве параметров передаются <code>form.on('success-send.coreui.form', function (form, result)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">error-send.coreui.form</td>
+                                <td>
+                                    Выполняется после не успешного запроса для отправки данных формы.<br>
+                                    В качестве параметров передаются <code>form.on('error-send.coreui.form', function (form, xhr, textStatus, errorThrown)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">end-send.coreui.form</td>
+                                <td>
+                                    Выполняется после запроса для отправки данных формы.<br>
+                                    В качестве параметров передаются <code>form.on('end-send.coreui.form', function (form, xhr, textStatus)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">before-load-modal.coreui.form</td>
+                                <td>
+                                    Выполняется перед началом запроса для получения данных для модала.<br>
+                                    В качестве параметров передаются <code>form.on('before-load-modal.coreui.form', function (modal, xhr)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">success-load-modal.coreui.form</td>
+                                <td>
+                                    Выполняется после успешного запроса для получения данных для модала.<br>
+                                    В качестве параметров передаются <code>form.on('success-load-modal.coreui.form', function (modal, result)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">error-load-modal.coreui.form</td>
+                                <td>
+                                    Выполняется после не успешного запроса для получения данных для модала.<br>
+                                    В качестве параметров передаются <code>form.on('error-load-modal.coreui.form', function (modal, xhr, textStatus, errorThrown)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">complete-load-modal.coreui.form</td>
+                                <td>
+                                    Выполняется после запроса для получения данных для модала.<br>
+                                    В качестве параметров передаются <code>form.on('complete-load-modal.coreui.form', function (modal, xhr, textStatus)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">select-load-modal.coreui.form</td>
+                                <td>
+                                    Выполняется при нажатии на кнопку открытия модала.<br>
+                                    В качестве параметров передаются <code>form.on('>select-load-modal.coreui.form', function (modal, xhr, textStatus)</code>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="buffer-content"></div>
+    </section>
+
+    <footer>
+        <section class="copyright">
+            <div class="container">
+                <span class="float-start">shabuninil24@gmail.com</span>
+                <span class="float-end">Code licensed under the GNU License</span>
+            </div>
+        </section>
+    </footer>
+</body>
+</html>
