@@ -123,7 +123,7 @@ CoreUI.form.fields.custom = {
             'coreui.layout',
             'coreui.panel',
             'coreui.tabs',
-            'coreui.alert',
+            'coreui.info',
             'coreui.chart',
         ];
 
