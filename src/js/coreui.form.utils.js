@@ -1,9 +1,9 @@
 
-CoreUI.form.utils = {
+let coreuiFormUtils = {
 
     /**
      * Получение значения поля
-     * @param {CoreUI.form.instance} form
+     * @param {coreuiFormInstance} form
      * @param {object}               fieldOptions
      * @returns {string|number|null}
      */
@@ -136,7 +136,7 @@ CoreUI.form.utils = {
 
     /**
      * Инициализация и рендер дополнительных полей
-     * @param {CoreUI.form.instance} form
+     * @param {coreuiFormInstance} form
      * @param {object}               options
      * @returns {object}
      * @private
@@ -325,3 +325,5 @@ CoreUI.form.utils = {
         }
     }
 }
+
+export default coreuiFormUtils;

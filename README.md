@@ -1,6 +1,6 @@
 # CoreUI form
 
-**[DEMO](https://shabuninil.github.io/coreui-form)**
+**[DEMO](https://n2ref.github.io/coreui-form)**
 
 
 ### Install with NPM
@@ -9,7 +9,7 @@
 
 ### Example usage
 
-![Preview](https://raw.githubusercontent.com/shabuninil/coreui-form/master/preview.png)
+![Preview](https://raw.githubusercontent.com/n2ref/coreui-form/master/preview.png)
 
 ```html
 <div id="form-all"></div>

@@ -1,5 +1,11 @@
 
-CoreUI.form.fields.dataset = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiForm      from "../coreui.form";
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+
+
+coreuiForm.fields.dataset = {
 
     _id: '',
     _hash: '',
@@ -29,17 +35,17 @@ CoreUI.form.fields.dataset = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {coreuiFormInstance} form
+     * @param {object}             options
+     * @param {int}                index Порядковый номер на форме
      */
     init: function (form, options, index) {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = CoreUI.form.utils.getFieldValue(form, options);
-        this._options = CoreUI.form.utils.mergeFieldOptions(form, this._options, options);
-        this._hash    = CoreUI.form.utils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
 
         let that = this;
 
@@ -312,9 +318,9 @@ CoreUI.form.fields.dataset = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = CoreUI.form.utils.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['form-field-label.html'], {
+        return ejs.render(coreuiFormTpl['form-field-label.html'], {
             id: this._id,
             form:  this._form,
             hash: this._hash,
@@ -376,7 +382,7 @@ CoreUI.form.fields.dataset = {
             }
         }
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/dataset.html'], {
+        return ejs.render(coreuiFormTpl['fields/dataset.html'], {
             field: options,
             value: this._value,
             lang: this._form.getLang(),
@@ -427,7 +433,7 @@ CoreUI.form.fields.dataset = {
             }
         }
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/dataset.html'], {
+        return ejs.render(coreuiFormTpl['fields/dataset.html'], {
             field: options,
             value: this._value,
             lang: this._form.getLang(),
@@ -559,8 +565,8 @@ CoreUI.form.fields.dataset = {
             });
         });
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/dataset-row.html'], {
-            hashItem: CoreUI.form.utils.hashCode(),
+        return ejs.render(coreuiFormTpl['fields/dataset-row.html'], {
+            hashItem: coreuiFormUtils.hashCode(),
             options: rowOptions,
         });
     },
@@ -621,10 +627,10 @@ CoreUI.form.fields.dataset = {
                     optionValue = cellValue;
 
                     switch (option.type) {
-                        case 'date':           optionValue = CoreUI.form.utils.formatDate(optionValue); break;
-                        case 'datetime-local': optionValue = CoreUI.form.utils.formatDateTime(optionValue); break;
-                        case 'month':          optionValue = CoreUI.form.utils.formatDateMonth(optionValue, lang); break;
-                        case 'week':           optionValue = CoreUI.form.utils.formatDateWeek(optionValue, lang); break;
+                        case 'date':           optionValue = coreuiFormUtils.formatDate(optionValue); break;
+                        case 'datetime-local': optionValue = coreuiFormUtils.formatDateTime(optionValue); break;
+                        case 'month':          optionValue = coreuiFormUtils.formatDateMonth(optionValue, lang); break;
+                        case 'week':           optionValue = coreuiFormUtils.formatDateWeek(optionValue, lang); break;
                         default: optionValue = cellValue;
                     }
                 }
@@ -635,7 +641,7 @@ CoreUI.form.fields.dataset = {
             });
         });
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/dataset-row-readonly.html'], {
+        return ejs.render(coreuiFormTpl['fields/dataset-row-readonly.html'], {
             options: rowOptions,
         });
     }

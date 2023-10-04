@@ -1,5 +1,11 @@
 
-CoreUI.form.fields.number = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiForm      from "../coreui.form";
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+
+
+coreuiForm.fields.number = {
 
     _id: '',
     _hash: '',
@@ -31,7 +37,7 @@ CoreUI.form.fields.number = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
+     * @param {coreuiFormInstance} form
      * @param {object}               options
      * @param {int}                  index Порядковый номер на форме
      */
@@ -40,9 +46,9 @@ CoreUI.form.fields.number = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = CoreUI.form.utils.hashCode();
-        this._value   = CoreUI.form.utils.getFieldValue(form, options);
-        this._options = CoreUI.form.utils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
 
 
         // Установка точности
@@ -147,7 +153,7 @@ CoreUI.form.fields.number = {
         }
 
         if (this._options.precision >= 0) {
-            value = CoreUI.form.utils.round(value, this._options.precision);
+            value = coreuiFormUtils.round(value, this._options.precision);
         }
 
         if (this._options.attr.hasOwnProperty('min')) {
@@ -247,9 +253,9 @@ CoreUI.form.fields.number = {
     render: function() {
 
         let options      = $.extend(true, {}, this._options);
-        let attachFields = CoreUI.form.utils.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['form-field-label.html'], {
+        return ejs.render(coreuiFormTpl['form-field-label.html'], {
             id: this._id,
             form:  this._form,
             hash: this._hash,
@@ -269,7 +275,7 @@ CoreUI.form.fields.number = {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = CoreUI.form.utils.hashCode();
+        let datalistId = coreuiFormUtils.hashCode();
 
 
         if ( ! options.hasOwnProperty('attr') ||
@@ -288,7 +294,7 @@ CoreUI.form.fields.number = {
         options.attr.value = this._value;
 
         if (options.width) {
-            options.attr = CoreUI.form.utils.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -322,7 +328,7 @@ CoreUI.form.fields.number = {
             attributes.push(name + '="' + value + '"');
         });
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/input.html'], {
+        return ejs.render(coreuiFormTpl['fields/input.html'], {
             field: options,
             datalistId: datalistId,
             value: this._value,
@@ -362,7 +368,7 @@ CoreUI.form.fields.number = {
             let value = $(this).val();
 
             if (that._options.precision >= 0) {
-                value = CoreUI.form.utils.round(value, that._options.precision);
+                value = coreuiFormUtils.round(value, that._options.precision);
             }
 
             if (that._options.attr.hasOwnProperty('min')) {

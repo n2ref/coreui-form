@@ -1,5 +1,11 @@
 
-CoreUI.form.controls.button = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+import coreuiForm      from "../coreui.form";
+
+
+coreuiForm.controls.button = {
 
     _form: null,
     _index: null,
@@ -16,7 +22,7 @@ CoreUI.form.controls.button = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
+     * @param {coreuiFormInstance} form
      * @param {object} options
      * @param {int} index
      */
@@ -57,7 +63,7 @@ CoreUI.form.controls.button = {
             attributes.push(name + '="' + value + '"');
         });
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['controls/button.html'], {
+        return ejs.render(coreuiFormTpl['controls/button.html'], {
             control: this._options,
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -116,7 +122,7 @@ CoreUI.form.controls.button = {
                     if (typeof that._options.onClick === 'function') {
                         that._options.onClick(that._form, event);
                     } else {
-                        let callback = CoreUI.form.utils.getFunctionByName(that._options.onClick);
+                        let callback = coreuiFormUtils.getFunctionByName(that._options.onClick);
 
                         if (typeof callback === 'function') {
                             callback(that._form, event);

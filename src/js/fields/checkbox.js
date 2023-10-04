@@ -1,5 +1,11 @@
 
-CoreUI.form.fields.checkbox = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+import coreuiForm      from "../coreui.form";
+
+
+coreuiForm.fields.checkbox = {
 
     _id: '',
     _hash: '',
@@ -26,17 +32,17 @@ CoreUI.form.fields.checkbox = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {coreuiFormInstance} form
+     * @param {object}             options
+     * @param {int}                index Порядковый номер на форме
      */
     init: function (form, options, index) {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = CoreUI.form.utils.hashCode();
-        this._value   = CoreUI.form.utils.getFieldValue(form, options);
-        this._options = CoreUI.form.utils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -254,9 +260,9 @@ CoreUI.form.fields.checkbox = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = CoreUI.form.utils.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['form-field-label.html'], {
+        return ejs.render(coreuiFormTpl['form-field-label.html'], {
             id: this._id,
             form:  this._form,
             hash: this._hash,
@@ -310,7 +316,7 @@ CoreUI.form.fields.checkbox = {
                     }
                 });
 
-                itemAttr.id = CoreUI.form.utils.hashCode();
+                itemAttr.id = coreuiFormUtils.hashCode();
 
                 if (typeof(that._value) === 'object' &&
                     Array.isArray(that._value)
@@ -349,7 +355,7 @@ CoreUI.form.fields.checkbox = {
             ? this._value.join(', ')
             : this._value
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/checkbox.html'], {
+        return ejs.render(coreuiFormTpl['fields/checkbox.html'], {
             field: fieldOptions,
             value: value,
             render: {

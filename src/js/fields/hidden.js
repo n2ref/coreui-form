@@ -1,5 +1,11 @@
 
-CoreUI.form.fields.hidden = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiForm      from "../coreui.form";
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+
+
+coreuiForm.fields.hidden = {
 
     _id: '',
     _form: null,
@@ -16,16 +22,16 @@ CoreUI.form.fields.hidden = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {coreuiFormInstance} form
+     * @param {object}             options
+     * @param {int}                index Порядковый номер на форме
      */
     init: function (form, options, index) {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = CoreUI.form.utils.getFieldValue(form, options);
-        this._options = CoreUI.form.utils.mergeFieldOptions(form, this._options, options);
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -74,7 +80,7 @@ CoreUI.form.fields.hidden = {
      */
     render: function() {
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['form-field-content.html'], {
+        return ejs.render(coreuiFormTpl['form-field-content.html'], {
             content: this.renderContent(),
         });
     },
@@ -112,7 +118,7 @@ CoreUI.form.fields.hidden = {
             attributes.push(name + '="' + value + '"');
         });
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/hidden.html'], {
+        return ejs.render(coreuiFormTpl['fields/hidden.html'], {
             value: this._value,
             field: options,
             render: {

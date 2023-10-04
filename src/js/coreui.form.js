@@ -1,7 +1,7 @@
 
-var CoreUI = typeof CoreUI !== 'undefined' ? CoreUI : {};
+import coreuiFormInstance from './coreui.form.instance';
 
-CoreUI.form = {
+var coreuiForm = {
 
     lang: {},
     fields: {},
@@ -19,11 +19,11 @@ CoreUI.form = {
     /**
      * Создание экземпляра формы
      * @param {object} options
-     * @returns {CoreUI.form.instance}
+     * @returns {coreuiFormInstance}
      */
     create: function (options) {
 
-        let instance = $.extend(true, {}, this.instance);
+        let instance = $.extend(true, {}, coreuiFormInstance);
         instance._init(options instanceof Object ? options : {});
 
         let formId = instance.getId();
@@ -36,7 +36,7 @@ CoreUI.form = {
     /**
      * Получение экземпляра формы по id
      * @param {string} id
-     * @returns {CoreUI.form.instance|null}
+     * @returns {coreuiFormInstance|null}
      */
     get: function (id) {
 
@@ -59,7 +59,7 @@ CoreUI.form = {
      */
     setSettings: function(settings) {
 
-        CoreUI.form._settings = $.extend({}, this._settings, settings);
+        this._settings = $.extend({}, this._settings, settings);
     },
 
 
@@ -71,10 +71,12 @@ CoreUI.form = {
 
         let value = null;
 
-        if (CoreUI.form._settings.hasOwnProperty(name)) {
-            value = CoreUI.form._settings[name];
+        if (this._settings.hasOwnProperty(name)) {
+            value = this._settings[name];
         }
 
         return value;
     }
 }
+
+export default coreuiForm;

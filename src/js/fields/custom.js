@@ -1,5 +1,11 @@
 
-CoreUI.form.fields.custom = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiForm      from "../coreui.form";
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+
+
+coreuiForm.fields.custom = {
 
     _id: '',
     _hash: '',
@@ -21,17 +27,17 @@ CoreUI.form.fields.custom = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {coreuiFormInstance} form
+     * @param {object}             options
+     * @param {int}                index Порядковый номер на форме
      */
     init: function (form, options, index) {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = CoreUI.form.utils.getFieldValue(form, options);
-        this._options = CoreUI.form.utils.mergeFieldOptions(form, this._options, options);
-        this._hash    = CoreUI.form.utils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
     },
 
 
@@ -97,9 +103,9 @@ CoreUI.form.fields.custom = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = CoreUI.form.utils.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['form-field-label.html'], {
+        return ejs.render(coreuiFormTpl['form-field-label.html'], {
             id: this._id,
             form:  this._form,
             hash: this._hash,
@@ -164,7 +170,7 @@ CoreUI.form.fields.custom = {
         }
 
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/custom.html'], {
+        return ejs.render(coreuiFormTpl['fields/custom.html'], {
             content: content
         });
     }

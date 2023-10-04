@@ -2,11 +2,11 @@
      <% if ( ! field.show) { %> style="display:none"<% } %>>
     <% if (field.labelWidth !== 0 && field.labelWidth !== '0px') { %>
     <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>>
-        <div class="coreui-form__field_label_text col-form-label-sm">
+        <div class="coreui-form__field_label_content col-form-label-sm">
             <% if (field.required) { %>
             <span class="coreui-form__field_label_req text-danger">*</span>
             <% } %>
-            <span><%- field.label %></span>
+            <span class="coreui-form__field_label_text fw-medium"><%- field.label %></span>
         </div>
 
         <% if (field.description) { %>

@@ -1,5 +1,7 @@
 
-CoreUI.form.controls.custom = {
+import coreuiForm from "../coreui.form";
+
+coreuiForm.controls.custom = {
 
     _form: null,
     _index: null,
@@ -11,7 +13,7 @@ CoreUI.form.controls.custom = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
+     * @param {coreuiFormInstance} form
      * @param {object} options
      * @param {int} index
      */

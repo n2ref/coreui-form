@@ -1,5 +1,11 @@
 
-CoreUI.form.fields.wysiwyg = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiForm      from "../coreui.form";
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+
+
+coreuiForm.fields.wysiwyg = {
 
     _id: '',
     _hash: '',
@@ -29,7 +35,7 @@ CoreUI.form.fields.wysiwyg = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
+     * @param {coreuiFormInstance} form
      * @param {object}               options
      * @param {int}                  index Порядковый номер на форме
      */
@@ -38,10 +44,10 @@ CoreUI.form.fields.wysiwyg = {
         this._form       = form;
         this._index      = index;
         this._id         = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash       = CoreUI.form.utils.hashCode();
-        this._editorHash = CoreUI.form.utils.hashCode();
-        this._value      = CoreUI.form.utils.getFieldValue(form, options);
-        this._options    = CoreUI.form.utils.mergeFieldOptions(form, this._options, options);
+        this._hash       = coreuiFormUtils.hashCode();
+        this._editorHash = coreuiFormUtils.hashCode();
+        this._value      = coreuiFormUtils.getFieldValue(form, options);
+        this._options    = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
 
         let that = this;
 
@@ -200,9 +206,9 @@ CoreUI.form.fields.wysiwyg = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = CoreUI.form.utils.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['form-field-label.html'], {
+        return ejs.render(coreuiFormTpl['form-field-label.html'], {
             id: this._id,
             form:  this._form,
             hash: this._hash,
@@ -221,7 +227,7 @@ CoreUI.form.fields.wysiwyg = {
 
         let options = this.getOptions();
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/wysiwyg.html'], {
+        return ejs.render(coreuiFormTpl['fields/wysiwyg.html'], {
             field: options,
             value: this._value,
             editorHash: this._editorHash

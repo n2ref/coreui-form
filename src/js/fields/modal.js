@@ -1,5 +1,11 @@
 
-CoreUI.form.fields.modal = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiForm      from "../coreui.form";
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+
+
+coreuiForm.fields.modal = {
 
     _id: '',
     _hash: '',
@@ -33,7 +39,7 @@ CoreUI.form.fields.modal = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
+     * @param {coreuiFormInstance} form
      * @param {object}               options
      * @param {int}                  index Порядковый номер на форме
      */
@@ -43,8 +49,8 @@ CoreUI.form.fields.modal = {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._options = CoreUI.form.utils.mergeFieldOptions(form, this._options, options);
-        this._hash    = CoreUI.form.utils.hashCode();
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
 
         if (typeof options.name === 'string' &&
             formRecord.hasOwnProperty(options.name) &&
@@ -160,7 +166,7 @@ CoreUI.form.fields.modal = {
                         modal.onChange(this);
 
                     } else if (typeof(modal.onChange) === 'string') {
-                        let func = CoreUI.form.utils.getFunctionByName(modal.onChange);
+                        let func = coreuiFormUtils.getFunctionByName(modal.onChange);
 
                         if (typeof func === 'function') {
                             func(this);
@@ -243,9 +249,9 @@ CoreUI.form.fields.modal = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = CoreUI.form.utils.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['form-field-label.html'], {
+        return ejs.render(coreuiFormTpl['form-field-label.html'], {
             id: this._id,
             form:  this._form,
             hash: this._hash,
@@ -279,14 +285,14 @@ CoreUI.form.fields.modal = {
             typeof fieldOptions.attr === 'object' &&
             Array.isArray(fieldOptions.attr)
         ) {
-            textAttr = CoreUI.form.utils.mergeAttr(textAttr, fieldOptions.attr);
+            textAttr = coreuiFormUtils.mergeAttr(textAttr, fieldOptions.attr);
         }
 
         $.each(textAttr, function (name, value) {
             attributes.push(name + '="' + value + '"');
         });
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['fields/modal.html'], {
+        return ejs.render(coreuiFormTpl['fields/modal.html'], {
             field: fieldOptions,
             value: this._value,
             text: this._text,
@@ -318,7 +324,7 @@ CoreUI.form.fields.modal = {
                     modal.onClear(that);
 
                 } else if (typeof(modal.onClear) === 'string') {
-                    let func = CoreUI.form.utils.getFunctionByName(modal.onClear);
+                    let func = coreuiFormUtils.getFunctionByName(modal.onClear);
 
                     if (typeof func === 'function') {
                         func(that);
@@ -352,8 +358,8 @@ CoreUI.form.fields.modal = {
             }
 
 
-            let modalId      = CoreUI.form.utils.hashCode();
-            let modalLoading = CoreUI.form.ejs.render(CoreUI.form.tpl['fields/modal-loading.html'], {
+            let modalId      = coreuiFormUtils.hashCode();
+            let modalLoading = ejs.render(coreuiFormTpl['fields/modal-loading.html'], {
                 lang: that._form.getLang(),
             });
 
@@ -367,7 +373,7 @@ CoreUI.form.fields.modal = {
                         onHidden = modal.onHidden;
 
                     } else if (typeof(modal.onHidden) === 'string') {
-                        let func = CoreUI.form.utils.getFunctionByName(modal.onHidden);
+                        let func = coreuiFormUtils.getFunctionByName(modal.onHidden);
 
                         if (typeof func === 'function') {
                             onHidden = func;
@@ -380,7 +386,7 @@ CoreUI.form.fields.modal = {
                         onShow = modal.onShow;
 
                     } else if (typeof(modal.onShow) === 'string') {
-                        let func = CoreUI.form.utils.getFunctionByName(modal.onShow);
+                        let func = coreuiFormUtils.getFunctionByName(modal.onShow);
 
                         if (typeof func === 'function') {
                             onShow = func;

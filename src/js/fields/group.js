@@ -1,5 +1,10 @@
 
-CoreUI.form.fields.group = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiForm    from "../coreui.form";
+import coreuiFormTpl from "../coreui.form.templates";
+
+
+coreuiForm.fields.group = {
 
     _id: '',
     _form: null,
@@ -16,9 +21,9 @@ CoreUI.form.fields.group = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {coreuiFormInstance} form
+     * @param {object}             options
+     * @param {int}                index Порядковый номер на форме
      */
     init: function (form, options, index) {
 
@@ -80,7 +85,7 @@ CoreUI.form.fields.group = {
      */
     render: function() {
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['form-field-group.html'], {
+        return ejs.render(coreuiFormTpl['form-field-group.html'], {
             id: this._id,
             form:  this._form,
             group: this._options,

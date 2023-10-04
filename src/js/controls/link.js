@@ -1,5 +1,10 @@
 
-CoreUI.form.controls.link = {
+import '../../../node_modules/ejs/ejs.min';
+import coreuiFormTpl from "../coreui.form.templates";
+import coreuiForm    from "../coreui.form";
+
+
+coreuiForm.controls.link = {
 
     _form: null,
     _index: null,
@@ -16,7 +21,7 @@ CoreUI.form.controls.link = {
 
     /**
      * Инициализация
-     * @param {CoreUI.form.instance} form
+     * @param {coreuiFormInstance} form
      * @param {object} options
      * @param {int} index
      */
@@ -91,7 +96,7 @@ CoreUI.form.controls.link = {
             attributes.push(name + '="' + value + '"');
         });
 
-        return CoreUI.form.ejs.render(CoreUI.form.tpl['controls/link.html'], {
+        return ejs.render(coreuiFormTpl['controls/link.html'], {
             control: this._options,
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -114,7 +119,7 @@ CoreUI.form.controls.link = {
                     if (typeof that._options.onClick === 'function') {
                         that._options.onClick(that._form, event);
                     } else {
-                        let callback = CoreUI.form.utils.getFunctionByName(that._options.onClick);
+                        let callback = coreuiFormUtils.getFunctionByName(that._options.onClick);
 
                         if (typeof callback === 'function') {
                             callback(that._form, event);

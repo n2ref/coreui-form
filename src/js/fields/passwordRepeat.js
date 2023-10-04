@@ -5,15 +5,16 @@ import coreuiFormUtils from "../coreui.form.utils";
 import coreuiForm      from "../coreui.form";
 
 
-coreuiForm.fields.input = {
+coreuiForm.fields.passwordRepeat = {
 
     _id: '',
     _hash: '',
     _form: null,
     _index: 0,
+    _isChangeState: true,
     _value: '',
     _options: {
-        type: 'text',
+        type: 'password',
         name: null,
         label: null,
         labelWidth: null,
@@ -23,6 +24,7 @@ coreuiForm.fields.input = {
         errorText: null,
         attach: null,
         attr: {
+            type: 'password',
             class: 'form-control form-control-sm d-inline-block'
         },
         required: null,
@@ -31,6 +33,7 @@ coreuiForm.fields.input = {
         readonly: null,
         datalist: null,
         show: true,
+        showBtn: true,
         column: null
     },
 
@@ -49,6 +52,13 @@ coreuiForm.fields.input = {
         this._hash    = coreuiFormUtils.hashCode();
         this._value   = coreuiFormUtils.getFieldValue(form, options);
         this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+
+
+        let that = this;
+
+        form.on('shown.coreui.form', function () {
+            that._initEvents();
+        });
     },
 
 
@@ -73,6 +83,10 @@ coreuiForm.fields.input = {
         $('.content-' + this._hash).html(
             this.renderContent()
         );
+
+        if ( ! this._options.readonly) {
+            this._initEvents();
+        }
     },
 
 
@@ -104,7 +118,7 @@ coreuiForm.fields.input = {
 
         return this._options.readonly
             ? this._value
-            : $('.content-' + this._hash + ' input').val();
+            : $('.content-' + this._hash + ' input[type="password"]').eq(0).val();
     },
 
 
@@ -121,9 +135,9 @@ coreuiForm.fields.input = {
         this._value = value;
 
         if (this._options.readonly) {
-            $('.content-' + this._hash).text(value);
+            $('.content-' + this._hash).text(value ? '******' : '');
         } else {
-            $('.content-' + this._hash + ' input').val(value);
+            $('.content-' + this._hash + ' input[type="password"]').val(value);
         }
     },
 
@@ -140,7 +154,7 @@ coreuiForm.fields.input = {
         }
 
         let container = $('.content-' + this._hash);
-        let input     = $('input', container);
+        let input     = $('input[type="password"]', container);
 
         container.find('.valid-feedback').remove();
         container.find('.invalid-feedback').remove();
@@ -186,10 +200,18 @@ coreuiForm.fields.input = {
      */
     isValid: function () {
 
-        let input = $('.content-' + this._hash + ' input');
+        if ( ! this._isChangeState || this._options.readonly) {
+            return true;
+        }
+
+        let input = $('.content-' + this._hash + ' input[type="password"]');
+
+        if (input.eq(0).val() !== input.eq(1).val()) {
+            return false;
+        }
 
         if (input[0]) {
-            return input.is(':valid');
+            return input.eq(0).is(':valid');
         }
 
         return null;
@@ -234,10 +256,14 @@ coreuiForm.fields.input = {
      */
     _renderContent: function () {
 
-        let attributes   = [];
-        let datalist     = [];
-        let options      = this.getOptions();
-        let datalistId   = coreuiFormUtils.hashCode();
+        let attributes  = [];
+        let attributes2 = [];
+        let datalist    = [];
+        let options     = this.getOptions();
+
+        this._isChangeState = ! options.showBtn
+            ? true
+            : ! this._value;
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -247,12 +273,15 @@ coreuiForm.fields.input = {
             options.attr = {};
         }
 
+        if ( ! this._isChangeState) {
+            options.attr.disabled = '';
+        }
+
         if (options.name) {
             options.attr.name = this._options.name;
         }
 
-        options.attr.type  = options.type;
-        options.attr.value = this._value;
+        options.attr.value = this._value ? '******' : '';
 
         if (options.width) {
             options.attr = coreuiFormUtils.mergeAttr(
@@ -265,36 +294,25 @@ coreuiForm.fields.input = {
             options.attr.required = 'required';
         }
 
-
-        if (options.hasOwnProperty('datalist') &&
-            typeof options.datalist === 'object' &&
-            Array.isArray(options.datalist)
-        ) {
-            options.attr.list = datalistId;
-
-            $.each(options.datalist, function (key, itemAttributes) {
-                let datalistAttr = [];
-
-                $.each(itemAttributes, function (name, value) {
-                    datalistAttr.push(name + '="' + value + '"');
-                });
-
-                datalist.push({
-                    attr: datalistAttr.length > 0 ? (' ' + datalistAttr.join(' ')) : ''
-                })
-            });
-        }
-
         $.each(options.attr, function (name, value) {
             attributes.push(name + '="' + value + '"');
         });
+        $.each(options.attr, function (name, value) {
+            if (['name', 'value'].indexOf(name) < 0) {
+                attributes2.push(name + '="' + value + '"');
+            }
+        });
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
+        let lang = this._form.getLang();
+
+        return ejs.render(coreuiFormTpl['fields/passwordRepeat.html'], {
             field: options,
-            datalistId: datalistId,
             value: this._value,
+            lang: lang,
+            btn_text: this._isChangeState ? lang.cancel : lang.change,
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+                attr2: attributes2.length > 0 ? (' ' + attributes2.join(' ')) : '',
                 datalist: datalist
             },
         });
@@ -308,31 +326,38 @@ coreuiForm.fields.input = {
     _renderContentReadonly: function () {
 
         let options = this.getOptions();
-        let type    = 'text';
         let value   = this._value;
-        let lang    = this._form.getLang();
 
-        if (options.hasOwnProperty('type') && typeof options.type === 'string') {
-            type = options.type;
-        }
-
-        try {
-            switch (type) {
-                case 'date':           value = coreuiFormUtils.formatDate(value); break;
-                case 'datetime-local': value = coreuiFormUtils.formatDateTime(value); break;
-                case 'month':          value = coreuiFormUtils.formatDateMonth(value, lang); break;
-                case 'week':           value = coreuiFormUtils.formatDateWeek(value, lang); break;
-            }
-
-        } catch (e) {
-            console.error(e);
-            // ignore
-        }
-
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
+        return ejs.render(coreuiFormTpl['fields/passwordRepeat.html'], {
             field: options,
-            value: value,
+            value: value ? '******' : '',
             hash: this._hash
+        });
+    },
+
+
+    /**
+     * Инициализация событий
+     * @private
+     */
+    _initEvents: function () {
+
+        let that = this;
+
+        $('.content-' + this._hash + ' .btn-password-change').click(function (e) {
+            let textChange = $(this).data('change');
+            let textCancel = $(this).data('cancel');
+
+            if (that._isChangeState) {
+                $('.content-' + that._hash + ' [type="password"]').attr('disabled', 'disabled');
+                $(this).text(textChange);
+                that._isChangeState = false;
+
+            } else {
+                $('.content-' + that._hash + ' [type="password"]').removeAttr('disabled');
+                $(this).text(textCancel);
+                that._isChangeState = true;
+            }
         });
     }
 }
