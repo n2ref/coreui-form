@@ -338,48 +338,58 @@ coreuiForm.fields.select = {
 
         if (options.hasOwnProperty('options') &&
             typeof options.options === 'object' &&
-            Array.isArray(options.options)
+            options.options !== null
         ) {
             $.each(options.options, function (key, option) {
-                let type = option.hasOwnProperty('type') && typeof option.type === 'string'
-                    ? option.type
-                    : 'option';
 
-                if (type === 'group') {
-                    let renderAttr   = [];
-                    let groupAttr    = {};
-                    let groupOptions = [];
+                if (typeof option === 'string' || typeof option === 'number') {
+                    selectOptions.push(that._renderOption({
+                        type: 'option',
+                        value: key,
+                        text: option
+                    }));
 
-                    if (option.hasOwnProperty('attr') &&
-                        typeof option.attr === 'object' &&
-                        option.attr !== null &&
-                        ! Array.isArray(option.attr)
-                    ) {
-                        groupAttr = option.attr;
-                    }
+                } else if (typeof option === 'object') {
+                    let type = option.hasOwnProperty('type') && typeof option.type === 'string'
+                        ? option.type
+                        : 'option';
 
-                    if (option.hasOwnProperty('label') && ['string', 'number'].indexOf(typeof(option.label)) >= 0) {
-                        groupAttr.label = option.label;
-                    }
+                    if (type === 'group') {
+                        let renderAttr   = [];
+                        let groupAttr    = {};
+                        let groupOptions = [];
 
-                    $.each(groupAttr, function (name, value) {
-                        renderAttr.push(name + '="' + value + '"');
-                    });
+                        if (option.hasOwnProperty('attr') &&
+                            typeof option.attr === 'object' &&
+                            option.attr !== null &&
+                            ! Array.isArray(option.attr)
+                        ) {
+                            groupAttr = option.attr;
+                        }
 
-                    if (Array.isArray(option.options)) {
-                        $.each(option.options, function (key, groupOption) {
-                            groupOptions.push(that._renderOption(groupOption));
+                        if (option.hasOwnProperty('label') && ['string', 'number'].indexOf(typeof(option.label)) >= 0) {
+                            groupAttr.label = option.label;
+                        }
+
+                        $.each(groupAttr, function (name, value) {
+                            renderAttr.push(name + '="' + value + '"');
                         });
+
+                        if (Array.isArray(option.options)) {
+                            $.each(option.options, function (key, groupOption) {
+                                groupOptions.push(that._renderOption(groupOption));
+                            });
+                        }
+
+                        selectOptions.push({
+                            type: 'group',
+                            attr: renderAttr.length > 0 ? (' ' + renderAttr.join(' ')) : '',
+                            options: groupOptions,
+                        });
+
+                    } else {
+                        selectOptions.push(that._renderOption(option));
                     }
-
-                    selectOptions.push({
-                        type: 'group',
-                        attr: renderAttr.length > 0 ? (' ' + renderAttr.join(' ')) : '',
-                        options: groupOptions,
-                    });
-
-                } else {
-                    selectOptions.push(that._renderOption(option));
                 }
             });
         }
