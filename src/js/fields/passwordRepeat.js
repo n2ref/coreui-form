@@ -172,7 +172,7 @@ coreuiForm.fields.passwordRepeat = {
             }
 
             if (typeof text === 'string') {
-                container.append('<div class="valid-feedback">' + text + '</div>');
+                container.append('<div class="valid-feedback d-block">' + text + '</div>');
             }
         } else {
             input.removeClass('is-valid');
@@ -188,7 +188,7 @@ coreuiForm.fields.passwordRepeat = {
             }
 
             if (typeof text === 'string') {
-                container.append('<div class="invalid-feedback">' + text + '</div>');
+                container.append('<div class="invalid-feedback d-block">' + text + '</div>');
             }
         }
     },
