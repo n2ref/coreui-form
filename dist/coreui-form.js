@@ -6398,10 +6398,14 @@ coreuiForm$1.fields.select = {
      */
     isValid: function () {
 
-        let input = $('.content-' + this._hash + ' input');
+        let select = $('.content-' + this._hash + ' select');
 
-        if (input[0]) {
-            return input.is(':valid');
+        if (this._options.required && select.val() === '') {
+            return false;
+        }
+
+        if (select[0]) {
+            return select.is(':valid');
         }
 
         return null;
