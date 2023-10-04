@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build_all": "gulp build_js && gulp build_css",
+    "build_all": "gulp build_js && gulp build_css && npm run test_js",
 
     "build_js": "gulp build_js",
     "build_js_fast": "gulp build_js_fast",
@@ -12,13 +12,14 @@
     "build_css_fast": "gulp build_css_fast",
 
     "build_watch": "gulp build_watch",
-    "text_js": "eslint -c .eslintrc.json --max-warnings 100 --ext .js ./src/js"
+    "test_js": "eslint -c .eslintrc.json --max-warnings 100 --ext .js ./src/js"
   },
   "dependencies": {
     "bootstrap": "5.3.0-alpha3",
     "bootstrap-icons": "1.10.5",
     "coreui-modal": "1.0.1",
     "jquery": "^3.6.*",
+    "eslint": "8.50.0",
     "tinymce": "6.4.2"
   },
   "devDependencies": {
@@ -29,6 +30,6 @@
     "gulp-clean-css": "4.*"
   },
   "keywords": [],
-  "author": "shabuninil",
+  "author": "n2ref",
   "license": "ISC"
 }

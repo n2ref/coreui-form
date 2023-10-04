@@ -30,4 +30,4 @@ CoreUI.layout.show("Title layout", "Body content", {
 
 ```
 
-![Layout](https://raw.githubusercontent.com/shabuninil/coreui-layout/main/preview.png) 
+![Layout](https://raw.githubusercontent.com/n2ref/coreui-layout/main/preview.png) 

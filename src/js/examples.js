@@ -210,11 +210,12 @@ document.addEventListener('DOMContentLoaded', function () {
             date: "2023-06-01",
         },
         fields: [
-            { type: 'text',     name: 'text',     label: 'Text',      width: 180, required: true, description: "Required field" },
-            { type: 'tel',      name: 'phone',    label: 'Phone',     width: 180, attr: { pattern: '\\+[\\d\\-]+' }, description: "Phone format", invalidText: "format +1234" },
-            { type: 'email',    name: 'email',    label: 'Email',     width: 180 },
-            { type: 'date',     name: 'date',     label: 'Date',      width: 180, attr: { min: "2023-06-06", max: "2023-06-14" }, description: "Date range validation" },
-            { type: 'textarea', name: 'textarea', label: 'Text area', width: 180, attr: { style: 'height:60px; resize: vertical' }, invalidText: "Invalid field text", validText: "Valid field text" }
+            { type: 'text',           name: 'text',     label: 'Text',      width: 180, required: true, description: "Required field" },
+            { type: 'tel',            name: 'phone',    label: 'Phone',     width: 180, attr: { pattern: '\\+[\\d\\-]+' }, description: "Phone format", invalidText: "format +1234" },
+            { type: 'email',          name: 'email',    label: 'Email',     width: 180 },
+            { type: 'passwordRepeat', name: 'pass',     label: 'Password',  width: 180, required: true, showBtn: true },
+            { type: 'date',           name: 'date',     label: 'Date',      width: 180, attr: { min: "2023-06-06", max: "2023-06-14" }, description: "Date range validation" },
+            { type: 'textarea',       name: 'textarea', label: 'Text area', width: 180, attr: { style: 'height:60px; resize: vertical' }, invalidText: "Invalid field text", validText: "Valid field text" }
         ],
         controls: [
             { type: "submit", content: "Save" },
@@ -352,6 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
             url: 'https://www.example.com',
             color: '#695D98',
             password: 123,
+            password2: 123,
             textarea: "123",
 
             date: "2023-01-01",
@@ -385,15 +387,16 @@ document.addEventListener('DOMContentLoaded', function () {
                             { value: 'Donnun, Nick',   label: 'Group 2' }
                         ]
                     },
-                    { type: 'mask',     name: 'mask',     label: 'Mask',      mask: '0000 AA-0', options: { translation: { A: {pattern: /[A-Z]/}, } } },
-                    { type: 'number',   name: 'float',    label: 'Float',     width: 100, attr: { min: -2, max: 50, step: 0.1 }, precision: 2 },
-                    { type: 'number',   name: 'int',      label: 'Int',       width: 100, attr: { min: -2, max: 50 }, },
-                    { type: 'email',    name: 'email',    label: 'Email'},
-                    { type: 'tel',      name: 'tel',      label: 'Phone',     attr: { pattern: "[0-9]{3}-[0-9]{3}-[0-9]{4}" } },
-                    { type: 'url',      name: 'url',      label: 'Url',       attr: { pattern: "https://.*" } },
-                    { type: 'password', name: 'password', label: 'Password',  attr: { minlength: 8 }, outContent: ' <i>min length 8</i>' },
-                    { type: 'textarea', name: 'textarea', label: 'Text Area', attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' },
-                    { type: 'hidden',   name: 'hidden' }
+                    { type: 'mask',           name: 'mask',      label: 'Mask',      mask: '0000 AA-0', options: { translation: { A: {pattern: /[A-Z]/}, } } },
+                    { type: 'number',         name: 'float',     label: 'Float',     width: 100, attr: { min: -2, max: 50, step: 0.1 }, precision: 2 },
+                    { type: 'number',         name: 'int',       label: 'Int',       width: 100, attr: { min: -2, max: 50 }, },
+                    { type: 'email',          name: 'email',     label: 'Email'},
+                    { type: 'tel',            name: 'tel',       label: 'Phone',     attr: { pattern: "[0-9]{3}-[0-9]{3}-[0-9]{4}" } },
+                    { type: 'url',            name: 'url',       label: 'Url',       attr: { pattern: "https://.*" } },
+                    { type: 'password',       name: 'password',  label: 'Password',  attr: { minlength: 8 }, outContent: ' <i>min length 8</i>' },
+                    { type: 'passwordRepeat', name: 'password2', label: 'Password repeat', width: 100, showBtn: true },
+                    { type: 'textarea',       name: 'textarea',  label: 'Text Area', attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' },
+                    { type: 'hidden',         name: 'hidden' }
                 ]
             },
 
