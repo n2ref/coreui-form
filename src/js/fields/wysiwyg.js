@@ -229,7 +229,7 @@ coreuiForm.fields.wysiwyg = {
 
         return ejs.render(coreuiFormTpl['fields/wysiwyg.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             editorHash: this._editorHash
         });
     },

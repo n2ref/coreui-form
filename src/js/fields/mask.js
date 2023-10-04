@@ -264,7 +264,7 @@ coreuiForm.fields.mask = {
         }
 
         options.attr.type  = 'text';
-        options.attr.value = this._value;
+        options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
             options.attr = coreuiFormUtils.mergeAttr(
@@ -303,7 +303,7 @@ coreuiForm.fields.mask = {
         return ejs.render(coreuiFormTpl['fields/input.html'], {
             field: options,
             datalistId: datalistId,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
                 datalist: datalist
@@ -322,7 +322,7 @@ coreuiForm.fields.mask = {
 
         return ejs.render(coreuiFormTpl['fields/input.html'], {
             field: options,
-            value: this._value
+            value: this._value !== null ? this._value : ''
         });
     },
 

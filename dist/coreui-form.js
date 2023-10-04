@@ -2964,7 +2964,7 @@ coreuiForm$1.fields.dataset = {
 
         return ejs.render(tpl['fields/dataset.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             lang: this._form.getLang(),
             render: {
                 headers: headers,
@@ -3015,7 +3015,7 @@ coreuiForm$1.fields.dataset = {
 
         return ejs.render(tpl['fields/dataset.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             lang: this._form.getLang(),
             render: {
                 headers: headers,
@@ -3128,7 +3128,7 @@ coreuiForm$1.fields.dataset = {
 
             } else {
                 if (['string', 'number'].indexOf(typeof(cellValue)) >= 0) {
-                    option.attr.value = cellValue;
+                    option.attr.value = cellValue !== null ? cellValue : '';
                 }
             }
 
@@ -3470,7 +3470,7 @@ coreuiForm$1.fields.hidden = {
         }
 
         options.attr.type  = 'hidden';
-        options.attr.value = this._value;
+        options.attr.value = this._value !== null ? this._value : '';
 
 
         $.each(options.attr, function (name, value) {
@@ -3478,7 +3478,7 @@ coreuiForm$1.fields.hidden = {
         });
 
         return ejs.render(tpl['fields/hidden.html'], {
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             field: options,
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -3734,7 +3734,7 @@ coreuiForm$1.fields.input = {
         }
 
         options.attr.type  = options.type;
-        options.attr.value = this._value;
+        options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
             options.attr = coreuiFormUtils$1.mergeAttr(
@@ -3774,7 +3774,7 @@ coreuiForm$1.fields.input = {
         return ejs.render(tpl['fields/input.html'], {
             field: options,
             datalistId: datalistId,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
                 datalist: datalist
@@ -4683,7 +4683,7 @@ coreuiForm$1.fields.mask = {
         }
 
         options.attr.type  = 'text';
-        options.attr.value = this._value;
+        options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
             options.attr = coreuiFormUtils$1.mergeAttr(
@@ -4722,7 +4722,7 @@ coreuiForm$1.fields.mask = {
         return ejs.render(tpl['fields/input.html'], {
             field: options,
             datalistId: datalistId,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
                 datalist: datalist
@@ -4741,7 +4741,7 @@ coreuiForm$1.fields.mask = {
 
         return ejs.render(tpl['fields/input.html'], {
             field: options,
-            value: this._value
+            value: this._value !== null ? this._value : ''
         });
     },
 
@@ -5026,7 +5026,7 @@ coreuiForm$1.fields.modal = {
             type: 'text',
             readonly: 'readonly',
             class: 'form-control form-control-sm coreui-form-modal-text',
-            value: this._text
+            value: this._text !== null ? this._text : ''
         };
 
         if (fieldOptions.required) {
@@ -5046,8 +5046,8 @@ coreuiForm$1.fields.modal = {
 
         return ejs.render(tpl['fields/modal.html'], {
             field: fieldOptions,
-            value: this._value,
-            text: this._text,
+            value: this._value !== null ? this._value : '',
+            text: this._text !== null ? this._text : '',
             lang: this._form.getLang(),
             render: {
                 width: this._options.width,
@@ -5464,7 +5464,7 @@ coreuiForm$1.fields.number = {
         }
 
         options.attr.type  = 'number';
-        options.attr.value = this._value;
+        options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
             options.attr = coreuiFormUtils$1.mergeAttr(
@@ -5504,7 +5504,7 @@ coreuiForm$1.fields.number = {
         return ejs.render(tpl['fields/input.html'], {
             field: options,
             datalistId: datalistId,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
                 datalist: datalist
@@ -7163,7 +7163,7 @@ coreuiForm$1.fields.textarea = {
 
         return ejs.render(tpl['fields/textarea.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : ''
             },
@@ -7395,7 +7395,7 @@ coreuiForm$1.fields.wysiwyg = {
 
         return ejs.render(tpl['fields/wysiwyg.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             editorHash: this._editorHash
         });
     },
@@ -7775,7 +7775,7 @@ coreuiForm$1.fields.passwordRepeat = {
 
         return ejs.render(tpl['fields/passwordRepeat.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             lang: lang,
             btn_text: this._isChangeState ? lang.cancel : lang.change,
             render: {
@@ -7794,11 +7794,10 @@ coreuiForm$1.fields.passwordRepeat = {
     _renderContentReadonly: function () {
 
         let options = this.getOptions();
-        let value   = this._value;
 
         return ejs.render(tpl['fields/passwordRepeat.html'], {
             field: options,
-            value: value ? '******' : '',
+            value: this._value ? '******' : '',
             hash: this._hash
         });
     },

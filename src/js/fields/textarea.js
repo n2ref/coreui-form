@@ -248,7 +248,7 @@ coreuiForm.fields.textarea = {
 
         return ejs.render(coreuiFormTpl['fields/textarea.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : ''
             },

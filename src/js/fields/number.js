@@ -291,7 +291,7 @@ coreuiForm.fields.number = {
         }
 
         options.attr.type  = 'number';
-        options.attr.value = this._value;
+        options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
             options.attr = coreuiFormUtils.mergeAttr(
@@ -331,7 +331,7 @@ coreuiForm.fields.number = {
         return ejs.render(coreuiFormTpl['fields/input.html'], {
             field: options,
             datalistId: datalistId,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
                 datalist: datalist

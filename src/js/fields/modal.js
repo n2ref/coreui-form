@@ -274,7 +274,7 @@ coreuiForm.fields.modal = {
             type: 'text',
             readonly: 'readonly',
             class: 'form-control form-control-sm coreui-form-modal-text',
-            value: this._text
+            value: this._text !== null ? this._text : ''
         };
 
         if (fieldOptions.required) {
@@ -294,8 +294,8 @@ coreuiForm.fields.modal = {
 
         return ejs.render(coreuiFormTpl['fields/modal.html'], {
             field: fieldOptions,
-            value: this._value,
-            text: this._text,
+            value: this._value !== null ? this._value : '',
+            text: this._text !== null ? this._text : '',
             lang: this._form.getLang(),
             render: {
                 width: this._options.width,

@@ -111,7 +111,7 @@ coreuiForm.fields.hidden = {
         }
 
         options.attr.type  = 'hidden';
-        options.attr.value = this._value;
+        options.attr.value = this._value !== null ? this._value : '';
 
 
         $.each(options.attr, function (name, value) {
@@ -119,7 +119,7 @@ coreuiForm.fields.hidden = {
         });
 
         return ejs.render(coreuiFormTpl['fields/hidden.html'], {
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             field: options,
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',

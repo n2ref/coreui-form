@@ -384,7 +384,7 @@ coreuiForm.fields.dataset = {
 
         return ejs.render(coreuiFormTpl['fields/dataset.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             lang: this._form.getLang(),
             render: {
                 headers: headers,
@@ -435,7 +435,7 @@ coreuiForm.fields.dataset = {
 
         return ejs.render(coreuiFormTpl['fields/dataset.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             lang: this._form.getLang(),
             render: {
                 headers: headers,
@@ -548,7 +548,7 @@ coreuiForm.fields.dataset = {
 
             } else {
                 if (['string', 'number'].indexOf(typeof(cellValue)) >= 0) {
-                    option.attr.value = cellValue;
+                    option.attr.value = cellValue !== null ? cellValue : '';
                 }
             }
 

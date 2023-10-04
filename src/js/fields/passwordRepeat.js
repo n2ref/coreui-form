@@ -307,7 +307,7 @@ coreuiForm.fields.passwordRepeat = {
 
         return ejs.render(coreuiFormTpl['fields/passwordRepeat.html'], {
             field: options,
-            value: this._value,
+            value: this._value !== null ? this._value : '',
             lang: lang,
             btn_text: this._isChangeState ? lang.cancel : lang.change,
             render: {
@@ -326,11 +326,10 @@ coreuiForm.fields.passwordRepeat = {
     _renderContentReadonly: function () {
 
         let options = this.getOptions();
-        let value   = this._value;
 
         return ejs.render(coreuiFormTpl['fields/passwordRepeat.html'], {
             field: options,
-            value: value ? '******' : '',
+            value: this._value ? '******' : '',
             hash: this._hash
         });
     },
