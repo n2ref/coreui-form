@@ -444,13 +444,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 ]
             },
             { type: 'select', name: 'select_multiple', label: 'Multiple', width: 200, attr: { multiple: "multiple" },
-                options: [
-                    { value: 1, text: 'Adams John' },
-                    { value: 2, text: 'Johnson Peter' },
-                    { value: 3, text: 'Lewis Frank' },
-                    { value: 4, text: 'Cruz Steve' },
-                    { value: 5, text: 'Donnun Nick' },
-                ]
+                options: {
+                    '1': 'Adams John',
+                    '2': 'Johnson Peter',
+                    '3': 'Lewis Frank',
+                    '4': 'Cruz Steve',
+                    '5': 'Donnun Nick',
+                }
             },
             { type: 'checkbox', name: 'checkbox', label: 'Check box',
                 options: [
