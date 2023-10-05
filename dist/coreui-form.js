@@ -7670,11 +7670,10 @@ coreuiForm$1.fields.passwordRepeat = {
         let pass = $('.content-' + this._hash + ' input[type="password"]').eq(0);
 
         if (typeof pass.attr('disabled') !== 'undefined' && pass.attr('disabled') !== false) {
-            return pass.val();
+            return '';
         }
-
-
-        return '';
+        
+        return pass.val();
     },
 
 
