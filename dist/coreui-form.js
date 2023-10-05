@@ -738,6 +738,7 @@ let coreuiFormInstance = {
             method: this._options.send.method,
             data: dataFormat,
             contentType: contentType,
+            processData: false,
             beforeSend: function(xhr) {
                 that._trigger('start-send.coreui.form', that, [ that, xhr ]);
             },
