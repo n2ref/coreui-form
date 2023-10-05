@@ -323,7 +323,8 @@ document.addEventListener('DOMContentLoaded', function () {
         title: 'Form title',
         save: {
             url: '/path/to/object/1',
-            method: 'post'
+            method: 'post',
+            format: 'form'
         },
         width: '100%',
         minWidth: 500,
