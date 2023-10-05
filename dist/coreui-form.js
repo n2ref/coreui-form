@@ -439,8 +439,9 @@ let coreuiFormInstance = {
         let formContainer = '#coreui-form-' + this._options.id + ' > form';
 
         $(formContainer).on('submit', function () {
-            that.send();
-
+            setTimeout(function () {
+                that.send.apply(that);
+            }, 0);
             return false;
         });
 
@@ -713,7 +714,7 @@ let coreuiFormInstance = {
             dataFormat  = JSON.stringify(data);
 
         } else {
-            contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            contentType = false;
             dataFormat  = new FormData();
 
             $.each(data, function (name, value) {
