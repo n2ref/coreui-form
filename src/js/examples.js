@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Simple
     let simpleOptions = {
-        save: {
+        send: {
             url: '/path/to/object/1',
             method: 'post'
         },
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Attach fields
     let attachOptions = {
-        save: {
+        send: {
             url: '/path/to/object/1',
             method: 'post'
         },
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Layout
     let layoutOptions = {
-        save: {
+        send: {
             url: '/path/to/object/1',
             method: 'post'
         },
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Events
     let eventsOptions = {
-        save: {
+        send: {
             url: '/path/to/object/1',
             method: 'post'
         },
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function () {
         id: "myform",
         lang: 'en',
         title: 'Form title',
-        save: {
+        send: {
             url: '/path/to/object/1',
             method: 'post',
             format: 'form'
