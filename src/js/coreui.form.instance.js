@@ -12,9 +12,10 @@ let coreuiFormInstance = {
         id: null,
         title: '',
         lang: 'en',
-        save: {
+        send: {
             url: '',
-            method: 'POST'
+            method: 'POST',
+            format: 'form',
         },
         width: null,
         minWidth: null,
@@ -48,9 +49,10 @@ let coreuiFormInstance = {
      */
     _init: function (options) {
 
-        this._options.labelWidth = coreuiForm.getSetting('labelWidth');
-        this._options.lang       = coreuiForm.getSetting('lang');
-        this._options.errorClass = coreuiForm.getSetting('errorClass');
+        this._options.labelWidth    = coreuiForm.getSetting('labelWidth');
+        this._options.lang          = coreuiForm.getSetting('lang');
+        this._options.errorClass    = coreuiForm.getSetting('errorClass');
+        this._options.send.format = coreuiForm.getSetting('sendDataFormat');
 
         this._options = $.extend(true, {}, this._options, options);
 
@@ -346,12 +348,43 @@ let coreuiFormInstance = {
 
         this.lock();
 
-        let that = this;
+        let that       = this;
+        let sendFormat = ['form', 'json'].indexOf(this._options.send.format) >= 0
+            ? this._options.send.format
+            : 'form';
+
+        let dataFormat  = null;
+        let contentType = null;
+
+        if (sendFormat === 'json') {
+            contentType = "application/json; charset=utf-8";
+            dataFormat  = JSON.stringify(data);
+
+        } else {
+            contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            dataFormat  = new FormData();
+
+            $.each(data, function (name, value) {
+                if (value instanceof File) {
+                    dataFormat.append(name, value, value.name);
+
+                } else if (value instanceof FileList) {
+                    $.each(value, function (key, file) {
+                        dataFormat.append(name, file, file.name);
+                    });
+
+                } else {
+                    dataFormat.append(name, value);
+                }
+            });
+        }
+
 
         $.ajax({
-            url: this._options.save.url,
-            method: this._options.save.method,
-            data: data,
+            url: this._options.send.url,
+            method: this._options.send.method,
+            data: dataFormat,
+            contentType: contentType,
             beforeSend: function(xhr) {
                 that._trigger('start-send.coreui.form', that, [ that, xhr ]);
             },
@@ -359,6 +392,45 @@ let coreuiFormInstance = {
                 that.hideError();
 
                 that._trigger('success-send.coreui.form', that, [ that, result ]);
+
+                let jsonResponse = null;
+
+                try {
+                    let parsedResponse = JSON.parse(result);
+                    if (typeof parsedResponse === 'object' &&
+                        parsedResponse !== null &&
+                        ! Array.isArray(parsedResponse)
+                    ) {
+                        jsonResponse = parsedResponse;
+                    }
+
+                } catch (e) {
+                    // ignore
+                }
+
+                if (jsonResponse !== null && typeof jsonResponse === 'object') {
+                    if (jsonResponse.hasOwnProperty('scripts') &&
+                        Array.isArray(jsonResponse.scripts)
+                    ) {
+                        $.each(jsonResponse.scripts, function (key, script) {
+                            if (typeof script === 'string') {
+                                let func = coreuiFormUtils.getFunctionByName(script);
+
+                                if (typeof func === 'function') {
+                                    func();
+                                } else {
+                                    eval(script);
+                                }
+                            }
+                        })
+                    }
+
+                    if (jsonResponse.hasOwnProperty('loadUrl') &&
+                        typeof jsonResponse.loadUrl === 'string'
+                    ) {
+                        location.href = jsonResponse.loadUrl;
+                    }
+                }
             },
             error: function(xhr, textStatus, errorThrown) {
                 let errorMessage = that.getLang().send_error || '';

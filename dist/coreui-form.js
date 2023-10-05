@@ -11,7 +11,7 @@ tpl['form-error.html'] = '<div class="coreui-form__error alert alert-danger aler
 tpl['form-field-content.html'] = '<%- content %>';
 tpl['form-field-group.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__group_container mb-3">\n    <div class="coreui-form__group_label pe-2">\n        <h6 class="coreui-form__field_label_text col-form-label-sm">\n            <%- group.label %>\n            <% if (group.showCollapsible) { %>\n                <button type="button" class="btn btn-sm btn-link btn-collapsible text-dark">\n                    <% if ( ! group.show) { %>\n                    <i class="bi bi-chevron-right"></i>\n                    <% } else { %>\n                    <i class="bi bi-chevron-down"></i>\n                    <% } %>\n                </button>\n            <% } %>\n        </h6>\n    </div>\n    <div class="coreui-form__group_content"<% if ( ! group.show) { %> style="display:none"<% } %>>\n        <%- content %>\n    </div>\n</div>';
 tpl['form-field-label.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__field_container d-flex flex-column flex-md-row mb-3"\n     <% if ( ! field.show) { %> style="display:none"<% } %>>\n    <% if (field.labelWidth !== 0 && field.labelWidth !== \'0px\') { %>\n    <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>>\n        <div class="coreui-form__field_label_content col-form-label-sm">\n            <% if (field.required) { %>\n            <span class="coreui-form__field_label_req text-danger">*</span>\n            <% } %>\n            <span class="coreui-form__field_label_text fw-medium"><%- field.label %></span>\n        </div>\n\n        <% if (field.description) { %>\n        <div class="coreui-form__field_label_description text-muted">\n            <small><%- field.description %></small>\n        </div>\n        <% } %>\n    </div>\n    <% } %>\n    <div class="coreui-form__field_content flex-fill pt-1">\n        <div class="d-inline-block content-<%= hash %>">\n            <%- content %>\n        </div>\n\n        <% if (field.outContent) { %>\n        <span class="coreui-form__field-content-out d-inline-block align-top pt-1 ps-1">\n            <%- field.outContent %>\n        </span>\n        <% } %>\n\n        <% if (attachFields && attachFields.length > 0) { %>\n            <% $.each(attachFields, function(key, attachField) { %>\n                <div class="<% if (attachField.hasOwnProperty(\'direction\') && attachField.direction === \'column\') { %>d-block mt-2<% } else { %>d-inline-block<% } %> content-<%= attachField.hash %>">\n                    <%- attachField.content %>\n                </div>\n            <% }); %>\n        <% } %>\n    </div>\n</div>';
-tpl['form.html'] = '<div id="coreui-form-<%= form.id %>" class="coreui-form mb-2"\n    <% if (widthSizes) { %>style="<%= widthSizes.join(\';\') %>"<% } %>>\n    <% if (form.title) { %>\n    <h5 class="mb-4"><%- form.title %></h5>\n    <% } %>\n\n    <form action="<%= form.save.url %>" method="<%= form.save.method %>"<%- formAttr %>>\n        <div class="coreui-form__fields d-flex justify-content-start flex-column flex-wrap">\n            <%- layout %>\n        </div>\n\n        <% if (controls) { %>\n        <div class="coreui-form__controls d-flex justify-content-start flex-sm-wrap flex-md-nowrap">\n            <% if (form.controlsOffset !== 0 && form.controlsOffset !== \'0px\') { %>\n            <div class="d-none d-md-block" style="width:<%= form.controlsOffset %>;min-width:<%= form.controlsOffset %>"></div>\n            <% } %>\n\n            <div class="d-flex justify-content-start flex-wrap gap-2">\n                <% $.each(controls, function(key, control) { %>\n                <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container"\n                     <% if ( ! control.show) { %>style="display:none"<% } %>>\n                    <%- control.content %>\n                </div>\n                <% }); %>\n            </div>\n        </div>\n        <% } %>\n    </form>\n</div>';
+tpl['form.html'] = '<div id="coreui-form-<%= form.id %>" class="coreui-form mb-2"\n    <% if (widthSizes) { %>style="<%= widthSizes.join(\';\') %>"<% } %>>\n    <% if (form.title) { %>\n    <h5 class="mb-4"><%- form.title %></h5>\n    <% } %>\n\n    <form action="<%= form.send.url %>" method="<%= form.send.method %>"<%- formAttr %>>\n        <div class="coreui-form__fields d-flex justify-content-start flex-column flex-wrap">\n            <%- layout %>\n        </div>\n\n        <% if (controls) { %>\n        <div class="coreui-form__controls d-flex justify-content-start flex-sm-wrap flex-md-nowrap">\n            <% if (form.controlsOffset !== 0 && form.controlsOffset !== \'0px\') { %>\n            <div class="d-none d-md-block" style="width:<%= form.controlsOffset %>;min-width:<%= form.controlsOffset %>"></div>\n            <% } %>\n\n            <div class="d-flex justify-content-start flex-wrap gap-2">\n                <% $.each(controls, function(key, control) { %>\n                <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container"\n                     <% if ( ! control.show) { %>style="display:none"<% } %>>\n                    <%- control.content %>\n                </div>\n                <% }); %>\n            </div>\n        </div>\n        <% } %>\n    </form>\n</div>';
 tpl['controls/button.html'] = '<button <%- render.attr %>><%- control.content %></button>';
 tpl['controls/link.html'] = '<a href="<%- control.href %>"<%- render.attr %>><%- control.content %></a>';
 tpl['fields/checkbox.html'] = '<% if (field.readonly) { %>\n    <%- render.selectedItems.join(\', \') %>\n<% } else { %>\n    <% $.each(render.options, function(key, option) { %>\n    <div class="form-check<% if (field.inline) { %> form-check-inline<% } %>">\n        <input <%- option.attr %>/>\n        <label class="form-check-label" for="<%= option.id %>"><%= option.text %></label>\n    </div>\n    <% }); %>\n<% } %>';
@@ -364,9 +364,10 @@ let coreuiFormInstance = {
         id: null,
         title: '',
         lang: 'en',
-        save: {
+        send: {
             url: '',
-            method: 'POST'
+            method: 'POST',
+            format: 'form',
         },
         width: null,
         minWidth: null,
@@ -400,9 +401,10 @@ let coreuiFormInstance = {
      */
     _init: function (options) {
 
-        this._options.labelWidth = coreuiForm$1.getSetting('labelWidth');
-        this._options.lang       = coreuiForm$1.getSetting('lang');
-        this._options.errorClass = coreuiForm$1.getSetting('errorClass');
+        this._options.labelWidth    = coreuiForm$1.getSetting('labelWidth');
+        this._options.lang          = coreuiForm$1.getSetting('lang');
+        this._options.errorClass    = coreuiForm$1.getSetting('errorClass');
+        this._options.send.format = coreuiForm$1.getSetting('sendDataFormat');
 
         this._options = $.extend(true, {}, this._options, options);
 
@@ -698,12 +700,43 @@ let coreuiFormInstance = {
 
         this.lock();
 
-        let that = this;
+        let that       = this;
+        let sendFormat = ['form', 'json'].indexOf(this._options.send.format) >= 0
+            ? this._options.send.format
+            : 'form';
+
+        let dataFormat  = null;
+        let contentType = null;
+
+        if (sendFormat === 'json') {
+            contentType = "application/json; charset=utf-8";
+            dataFormat  = JSON.stringify(data);
+
+        } else {
+            contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            dataFormat  = new FormData();
+
+            $.each(data, function (name, value) {
+                if (value instanceof File) {
+                    dataFormat.append(name, value, value.name);
+
+                } else if (value instanceof FileList) {
+                    $.each(value, function (key, file) {
+                        dataFormat.append(name, file, file.name);
+                    });
+
+                } else {
+                    dataFormat.append(name, value);
+                }
+            });
+        }
+
 
         $.ajax({
-            url: this._options.save.url,
-            method: this._options.save.method,
-            data: data,
+            url: this._options.send.url,
+            method: this._options.send.method,
+            data: dataFormat,
+            contentType: contentType,
             beforeSend: function(xhr) {
                 that._trigger('start-send.coreui.form', that, [ that, xhr ]);
             },
@@ -711,6 +744,45 @@ let coreuiFormInstance = {
                 that.hideError();
 
                 that._trigger('success-send.coreui.form', that, [ that, result ]);
+
+                let jsonResponse = null;
+
+                try {
+                    let parsedResponse = JSON.parse(result);
+                    if (typeof parsedResponse === 'object' &&
+                        parsedResponse !== null &&
+                        ! Array.isArray(parsedResponse)
+                    ) {
+                        jsonResponse = parsedResponse;
+                    }
+
+                } catch (e) {
+                    // ignore
+                }
+
+                if (jsonResponse !== null && typeof jsonResponse === 'object') {
+                    if (jsonResponse.hasOwnProperty('scripts') &&
+                        Array.isArray(jsonResponse.scripts)
+                    ) {
+                        $.each(jsonResponse.scripts, function (key, script) {
+                            if (typeof script === 'string') {
+                                let func = coreuiFormUtils$1.getFunctionByName(script);
+
+                                if (typeof func === 'function') {
+                                    func();
+                                } else {
+                                    eval(script);
+                                }
+                            }
+                        });
+                    }
+
+                    if (jsonResponse.hasOwnProperty('loadUrl') &&
+                        typeof jsonResponse.loadUrl === 'string'
+                    ) {
+                        location.href = jsonResponse.loadUrl;
+                    }
+                }
             },
             error: function(xhr, textStatus, errorThrown) {
                 let errorMessage = that.getLang().send_error || '';
@@ -1183,6 +1255,7 @@ var coreuiForm$1 = {
         labelWidth: 200,
         lang: 'en',
         class: '',
+        sendDataFormat: 'form',
         errorMessageScrollOffset: 70
     },
 
@@ -7829,6 +7902,352 @@ coreuiForm$1.fields.passwordRepeat = {
                 $(this).text(textCancel);
                 that._isChangeState = true;
             }
+        });
+    }
+};
+
+coreuiForm$1.fields.file = {
+
+    _id: '',
+    _hash: '',
+    _form: null,
+    _index: 0,
+    _value: '',
+    _options: {
+        type: 'file',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        attach: null,
+        attr: {
+            class: 'form-control form-control-sm d-inline-block'
+        },
+        required: null,
+        invalidText: null,
+        validText: null,
+        readonly: null,
+        datalist: null,
+        show: true,
+        column: null
+    },
+
+
+    /**
+     * Инициализация
+     * @param {coreuiFormInstance} form
+     * @param {object}             options
+     * @param {int}                index Порядковый номер на форме
+     */
+    init: function (form, options, index) {
+
+        this._form    = form;
+        this._index   = index;
+        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
+        this._hash    = coreuiFormUtils$1.hashCode();
+        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
+        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+    },
+
+
+    /**
+     * Получение параметров
+     * @returns {object}
+     */
+    getOptions: function () {
+        return $.extend(true, {}, this._options);
+    },
+
+
+    /**
+     * Изменение режима поля только для чтения
+     * @param {bool} isReadonly
+     */
+    readonly: function (isReadonly) {
+
+        this._value            = this.getValue();
+        this._options.readonly = !! isReadonly;
+
+        $('.content-' + this._hash).html(
+            this.renderContent()
+        );
+    },
+
+
+    /**
+     * Скрытие поля
+     * @param {int} duration
+     */
+    hide: function (duration) {
+
+        $('#coreui-form-' + this._id).hide(duration);
+    },
+
+
+    /**
+     * Показ поля
+     * @param {int} duration
+     */
+    show: function (duration) {
+
+        $('#coreui-form-' + this._id).show(duration);
+    },
+
+
+    /**
+     * Получение значения в поле
+     * @returns {File[]}
+     */
+    getValue: function () {
+
+        return this._options.readonly
+            ? this._value
+            : $('.content-' + this._hash + ' input')[0].files;
+    },
+
+
+    /**
+     * Установка значения в поле
+     * @param {File|File[]} value
+     */
+    setValue: function (value) {
+
+        if ( ! (value instanceof File) &&  ! (value instanceof FileList)) {
+            return;
+        }
+
+        this._value = value;
+
+
+        if (this._options.readonly) {
+            $('.content-' + this._hash).text('');
+        } else {
+            let container = new DataTransfer();
+
+            if (value instanceof File) {
+                container.items.add(value);
+
+            } else {
+                $.each(value, function (key, file) {
+                    if (value instanceof File) {
+                        container.items.add(file);
+                    }
+                });
+            }
+
+            $('.content-' + this._hash + ' input')[0].files = container.files;
+        }
+    },
+
+
+    /**
+     * Установка валидности поля
+     * @param {bool|null} isValid
+     * @param {text} text
+     */
+    validate: function (isValid, text) {
+
+        if (this._options.readonly) {
+            return;
+        }
+
+        let container = $('.content-' + this._hash);
+        let input     = $('input', container);
+
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+
+        if (isValid === null) {
+            input.removeClass('is-invalid');
+            input.removeClass('is-valid');
+
+        } else if (isValid) {
+            input.removeClass('is-invalid');
+            input.addClass('is-valid');
+
+            if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+                text = this._options.validText;
+            }
+
+            if (typeof text === 'string') {
+                container.append('<div class="valid-feedback">' + text + '</div>');
+            }
+        } else {
+            input.removeClass('is-valid');
+            input.addClass('is-invalid');
+
+            if (typeof text === 'undefined') {
+                if (typeof this._options.invalidText === 'string') {
+                    text = this._options.invalidText;
+
+                } else if ( ! text && this._options.required) {
+                    text = this._form.getLang().required_field;
+                }
+            }
+
+            if (typeof text === 'string') {
+                container.append('<div class="invalid-feedback">' + text + '</div>');
+            }
+        }
+    },
+
+
+    /**
+     * Проверка валидности поля
+     * @return {boolean|null}
+     */
+    isValid: function () {
+
+        let input = $('.content-' + this._hash + ' input');
+
+        if (input[0]) {
+            return input.is(':valid');
+        }
+
+        return null;
+    },
+
+
+    /**
+     * Формирование поля
+     * @returns {string}
+     */
+    render: function() {
+
+        let options      = this.getOptions();
+        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+
+        return ejs.render(tpl['form-field-label.html'], {
+            id: this._id,
+            form: this._form,
+            hash: this._hash,
+            field: options,
+            content: this.renderContent(),
+            attachFields: attachFields
+        });
+    },
+
+
+    /**
+     * Формирование контента поля
+     * @return {*}
+     */
+    renderContent: function () {
+
+        return this._options.readonly
+            ? this._renderContentReadonly()
+            : this._renderContent();
+    },
+
+
+    /**
+     *
+     * @private
+     */
+    _renderContent: function () {
+
+        let attributes   = [];
+        let datalist     = [];
+        let options      = this.getOptions();
+        let datalistId   = coreuiFormUtils$1.hashCode();
+
+        if ( ! options.hasOwnProperty('attr') ||
+            typeof options.attr !== 'object' ||
+            options.attr === null ||
+            Array.isArray(options.attr)
+        ) {
+            options.attr = {};
+        }
+
+        if (options.name) {
+            options.attr.name = this._options.name;
+        }
+
+        options.attr.type  = options.type;
+        options.attr.value = this._value !== null ? this._value : '';
+
+        if (options.width) {
+            options.attr = coreuiFormUtils$1.mergeAttr(
+                { style: 'width:' + options.width },
+                options.attr
+            );
+        }
+
+        if (options.required) {
+            options.attr.required = 'required';
+        }
+
+
+        if (options.hasOwnProperty('datalist') &&
+            typeof options.datalist === 'object' &&
+            Array.isArray(options.datalist)
+        ) {
+            options.attr.list = datalistId;
+
+            $.each(options.datalist, function (key, itemAttributes) {
+                let datalistAttr = [];
+
+                $.each(itemAttributes, function (name, value) {
+                    datalistAttr.push(name + '="' + value + '"');
+                });
+
+                datalist.push({
+                    attr: datalistAttr.length > 0 ? (' ' + datalistAttr.join(' ')) : ''
+                });
+            });
+        }
+
+        $.each(options.attr, function (name, value) {
+            attributes.push(name + '="' + value + '"');
+        });
+
+        return ejs.render(tpl['fields/input.html'], {
+            field: options,
+            datalistId: datalistId,
+            value: this._value !== null ? this._value : '',
+            render: {
+                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+                datalist: datalist
+            },
+        });
+    },
+
+
+    /**
+     *
+     * @private
+     */
+    _renderContentReadonly: function () {
+
+        let options = this.getOptions();
+        let type    = 'text';
+        let value   = this._value;
+        let lang    = this._form.getLang();
+
+        if (options.hasOwnProperty('type') && typeof options.type === 'string') {
+            type = options.type;
+        }
+
+        try {
+            switch (type) {
+                case 'date':           value = coreuiFormUtils$1.formatDate(value); break;
+                case 'datetime-local': value = coreuiFormUtils$1.formatDateTime(value); break;
+                case 'month':          value = coreuiFormUtils$1.formatDateMonth(value, lang); break;
+                case 'week':           value = coreuiFormUtils$1.formatDateWeek(value, lang); break;
+            }
+
+        } catch (e) {
+            console.error(e);
+            // ignore
+        }
+
+        return ejs.render(tpl['fields/input.html'], {
+            field: options,
+            value: value,
+            hash: this._hash
         });
     }
 };

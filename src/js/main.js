@@ -29,5 +29,6 @@ import "./fields/switch";
 import "./fields/textarea";
 import "./fields/wysiwyg";
 import "./fields/passwordRepeat";
+import "./fields/file";
 
 export default coreuiForm;

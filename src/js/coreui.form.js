@@ -12,6 +12,7 @@ var coreuiForm = {
         labelWidth: 200,
         lang: 'en',
         class: '',
+        sendDataFormat: 'form',
         errorMessageScrollOffset: 70
     },
 
