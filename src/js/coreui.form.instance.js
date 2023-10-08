@@ -314,12 +314,21 @@ let coreuiFormInstance = {
         if (typeof this._options.onSubmit === 'function') {
             onsubmit = this._options.onSubmit;
 
-        } else if (typeof this._options.onSubmit === 'string') {
+        } else if (typeof this._options.onSubmit === 'string' && this._options.onSubmit) {
             let func = coreuiFormUtils.getFunctionByName(this._options.onSubmit);
+
             if (typeof func === 'function') {
                 onsubmit = func;
-            } else if (typeof func === 'string') {
-                eval(func);
+            } else if (typeof this._options.onSubmit === 'string') {
+                let onSubmitText = this._options.onSubmit;
+
+                onsubmit = function(form, data) {
+                    try {
+                        eval(onSubmitText);
+                    } catch (e) {
+                        throw Error('Incorrect onSubmit param: ' + e.message)
+                    }
+                }
             }
         }
 
