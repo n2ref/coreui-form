@@ -442,6 +442,36 @@ let coreuiFormInstance = {
                         location.href = jsonResponse.loadUrl;
                     }
                 }
+
+                if (that._options.hasOwnProperty('successLoadUrl') &&
+                    typeof that._options.successLoadUrl === 'string'
+                ) {
+                    let successLoadUrl = that._options.successLoadUrl;
+
+                    // Замена параметров
+                    if (jsonResponse !== null && typeof jsonResponse === 'object') {
+                        const regx = new RegExp('\\[response\\.([\\d\\w\\.]+)\\]', 'uig');
+                        let urlParams = {};
+
+                        while (result = regx.exec(successLoadUrl)) {
+                            urlParams[result[0]] = result[1];
+                        }
+
+                        if (Object.keys(urlParams).length > 0) {
+                            $.each(urlParams, function (param, path) {
+                                let value = coreuiFormUtils.getObjValue(jsonResponse, path);
+                                value = typeof value !== 'undefined' ? value : '';
+
+                                successLoadUrl = successLoadUrl.replace(
+                                    new RegExp(param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+                                    value
+                                );
+                            });
+                        }
+                    }
+
+                    location.href = successLoadUrl;
+                }
             },
             error: function(xhr, textStatus, errorThrown) {
                 let errorMessage = that.getLang().send_error || '';

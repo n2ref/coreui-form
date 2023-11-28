@@ -291,6 +291,22 @@ let coreuiFormUtils$1 = {
 
 
     /**
+     * Получение значения из объекта по указанному пути
+     * @param {object} obj
+     * @param {string} path
+     * @return {*}
+     */
+    getObjValue: function(obj, path) {
+
+        for (let i = 0, path = path.split('.'), len = path.length; i < len; i++){
+            obj = obj[path[i]];
+        }
+
+        return obj;
+    },
+
+
+    /**
      * Проверка на число
      * @param num
      * @returns {boolean}
@@ -793,6 +809,36 @@ let coreuiFormInstance = {
                     ) {
                         location.href = jsonResponse.loadUrl;
                     }
+                }
+
+                if (that._options.hasOwnProperty('successLoadUrl') &&
+                    typeof that._options.successLoadUrl === 'string'
+                ) {
+                    let successLoadUrl = that._options.successLoadUrl;
+
+                    // Замена параметров
+                    if (jsonResponse !== null && typeof jsonResponse === 'object') {
+                        const regx = new RegExp('\\[response\\.([\\d\\w\\.]+)\\]', 'uig');
+                        let urlParams = {};
+
+                        while (result = regx.exec(successLoadUrl)) {
+                            urlParams[result[0]] = result[1];
+                        }
+
+                        if (Object.keys(urlParams).length > 0) {
+                            $.each(urlParams, function (param, path) {
+                                let value = coreuiFormUtils$1.getObjValue(jsonResponse, path);
+                                value = typeof value !== 'undefined' ? value : '';
+
+                                successLoadUrl = successLoadUrl.replace(
+                                    new RegExp(param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+                                    value
+                                );
+                            });
+                        }
+                    }
+
+                    location.href = successLoadUrl;
                 }
             },
             error: function(xhr, textStatus, errorThrown) {

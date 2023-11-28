@@ -259,6 +259,22 @@ let coreuiFormUtils = {
 
 
     /**
+     * Получение значения из объекта по указанному пути
+     * @param {object} obj
+     * @param {string} path
+     * @return {*}
+     */
+    getObjValue: function(obj, path) {
+
+        for (let i = 0, path = path.split('.'), len = path.length; i < len; i++){
+            obj = obj[path[i]];
+        }
+
+        return obj;
+    },
+
+
+    /**
      * Проверка на число
      * @param num
      * @returns {boolean}
