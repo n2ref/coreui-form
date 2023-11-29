@@ -465,7 +465,8 @@ let coreuiFormInstance = {
                 }
 
                 if (that._options.hasOwnProperty('successLoadUrl') &&
-                    typeof that._options.successLoadUrl === 'string'
+                    typeof that._options.successLoadUrl === 'string' &&
+                    that._options.successLoadUrl !== ''
                 ) {
                     let successLoadUrl = that._options.successLoadUrl;
 
