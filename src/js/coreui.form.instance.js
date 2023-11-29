@@ -476,11 +476,11 @@ let coreuiFormInstance = {
                     }
 
 
-                    let equalUrl = location.href === successLoadUrl
+                    let equalHash = location.hash === successLoadUrl;
 
                     location.href = successLoadUrl;
 
-                    if (equalUrl) {
+                    if (equalHash) {
                         window.onhashchange();
                     }
                 }
