@@ -2,6 +2,7 @@
 import '../../../node_modules/ejs/ejs.min';
 import coreuiFormTpl from "../coreui.form.templates";
 import coreuiForm    from "../coreui.form";
+import coreuiFormUtils from "../coreui.form.utils";
 
 coreuiForm.controls.submit = {
 
@@ -138,7 +139,7 @@ coreuiForm.controls.submit = {
                         if (typeof callback === 'function') {
                             callback(that._form, event);
                         } else {
-                            eval(that._options.onClick);
+                            coreuiFormUtils.eval(that._options.onClick);
                         }
                     }
                 });

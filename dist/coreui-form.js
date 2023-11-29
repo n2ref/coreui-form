@@ -31,7 +31,7 @@ tpl['fields/switch.html'] = '<% if (field.readonly) { %>\n    <%= field.valueY =
 tpl['fields/textarea.html'] = '<% if (field.readonly) { %>\n    <%- value %>\n<% } else { %>\n    <textarea <%- render.attr %>><%- value %></textarea>\n<% } %>';
 tpl['fields/wysiwyg.html'] = '<% if (field.readonly) { %>\n    <%- value %>\n<% } else { %>\n    <textarea name="<%= field.name %>" id="editor-<%= editorHash %>"><%- value %></textarea>\n<% } %>';
 
-let coreuiFormUtils$1 = {
+let coreuiFormUtils = {
 
     /**
      * Получение значения поля
@@ -84,6 +84,17 @@ let coreuiFormUtils$1 = {
         }
 
         return null;
+    },
+
+
+    /**
+     *
+     */
+    eval: function (code) {
+
+        (function(){
+            eval(code);
+        })();
     },
 
 
@@ -398,6 +409,7 @@ let coreuiFormInstance = {
         errorClass: '',
         layout: '[column_default]',
         onSubmit: null,
+        onSubmitSuccess: null,
         record: {},
         fields: [],
         controls: []
@@ -428,7 +440,7 @@ let coreuiFormInstance = {
         this._options = $.extend(true, {}, this._options, options);
 
         if ( ! this._options.id) {
-            this._options.id = coreuiFormUtils$1.hashCode();
+            this._options.id = coreuiFormUtils.hashCode();
         }
 
         if (this._options.hasOwnProperty('labelWidth')) {
@@ -686,7 +698,7 @@ let coreuiFormInstance = {
             onsubmit = this._options.onSubmit;
 
         } else if (typeof this._options.onSubmit === 'string' && this._options.onSubmit) {
-            let func = coreuiFormUtils$1.getFunctionByName(this._options.onSubmit);
+            let func = coreuiFormUtils.getFunctionByName(this._options.onSubmit);
 
             if (typeof func === 'function') {
                 onsubmit = func;
@@ -695,7 +707,7 @@ let coreuiFormInstance = {
 
                 onsubmit = function(form, data) {
                     try {
-                        eval(onSubmitText);
+                        coreuiFormUtils.eval(onSubmitText);
                     } catch (e) {
                         throw Error('Incorrect onSubmit param: ' + e.message)
                     }
@@ -800,12 +812,12 @@ let coreuiFormInstance = {
                     ) {
                         $.each(jsonResponse.scripts, function (key, script) {
                             if (typeof script === 'string') {
-                                let func = coreuiFormUtils$1.getFunctionByName(script);
+                                let func = coreuiFormUtils.getFunctionByName(script);
 
                                 if (typeof func === 'function') {
                                     func();
                                 } else {
-                                    eval(script);
+                                    coreuiFormUtils.eval(script);
                                 }
                             }
                         });
@@ -815,6 +827,21 @@ let coreuiFormInstance = {
                         typeof jsonResponse.loadUrl === 'string'
                     ) {
                         location.href = jsonResponse.loadUrl;
+                    }
+                }
+
+                if (that._options.hasOwnProperty('onSubmitSuccess')) {
+                    if (typeof that._options.onSubmitSuccess === 'function') {
+                        that._options.onSubmitSuccess();
+
+                    } else if (typeof that._options.onSubmitSuccess === 'string') {
+                        let func = coreuiFormUtils.getFunctionByName(that._options.onSubmitSuccess);
+
+                        if (typeof func === 'function') {
+                            func();
+                        } else {
+                            coreuiFormUtils.eval(that._options.onSubmitSuccess);
+                        }
                     }
                 }
 
@@ -834,7 +861,7 @@ let coreuiFormInstance = {
 
                         if (Object.keys(urlParams).length > 0) {
                             $.each(urlParams, function (param, path) {
-                                let value = coreuiFormUtils$1.getObjValue(jsonResponse, path);
+                                let value = coreuiFormUtils.getObjValue(jsonResponse, path);
                                 value = typeof value !== 'undefined' ? value : '';
 
                                 successLoadUrl = successLoadUrl.replace(
@@ -1541,12 +1568,12 @@ coreuiForm$1.controls.button = {
                     if (typeof that._options.onClick === 'function') {
                         that._options.onClick(that._form, event);
                     } else {
-                        let callback = coreuiFormUtils$1.getFunctionByName(that._options.onClick);
+                        let callback = coreuiFormUtils.getFunctionByName(that._options.onClick);
 
                         if (typeof callback === 'function') {
                             callback(that._form, event);
                         } else {
-                            eval(that._options.onClick);
+                            coreuiFormUtils.eval(that._options.onClick);
                         }
                     }
                 });
@@ -1737,7 +1764,7 @@ coreuiForm$1.controls.link = {
                         if (typeof callback === 'function') {
                             callback(that._form, event);
                         } else {
-                            eval(that._options.onClick);
+                            coreuiFormUtils.eval(that._options.onClick);
                         }
                     }
                 });
@@ -1880,7 +1907,7 @@ coreuiForm$1.controls.submit = {
                         if (typeof callback === 'function') {
                             callback(that._form, event);
                         } else {
-                            eval(that._options.onClick);
+                            coreuiFormUtils.eval(that._options.onClick);
                         }
                     }
                 });
@@ -1923,9 +1950,9 @@ coreuiForm$1.fields.checkbox = {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -2143,7 +2170,7 @@ coreuiForm$1.fields.checkbox = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -2199,7 +2226,7 @@ coreuiForm$1.fields.checkbox = {
                     }
                 });
 
-                itemAttr.id = coreuiFormUtils$1.hashCode();
+                itemAttr.id = coreuiFormUtils.hashCode();
 
                 if (typeof(that._value) === 'object' &&
                     Array.isArray(that._value)
@@ -2287,9 +2314,9 @@ coreuiForm$1.fields.color = {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -2444,7 +2471,7 @@ coreuiForm$1.fields.color = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -2479,7 +2506,7 @@ coreuiForm$1.fields.color = {
         let attributes   = [];
         let datalist     = [];
         let options      = this.getOptions();
-        let datalistId   = coreuiFormUtils$1.hashCode();
+        let datalistId   = coreuiFormUtils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -2497,7 +2524,7 @@ coreuiForm$1.fields.color = {
         options.attr.value = this._value;
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -2588,9 +2615,9 @@ coreuiForm$1.fields.custom = {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
-        this._hash    = coreuiFormUtils$1.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
     },
 
 
@@ -2656,7 +2683,7 @@ coreuiForm$1.fields.custom = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -2767,9 +2794,9 @@ coreuiForm$1.fields.dataset = {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
-        this._hash    = coreuiFormUtils$1.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
 
         let that = this;
 
@@ -3042,7 +3069,7 @@ coreuiForm$1.fields.dataset = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -3290,7 +3317,7 @@ coreuiForm$1.fields.dataset = {
         });
 
         return ejs.render(tpl['fields/dataset-row.html'], {
-            hashItem: coreuiFormUtils$1.hashCode(),
+            hashItem: coreuiFormUtils.hashCode(),
             options: rowOptions,
         });
     },
@@ -3351,10 +3378,10 @@ coreuiForm$1.fields.dataset = {
                     optionValue = cellValue;
 
                     switch (option.type) {
-                        case 'date':           optionValue = coreuiFormUtils$1.formatDate(optionValue); break;
-                        case 'datetime-local': optionValue = coreuiFormUtils$1.formatDateTime(optionValue); break;
-                        case 'month':          optionValue = coreuiFormUtils$1.formatDateMonth(optionValue, lang); break;
-                        case 'week':           optionValue = coreuiFormUtils$1.formatDateWeek(optionValue, lang); break;
+                        case 'date':           optionValue = coreuiFormUtils.formatDate(optionValue); break;
+                        case 'datetime-local': optionValue = coreuiFormUtils.formatDateTime(optionValue); break;
+                        case 'month':          optionValue = coreuiFormUtils.formatDateMonth(optionValue, lang); break;
+                        case 'week':           optionValue = coreuiFormUtils.formatDateWeek(optionValue, lang); break;
                         default: optionValue = cellValue;
                     }
                 }
@@ -3533,8 +3560,8 @@ coreuiForm$1.fields.hidden = {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -3672,9 +3699,9 @@ coreuiForm$1.fields.input = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -3829,7 +3856,7 @@ coreuiForm$1.fields.input = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -3863,7 +3890,7 @@ coreuiForm$1.fields.input = {
         let attributes   = [];
         let datalist     = [];
         let options      = this.getOptions();
-        let datalistId   = coreuiFormUtils$1.hashCode();
+        let datalistId   = coreuiFormUtils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -3881,7 +3908,7 @@ coreuiForm$1.fields.input = {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -3944,10 +3971,10 @@ coreuiForm$1.fields.input = {
 
         try {
             switch (type) {
-                case 'date':           value = coreuiFormUtils$1.formatDate(value); break;
-                case 'datetime-local': value = coreuiFormUtils$1.formatDateTime(value); break;
-                case 'month':          value = coreuiFormUtils$1.formatDateMonth(value, lang); break;
-                case 'week':           value = coreuiFormUtils$1.formatDateWeek(value, lang); break;
+                case 'date':           value = coreuiFormUtils.formatDate(value); break;
+                case 'datetime-local': value = coreuiFormUtils.formatDateTime(value); break;
+                case 'month':          value = coreuiFormUtils.formatDateMonth(value, lang); break;
+                case 'week':           value = coreuiFormUtils.formatDateWeek(value, lang); break;
             }
 
         } catch (e) {
@@ -4607,9 +4634,9 @@ coreuiForm$1.fields.mask = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
-        this._hash    = coreuiFormUtils$1.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
         let that      = this;
 
         form.on('shown.coreui.form', function () {
@@ -4777,7 +4804,7 @@ coreuiForm$1.fields.mask = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -4812,7 +4839,7 @@ coreuiForm$1.fields.mask = {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = coreuiFormUtils$1.hashCode();
+        let datalistId = coreuiFormUtils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -4830,7 +4857,7 @@ coreuiForm$1.fields.mask = {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -4945,8 +4972,8 @@ coreuiForm$1.fields.modal = {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
-        this._hash    = coreuiFormUtils$1.hashCode();
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
 
         if (typeof options.name === 'string' &&
             formRecord.hasOwnProperty(options.name) &&
@@ -5062,12 +5089,12 @@ coreuiForm$1.fields.modal = {
                         modal.onChange(this);
 
                     } else if (typeof(modal.onChange) === 'string') {
-                        let func = coreuiFormUtils$1.getFunctionByName(modal.onChange);
+                        let func = coreuiFormUtils.getFunctionByName(modal.onChange);
 
                         if (typeof func === 'function') {
                             func(this);
                         } else {
-                            eval(modal.onChange);
+                            coreuiFormUtils.eval(modal.onChange);
                         }
                     }
                 }
@@ -5145,7 +5172,7 @@ coreuiForm$1.fields.modal = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -5181,7 +5208,7 @@ coreuiForm$1.fields.modal = {
             typeof fieldOptions.attr === 'object' &&
             Array.isArray(fieldOptions.attr)
         ) {
-            textAttr = coreuiFormUtils$1.mergeAttr(textAttr, fieldOptions.attr);
+            textAttr = coreuiFormUtils.mergeAttr(textAttr, fieldOptions.attr);
         }
 
         $.each(textAttr, function (name, value) {
@@ -5220,12 +5247,12 @@ coreuiForm$1.fields.modal = {
                     modal.onClear(that);
 
                 } else if (typeof(modal.onClear) === 'string') {
-                    let func = coreuiFormUtils$1.getFunctionByName(modal.onClear);
+                    let func = coreuiFormUtils.getFunctionByName(modal.onClear);
 
                     if (typeof func === 'function') {
                         func(that);
                     } else {
-                        eval(modal.onClear);
+                        coreuiFormUtils.eval(modal.onClear);
                     }
                 }
             }
@@ -5254,7 +5281,7 @@ coreuiForm$1.fields.modal = {
             }
 
 
-            let modalId      = coreuiFormUtils$1.hashCode();
+            let modalId      = coreuiFormUtils.hashCode();
             let modalLoading = ejs.render(tpl['fields/modal-loading.html'], {
                 lang: that._form.getLang(),
             });
@@ -5269,7 +5296,7 @@ coreuiForm$1.fields.modal = {
                         onHidden = modal.onHidden;
 
                     } else if (typeof(modal.onHidden) === 'string') {
-                        let func = coreuiFormUtils$1.getFunctionByName(modal.onHidden);
+                        let func = coreuiFormUtils.getFunctionByName(modal.onHidden);
 
                         if (typeof func === 'function') {
                             onHidden = func;
@@ -5282,7 +5309,7 @@ coreuiForm$1.fields.modal = {
                         onShow = modal.onShow;
 
                     } else if (typeof(modal.onShow) === 'string') {
-                        let func = coreuiFormUtils$1.getFunctionByName(modal.onShow);
+                        let func = coreuiFormUtils.getFunctionByName(modal.onShow);
 
                         if (typeof func === 'function') {
                             onShow = func;
@@ -5363,9 +5390,9 @@ coreuiForm$1.fields.number = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
 
 
         // Установка точности
@@ -5470,7 +5497,7 @@ coreuiForm$1.fields.number = {
         }
 
         if (this._options.precision >= 0) {
-            value = coreuiFormUtils$1.round(value, this._options.precision);
+            value = coreuiFormUtils.round(value, this._options.precision);
         }
 
         if (this._options.attr.hasOwnProperty('min')) {
@@ -5570,7 +5597,7 @@ coreuiForm$1.fields.number = {
     render: function() {
 
         let options      = $.extend(true, {}, this._options);
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -5592,7 +5619,7 @@ coreuiForm$1.fields.number = {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = coreuiFormUtils$1.hashCode();
+        let datalistId = coreuiFormUtils.hashCode();
 
 
         if ( ! options.hasOwnProperty('attr') ||
@@ -5611,7 +5638,7 @@ coreuiForm$1.fields.number = {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -5685,7 +5712,7 @@ coreuiForm$1.fields.number = {
             let value = $(this).val();
 
             if (that._options.precision >= 0) {
-                value = coreuiFormUtils$1.round(value, that._options.precision);
+                value = coreuiFormUtils.round(value, that._options.precision);
             }
 
             if (that._options.attr.hasOwnProperty('min')) {
@@ -5740,9 +5767,9 @@ coreuiForm$1.fields.radio = {
 
         this._form    = form;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -5920,7 +5947,7 @@ coreuiForm$1.fields.radio = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -5976,7 +6003,7 @@ coreuiForm$1.fields.radio = {
                     }
                 });
 
-                itemAttr.id = coreuiFormUtils$1.hashCode();
+                itemAttr.id = coreuiFormUtils.hashCode();
 
                 if (that._value == option.value) {
                     if (option.hasOwnProperty('text') && option.text) {
@@ -6048,9 +6075,9 @@ coreuiForm$1.fields.range = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -6205,7 +6232,7 @@ coreuiForm$1.fields.range = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -6227,7 +6254,7 @@ coreuiForm$1.fields.range = {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = coreuiFormUtils$1.hashCode();
+        let datalistId = coreuiFormUtils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -6245,7 +6272,7 @@ coreuiForm$1.fields.range = {
         options.attr.value = this._value;
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -6329,9 +6356,9 @@ coreuiForm$1.fields.select = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -6563,7 +6590,7 @@ coreuiForm$1.fields.select = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -6614,7 +6641,7 @@ coreuiForm$1.fields.select = {
         }
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -6853,9 +6880,9 @@ coreuiForm$1.fields.switch = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -7006,7 +7033,7 @@ coreuiForm$1.fields.switch = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -7046,7 +7073,7 @@ coreuiForm$1.fields.switch = {
             typeof options.attr === 'object' &&
             Array.isArray(options.attr)
         ) {
-            itemAttr = coreuiFormUtils$1.mergeAttr(itemAttr, options.attr);
+            itemAttr = coreuiFormUtils.mergeAttr(itemAttr, options.attr);
         }
 
         if (this._value === options.valueY) {
@@ -7106,9 +7133,9 @@ coreuiForm$1.fields.textarea = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -7261,7 +7288,7 @@ coreuiForm$1.fields.textarea = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -7296,7 +7323,7 @@ coreuiForm$1.fields.textarea = {
         }
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -7358,10 +7385,10 @@ coreuiForm$1.fields.wysiwyg = {
         this._form       = form;
         this._index      = index;
         this._id         = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash       = coreuiFormUtils$1.hashCode();
-        this._editorHash = coreuiFormUtils$1.hashCode();
-        this._value      = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options    = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash       = coreuiFormUtils.hashCode();
+        this._editorHash = coreuiFormUtils.hashCode();
+        this._value      = coreuiFormUtils.getFieldValue(form, options);
+        this._options    = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
 
         let that = this;
 
@@ -7520,7 +7547,7 @@ coreuiForm$1.fields.wysiwyg = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -7665,9 +7692,9 @@ coreuiForm$1.fields.passwordRepeat = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
 
 
         let that = this;
@@ -7849,7 +7876,7 @@ coreuiForm$1.fields.passwordRepeat = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -7908,7 +7935,7 @@ coreuiForm$1.fields.passwordRepeat = {
         options.attr.value = this._value ? '******' : '';
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -8026,9 +8053,9 @@ coreuiForm$1.fields.file = {
         this._form    = form;
         this._index   = index;
         this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils$1.hashCode();
-        this._value   = coreuiFormUtils$1.getFieldValue(form, options);
-        this._options = coreuiFormUtils$1.mergeFieldOptions(form, this._options, options);
+        this._hash    = coreuiFormUtils.hashCode();
+        this._value   = coreuiFormUtils.getFieldValue(form, options);
+        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
     },
 
 
@@ -8197,7 +8224,7 @@ coreuiForm$1.fields.file = {
     render: function() {
 
         let options      = this.getOptions();
-        let attachFields = coreuiFormUtils$1.getAttacheFields(this._form, options);
+        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
         return ejs.render(tpl['form-field-label.html'], {
             id: this._id,
@@ -8231,7 +8258,7 @@ coreuiForm$1.fields.file = {
         let attributes   = [];
         let datalist     = [];
         let options      = this.getOptions();
-        let datalistId   = coreuiFormUtils$1.hashCode();
+        let datalistId   = coreuiFormUtils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -8249,7 +8276,7 @@ coreuiForm$1.fields.file = {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = coreuiFormUtils$1.mergeAttr(
+            options.attr = coreuiFormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -8312,10 +8339,10 @@ coreuiForm$1.fields.file = {
 
         try {
             switch (type) {
-                case 'date':           value = coreuiFormUtils$1.formatDate(value); break;
-                case 'datetime-local': value = coreuiFormUtils$1.formatDateTime(value); break;
-                case 'month':          value = coreuiFormUtils$1.formatDateMonth(value, lang); break;
-                case 'week':           value = coreuiFormUtils$1.formatDateWeek(value, lang); break;
+                case 'date':           value = coreuiFormUtils.formatDate(value); break;
+                case 'datetime-local': value = coreuiFormUtils.formatDateTime(value); break;
+                case 'month':          value = coreuiFormUtils.formatDateMonth(value, lang); break;
+                case 'week':           value = coreuiFormUtils.formatDateWeek(value, lang); break;
             }
 
         } catch (e) {

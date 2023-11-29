@@ -127,7 +127,7 @@ coreuiForm.controls.button = {
                         if (typeof callback === 'function') {
                             callback(that._form, event);
                         } else {
-                            eval(that._options.onClick);
+                            coreuiFormUtils.eval(that._options.onClick);
                         }
                     }
                 });

@@ -28,6 +28,7 @@ let coreuiFormInstance = {
         errorClass: '',
         layout: '[column_default]',
         onSubmit: null,
+        onSubmitSuccess: null,
         record: {},
         fields: [],
         controls: []
@@ -325,7 +326,7 @@ let coreuiFormInstance = {
 
                 onsubmit = function(form, data) {
                     try {
-                        eval(onSubmitText);
+                        coreuiFormUtils.eval(onSubmitText);
                     } catch (e) {
                         throw Error('Incorrect onSubmit param: ' + e.message)
                     }
@@ -435,7 +436,7 @@ let coreuiFormInstance = {
                                 if (typeof func === 'function') {
                                     func();
                                 } else {
-                                    eval(script);
+                                    coreuiFormUtils.eval(script);
                                 }
                             }
                         })
@@ -445,6 +446,21 @@ let coreuiFormInstance = {
                         typeof jsonResponse.loadUrl === 'string'
                     ) {
                         location.href = jsonResponse.loadUrl;
+                    }
+                }
+
+                if (that._options.hasOwnProperty('onSubmitSuccess')) {
+                    if (typeof that._options.onSubmitSuccess === 'function') {
+                        that._options.onSubmitSuccess();
+
+                    } else if (typeof that._options.onSubmitSuccess === 'string') {
+                        let func = coreuiFormUtils.getFunctionByName(that._options.onSubmitSuccess);
+
+                        if (typeof func === 'function') {
+                            func();
+                        } else {
+                            coreuiFormUtils.eval(that._options.onSubmitSuccess);
+                        }
                     }
                 }
 

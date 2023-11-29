@@ -171,7 +171,7 @@ coreuiForm.fields.modal = {
                         if (typeof func === 'function') {
                             func(this);
                         } else {
-                            eval(modal.onChange);
+                            coreuiFormUtils.eval(modal.onChange);
                         }
                     }
                 }
@@ -329,7 +329,7 @@ coreuiForm.fields.modal = {
                     if (typeof func === 'function') {
                         func(that);
                     } else {
-                        eval(modal.onClear);
+                        coreuiFormUtils.eval(modal.onClear);
                     }
                 }
             }
