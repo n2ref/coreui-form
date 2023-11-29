@@ -24,6 +24,7 @@ let coreuiFormInstance = {
         controlsOffset: null,
         readonly: false,
         validate: false,
+        successLoadUrl: '',
         errorClass: '',
         layout: '[column_default]',
         onSubmit: null,
@@ -406,17 +407,21 @@ let coreuiFormInstance = {
 
                 let jsonResponse = null;
 
-                try {
-                    let parsedResponse = JSON.parse(result);
-                    if (typeof parsedResponse === 'object' &&
-                        parsedResponse !== null &&
-                        ! Array.isArray(parsedResponse)
-                    ) {
-                        jsonResponse = parsedResponse;
-                    }
+                if (typeof result === 'string') {
+                    try {
+                        let parsedResponse = JSON.parse(result);
+                        if (typeof parsedResponse === 'object' &&
+                            parsedResponse !== null &&
+                            ! Array.isArray(parsedResponse)
+                        ) {
+                            jsonResponse = parsedResponse;
+                        }
 
-                } catch (e) {
-                    // ignore
+                    } catch (e) {
+                        // ignore
+                    }
+                } else {
+                    jsonResponse = result;
                 }
 
                 if (jsonResponse !== null && typeof jsonResponse === 'object') {
@@ -450,8 +455,8 @@ let coreuiFormInstance = {
 
                     // Замена параметров
                     if (jsonResponse !== null && typeof jsonResponse === 'object') {
-                        const regx = new RegExp('\\[response\\.([\\d\\w\\.]+)\\]', 'uig');
-                        let urlParams = {};
+                        const regx      = new RegExp('\\[response\\.([\\d\\w\\.]+)\\]', 'uig');
+                        let   urlParams = {};
 
                         while (result = regx.exec(successLoadUrl)) {
                             urlParams[result[0]] = result[1];
@@ -470,7 +475,14 @@ let coreuiFormInstance = {
                         }
                     }
 
+
+                    let equalUrl = location.href === successLoadUrl
+
                     location.href = successLoadUrl;
+
+                    if (equalUrl) {
+                        window.onhashchange();
+                    }
                 }
             },
             error: function(xhr, textStatus, errorThrown) {

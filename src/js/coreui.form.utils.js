@@ -266,7 +266,9 @@ let coreuiFormUtils = {
      */
     getObjValue: function(obj, path) {
 
-        for (let i = 0, path = path.split('.'), len = path.length; i < len; i++){
+        path = path.split('.');
+
+        for (let i = 0, len = path.length; i < len; i++){
             obj = obj[path[i]];
         }
 
