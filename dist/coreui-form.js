@@ -953,7 +953,11 @@ let coreuiFormInstance = {
             let fieldOptions = field.getOptions();
 
             if (fieldOptions.hasOwnProperty('name') && fieldOptions.name) {
-                data[fieldOptions.name] = field.getValue();
+                let value = field.getValue();
+
+                if (value !== null) {
+                    data[fieldOptions.name] = value;
+                }
             }
         });
 
