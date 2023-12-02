@@ -6937,9 +6937,17 @@ coreuiForm$1.fields.switch = {
      */
     getValue: function () {
 
-        return this._options.readonly
-            ? this._value
-            : $('.content-' + this._hash + ' input').val();
+        let result;
+
+        if (this._options.readonly) {
+            result = this._value;
+        } else {
+            result = $('.content-' + this._hash + ' input').prop('checked')
+                ? this._options.valueY
+                : this._options.valueN;
+        }
+
+        return result;
     },
 
 
@@ -7760,17 +7768,22 @@ coreuiForm$1.fields.passwordRepeat = {
      */
     getValue: function () {
 
+        let result;
+
         if (this._options.readonly) {
-            return this._value;
+            result = this._value;
+
+        } else {
+            let pass = $('.content-' + this._hash + ' input[type="password"]').eq(0);
+
+            if (typeof pass.attr('disabled') !== 'undefined' && pass.attr('disabled') !== false) {
+                result = null;
+            } else {
+                result = pass.val();
+            }
         }
 
-        let pass = $('.content-' + this._hash + ' input[type="password"]').eq(0);
-
-        if (typeof pass.attr('disabled') !== 'undefined' && pass.attr('disabled') !== false) {
-            return '';
-        }
-
-        return pass.val();
+        return result;
     },
 
 

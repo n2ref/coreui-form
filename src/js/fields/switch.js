@@ -97,9 +97,17 @@ coreuiForm.fields.switch = {
      */
     getValue: function () {
 
-        return this._options.readonly
-            ? this._value
-            : $('.content-' + this._hash + ' input').val();
+        let result;
+
+        if (this._options.readonly) {
+            result = this._value;
+        } else {
+            result = $('.content-' + this._hash + ' input').prop('checked')
+                ? this._options.valueY
+                : this._options.valueN
+        }
+
+        return result;
     },
 
 

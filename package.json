@@ -1,6 +1,6 @@
 {
   "name": "coreui-form",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "CoreUI form",
   "scripts": {
     "build_all": "gulp build_tpl && gulp build_js && gulp build_js_min && npm run test_js",

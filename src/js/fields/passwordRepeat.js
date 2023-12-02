@@ -116,17 +116,22 @@ coreuiForm.fields.passwordRepeat = {
      */
     getValue: function () {
 
+        let result;
+
         if (this._options.readonly) {
-            return this._value;
+            result = this._value;
+
+        } else {
+            let pass = $('.content-' + this._hash + ' input[type="password"]').eq(0);
+
+            if (typeof pass.attr('disabled') !== 'undefined' && pass.attr('disabled') !== false) {
+                result = null;
+            } else {
+                result = pass.val();
+            }
         }
 
-        let pass = $('.content-' + this._hash + ' input[type="password"]').eq(0);
-
-        if (typeof pass.attr('disabled') !== 'undefined' && pass.attr('disabled') !== false) {
-            return '';
-        }
-
-        return pass.val();
+        return result;
     },
 
 
