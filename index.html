@@ -571,7 +571,7 @@
             readonly: false,
             validate: true,
             errorClass: 'error1 error2',
-            onSubmit: function() { return false; },
+            onSubmit: function(form, data) { console.log(data); return false; },
             layout:
                 '&lt;div class="d-flex flex-wrap"&gt;' +
                     '&lt;div style="width: 500px"&gt;[column_left]&lt;/div&gt;' +

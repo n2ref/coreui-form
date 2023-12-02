@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
         readonly: false,
         validate: true,
         errorClass: 'error1 error2',
-        onSubmit: function() { return false; },
+        onSubmit: function(form, data) { console.log(data); return false; },
         layout:
             '<div class="d-flex flex-wrap">' +
                 '<div style="width: 500px">[column_left]</div>' +
