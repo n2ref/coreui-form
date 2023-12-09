@@ -166,13 +166,7 @@ coreuiForm.fields.modal = {
                         modal.onChange(this);
 
                     } else if (typeof(modal.onChange) === 'string') {
-                        let func = coreuiFormUtils.getFunctionByName(modal.onChange);
-
-                        if (typeof func === 'function') {
-                            func(this);
-                        } else {
-                            coreuiFormUtils.eval(modal.onChange);
-                        }
+                        (new Function('modal', modal.onChange))(this);
                     }
                 }
 
@@ -324,13 +318,7 @@ coreuiForm.fields.modal = {
                     modal.onClear(that);
 
                 } else if (typeof(modal.onClear) === 'string') {
-                    let func = coreuiFormUtils.getFunctionByName(modal.onClear);
-
-                    if (typeof func === 'function') {
-                        func(that);
-                    } else {
-                        coreuiFormUtils.eval(modal.onClear);
-                    }
+                    (new Function('field', modal.onClear))(that);
                 }
             }
 
@@ -373,11 +361,7 @@ coreuiForm.fields.modal = {
                         onHidden = modal.onHidden;
 
                     } else if (typeof(modal.onHidden) === 'string') {
-                        let func = coreuiFormUtils.getFunctionByName(modal.onHidden);
-
-                        if (typeof func === 'function') {
-                            onHidden = func;
-                        }
+                        onHidden = new Function(modal.onHidden);
                     }
                 }
 
@@ -386,11 +370,7 @@ coreuiForm.fields.modal = {
                         onShow = modal.onShow;
 
                     } else if (typeof(modal.onShow) === 'string') {
-                        let func = coreuiFormUtils.getFunctionByName(modal.onShow);
-
-                        if (typeof func === 'function') {
-                            onShow = func;
-                        }
+                        onShow = new Function(modal.onShow)
                     }
                 }
 

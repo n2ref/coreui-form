@@ -134,13 +134,7 @@ coreuiForm.controls.submit = {
                     if (typeof that._options.onClick === 'function') {
                         that._options.onClick(that._form, event);
                     } else {
-                        let callback = coreuiFormUtils.getFunctionByName(that._options.onClick);
-
-                        if (typeof callback === 'function') {
-                            callback(that._form, event);
-                        } else {
-                            coreuiFormUtils.eval(that._options.onClick);
-                        }
+                        (new Function('form', 'event', that._options.onClick))(that._form, event);
                     }
                 });
         }

@@ -322,15 +322,7 @@ let coreuiFormInstance = {
             if (typeof func === 'function') {
                 onsubmit = func;
             } else if (typeof this._options.onSubmit === 'string') {
-                let onSubmitText = this._options.onSubmit;
-
-                onsubmit = function(form, data) {
-                    try {
-                        coreuiFormUtils.eval(onSubmitText);
-                    } catch (e) {
-                        throw Error('Incorrect onSubmit param: ' + e.message)
-                    }
-                }
+                onsubmit = new Function('form', 'data', this._options.onSubmit);
             }
         }
 
@@ -431,13 +423,7 @@ let coreuiFormInstance = {
                     ) {
                         $.each(jsonResponse.scripts, function (key, script) {
                             if (typeof script === 'string') {
-                                let func = coreuiFormUtils.getFunctionByName(script);
-
-                                if (typeof func === 'function') {
-                                    func();
-                                } else {
-                                    coreuiFormUtils.eval(script);
-                                }
+                                (new Function(script))();
                             }
                         })
                     }
@@ -454,13 +440,7 @@ let coreuiFormInstance = {
                         that._options.onSubmitSuccess();
 
                     } else if (typeof that._options.onSubmitSuccess === 'string') {
-                        let func = coreuiFormUtils.getFunctionByName(that._options.onSubmitSuccess);
-
-                        if (typeof func === 'function') {
-                            func();
-                        } else {
-                            coreuiFormUtils.eval(that._options.onSubmitSuccess);
-                        }
+                        (new Function(that._options.onSubmitSuccess))();
                     }
                 }
 

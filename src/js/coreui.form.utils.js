@@ -56,17 +56,6 @@ let coreuiFormUtils = {
 
 
     /**
-     *
-     */
-    eval: function (code) {
-
-        (function(){
-            eval(code);
-        })();
-    },
-
-
-    /**
      * Обработка полей в полях
      * @param form
      * @param defaultOptions
