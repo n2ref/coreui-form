@@ -277,6 +277,27 @@ let coreuiFormUtils = {
 
 
     /**
+     * Проверка текста на содержимое JSON
+     * @param text
+     * @return {boolean}
+     */
+    isJson: function (text) {
+
+        if (typeof text !== "string") {
+            return false;
+        }
+
+        try {
+            let json = JSON.parse(text);
+            return typeof json === 'object' || Array.isArray(json);
+
+        } catch (error) {
+            return false;
+        }
+    },
+
+
+    /**
      * Проверка на число
      * @param num
      * @returns {boolean}

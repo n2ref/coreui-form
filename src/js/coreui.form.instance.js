@@ -18,6 +18,10 @@ let coreuiFormInstance = {
             format: 'form',
         },
         width: null,
+        validResponse: {
+            headers: null,
+            dataType: null,
+        },
         minWidth: null,
         maxWidth: null,
         labelWidth: 200,
@@ -384,6 +388,137 @@ let coreuiFormInstance = {
         }
 
 
+        /**
+         * Запрос выполнился успешно
+         * @param result
+         */
+        let successSend = function (result) {
+
+            that.hideError();
+
+            that._trigger('success-send.coreui.form', that, [ that, result ]);
+
+            let jsonResponse = null;
+
+            if (typeof result === 'string') {
+                try {
+                    let parsedResponse = JSON.parse(result);
+                    if (typeof parsedResponse === 'object' &&
+                        parsedResponse !== null &&
+                        ! Array.isArray(parsedResponse)
+                    ) {
+                        jsonResponse = parsedResponse;
+                    }
+
+                } catch (e) {
+                    // ignore
+                }
+            } else {
+                jsonResponse = result;
+            }
+
+            if (jsonResponse !== null && typeof jsonResponse === 'object') {
+                if (jsonResponse.hasOwnProperty('scripts') &&
+                    Array.isArray(jsonResponse.scripts)
+                ) {
+                    $.each(jsonResponse.scripts, function (key, script) {
+                        if (typeof script === 'string') {
+                            (new Function(script))();
+                        }
+                    })
+                }
+
+                if (jsonResponse.hasOwnProperty('loadUrl') &&
+                    typeof jsonResponse.loadUrl === 'string'
+                ) {
+                    location.href = jsonResponse.loadUrl;
+                }
+            }
+
+            if (that._options.hasOwnProperty('onSubmitSuccess')) {
+                if (typeof that._options.onSubmitSuccess === 'function') {
+                    that._options.onSubmitSuccess();
+
+                } else if (typeof that._options.onSubmitSuccess === 'string') {
+                    (new Function(that._options.onSubmitSuccess))();
+                }
+            }
+
+            if (that._options.hasOwnProperty('successLoadUrl') &&
+                typeof that._options.successLoadUrl === 'string' &&
+                that._options.successLoadUrl !== ''
+            ) {
+                let successLoadUrl = that._options.successLoadUrl;
+
+                // Замена параметров
+                if (jsonResponse !== null && typeof jsonResponse === 'object') {
+                    const regx      = new RegExp('\\[response\\.([\\d\\w\\.]+)\\]', 'uig');
+                    let   urlParams = {};
+
+                    while (result = regx.exec(successLoadUrl)) {
+                        urlParams[result[0]] = result[1];
+                    }
+
+                    if (Object.keys(urlParams).length > 0) {
+                        $.each(urlParams, function (param, path) {
+                            let value = coreuiFormUtils.getObjValue(jsonResponse, path);
+                            value = typeof value !== 'undefined' ? value : '';
+
+                            successLoadUrl = successLoadUrl.replace(
+                                new RegExp(param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+                                value
+                            );
+                        });
+                    }
+                }
+
+
+                let equalHash = location.hash === successLoadUrl;
+
+                location.href = successLoadUrl;
+
+                if (equalHash) {
+                    window.onhashchange();
+                }
+            }
+        }
+
+
+        /**
+         * Запрос с ошибкой
+         * @param xhr
+         * @param textStatus
+         * @param errorThrown
+         */
+        let errorSend = function(xhr, textStatus, errorThrown) {
+
+            let errorMessage = that.getLang().send_error || '';
+            let data         = {};
+
+            try {
+                let parsedResponse = JSON.parse(xhr.responseText);
+                if (typeof parsedResponse === 'object' &&
+                    parsedResponse !== null &&
+                    ! Array.isArray(parsedResponse)
+                ) {
+                    data = parsedResponse;
+                }
+
+            } catch (e) {
+                // ignore
+            }
+
+            if (data.hasOwnProperty('error_message') &&
+                typeof data.error_message === 'string' &&
+                data.error_message !== ''
+            ) {
+                errorMessage = data.error_message;
+            }
+
+            that.showError(errorMessage);
+            that._trigger('error-send.coreui.form', that, [ that, xhr, textStatus, errorThrown ]);
+        }
+
         $.ajax({
             url: this._options.send.url,
             method: this._options.send.method,
@@ -393,122 +528,63 @@ let coreuiFormInstance = {
             beforeSend: function(xhr) {
                 that._trigger('start-send.coreui.form', that, [ that, xhr ]);
             },
-            success: function (result) {
-                that.hideError();
+            success: function (result, textStatus, xhr) {
 
-                that._trigger('success-send.coreui.form', that, [ that, result ]);
+                let isValidResponse = true;
 
-                let jsonResponse = null;
+                if (typeof that._options.validResponse === 'object') {
+                    if (Array.isArray(that._options.validResponse.headers)) {
+                        $.each(that._options.validResponse.headers, function (header, headerValues) {
+                            if (typeof headerValues === 'string') {
+                                if (xhr.getResponseHeader(header) != headerValues) {
+                                    isValidResponse = false;
+                                    return false;
+                                }
 
-                if (typeof result === 'string') {
-                    try {
-                        let parsedResponse = JSON.parse(result);
-                        if (typeof parsedResponse === 'object' &&
-                            parsedResponse !== null &&
-                            ! Array.isArray(parsedResponse)
-                        ) {
-                            jsonResponse = parsedResponse;
-                        }
-
-                    } catch (e) {
-                        // ignore
-                    }
-                } else {
-                    jsonResponse = result;
-                }
-
-                if (jsonResponse !== null && typeof jsonResponse === 'object') {
-                    if (jsonResponse.hasOwnProperty('scripts') &&
-                        Array.isArray(jsonResponse.scripts)
-                    ) {
-                        $.each(jsonResponse.scripts, function (key, script) {
-                            if (typeof script === 'string') {
-                                (new Function(script))();
+                            } else if (Array.isArray(headerValues)) {
+                                if (headerValues.indexOf(xhr.getResponseHeader(header)) < 0) {
+                                    isValidResponse = false;
+                                    return false;
+                                }
                             }
-                        })
+                        });
                     }
 
-                    if (jsonResponse.hasOwnProperty('loadUrl') &&
-                        typeof jsonResponse.loadUrl === 'string'
-                    ) {
-                        location.href = jsonResponse.loadUrl;
-                    }
-                }
+                    if (isValidResponse) {
+                        if (typeof that._options.validResponse.dataType === 'string') {
+                            if (that._options.validResponse.dataType === 'json') {
+                                if (typeof result !== 'object' &&
+                                    ! Array.isArray(result) &&
+                                    ! coreuiFormUtils.isJson(result)
+                                ) {
+                                    isValidResponse = false;
+                                }
+                            }
 
-                if (that._options.hasOwnProperty('onSubmitSuccess')) {
-                    if (typeof that._options.onSubmitSuccess === 'function') {
-                        that._options.onSubmitSuccess();
+                        } else if (Array.isArray(that._options.validResponse.dataType)) {
+                            $.each(that._options.validResponse.dataType, function (key, dataType) {
 
-                    } else if (typeof that._options.onSubmitSuccess === 'string') {
-                        (new Function(that._options.onSubmitSuccess))();
-                    }
-                }
-
-                if (that._options.hasOwnProperty('successLoadUrl') &&
-                    typeof that._options.successLoadUrl === 'string' &&
-                    that._options.successLoadUrl !== ''
-                ) {
-                    let successLoadUrl = that._options.successLoadUrl;
-
-                    // Замена параметров
-                    if (jsonResponse !== null && typeof jsonResponse === 'object') {
-                        const regx      = new RegExp('\\[response\\.([\\d\\w\\.]+)\\]', 'uig');
-                        let   urlParams = {};
-
-                        while (result = regx.exec(successLoadUrl)) {
-                            urlParams[result[0]] = result[1];
-                        }
-
-                        if (Object.keys(urlParams).length > 0) {
-                            $.each(urlParams, function (param, path) {
-                                let value = coreuiFormUtils.getObjValue(jsonResponse, path);
-                                value = typeof value !== 'undefined' ? value : '';
-
-                                successLoadUrl = successLoadUrl.replace(
-                                    new RegExp(param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
-                                    value
-                                );
+                                if (dataType === 'json') {
+                                    if (typeof result !== 'object' &&
+                                        ! Array.isArray(result) &&
+                                        ! coreuiFormUtils.isJson(result)
+                                    ) {
+                                        isValidResponse = false;
+                                        return false;
+                                    }
+                                }
                             });
                         }
                     }
+                }
 
-
-                    let equalHash = location.hash === successLoadUrl;
-
-                    location.href = successLoadUrl;
-
-                    if (equalHash) {
-                        window.onhashchange();
-                    }
+                if (isValidResponse) {
+                    successSend(result);
+                } else {
+                    errorSend(xhr, textStatus);
                 }
             },
-            error: function(xhr, textStatus, errorThrown) {
-                let errorMessage = that.getLang().send_error || '';
-                let data         = {};
-
-                try {
-                    let parsedResponse = JSON.parse(xhr.responseText);
-                    if (typeof parsedResponse === 'object' &&
-                        parsedResponse !== null &&
-                        ! Array.isArray(parsedResponse)
-                    ) {
-                        data = parsedResponse;
-                    }
-
-                } catch (e) {
-                    // ignore
-                }
-
-                if (data.hasOwnProperty('error_message') &&
-                    typeof data.error_message === 'string' &&
-                    data.error_message !== ''
-                ) {
-                    errorMessage = data.error_message;
-                }
-
-                that.showError(errorMessage);
-                that._trigger('error-send.coreui.form', that, [ that, xhr, textStatus, errorThrown ]);
-            },
+            error: errorSend,
             complete: function(xhr, textStatus) {
                 that.unlock();
                 that._trigger('end-send.coreui.form', that, [ that, xhr, textStatus ]);

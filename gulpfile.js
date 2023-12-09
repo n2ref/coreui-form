@@ -104,9 +104,7 @@ gulp.task('build_js_min', function() {
     })
         .pipe(source(conf.js.fileMin))
         .pipe(buffer())
-        .pipe(sourcemaps.init())
         .pipe(uglify())
-        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(conf.dist));
 });
 
