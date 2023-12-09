@@ -562,6 +562,12 @@
                 method: 'post',
                 format: 'form'
             },
+            validResponse: {
+                headers: {
+                    'Content-Type': [ 'application/json', 'application/json; charset=utf-8' ]
+                },
+                dataType: [ 'json' ],
+            }
             width: '100%',
             minWidth: 500,
             maxWidth: '100%',
@@ -784,8 +790,15 @@
                                 <td>Заголовок формы</td>
                             </tr>
                             <tr>
-                                <th>save</th> <td>object</td> <td></td>
+                                <th>send</th> <td>object</td> <td></td>
                                 <td>Адрес и Http метод используемые для отправки данных с формы. <code>{url: '/path', method: 'post'}</code></td>
+                            </tr>
+                            <tr>
+                                <th>validResponse</th> <td>object</td> <td></td>
+                                <td>
+                                    Описание заголовков и данных которые должен вернуть сервер, иначе ошибка.
+                                    <code>{ headers : { 'Content-Type': ['application/json'] }, dataType: ['json'] }</code>
+                                </td>
                             </tr>
                             <tr>
                                 <th>width</th> <td>string|number</td> <td></td>

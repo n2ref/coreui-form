@@ -326,6 +326,12 @@ document.addEventListener('DOMContentLoaded', function () {
             method: 'post',
             format: 'form'
         },
+        validResponse: {
+            headers : {
+                'Content-Type': ['application/json', 'application/json; charset=utf-8']
+            },
+            dataType: ['json']
+        },
         width: '100%',
         minWidth: 500,
         maxWidth: '100%',
