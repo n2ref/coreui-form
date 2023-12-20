@@ -15,7 +15,7 @@ coreuiForm.controls.submit = {
         onClick: null,
         show: true,
         attr: {
-            class: 'btn btn-sm btn-primary'
+            class: 'btn btn-primary'
         }
     },
 

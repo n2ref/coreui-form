@@ -2,7 +2,7 @@
      <% if ( ! field.show) { %> style="display:none"<% } %>>
     <% if (field.labelWidth !== 0 && field.labelWidth !== '0px') { %>
     <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>>
-        <div class="coreui-form__field_label_content col-form-label-sm">
+        <div class="coreui-form__field_label_content col-form-label">
             <% if (field.required) { %>
             <span class="coreui-form__field_label_req text-danger">*</span>
             <% } %>
@@ -16,13 +16,13 @@
         <% } %>
     </div>
     <% } %>
-    <div class="coreui-form__field_content flex-fill pt-1">
+    <div class="coreui-form__field_content flex-fill">
         <div class="d-inline-block content-<%= hash %>">
             <%- content %>
         </div>
 
         <% if (field.outContent) { %>
-        <span class="coreui-form__field-content-out d-inline-block align-top pt-1 ps-1">
+        <span class="coreui-form__field-content-out d-inline-block align-top ps-1">
             <%- field.outContent %>
         </span>
         <% } %>

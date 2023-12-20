@@ -1,5 +1,5 @@
 <% if (field.readonly) { %>
-    <%- render.selectedItem %>
+    <div class="coreui-form__field-readonly pt-2"><%- render.selectedItem %></div>
 <% } else { %>
     <% $.each(render.options, function(key, option) { %>
     <div class="form-check<% if (field.inline) { %> form-check-inline<% } %>">

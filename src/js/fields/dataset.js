@@ -101,8 +101,8 @@ coreuiForm.fields.dataset = {
 
                 } else {
                     attributes.class = attributes.hasOwnProperty('class')
-                        ? 'form-control form-control-sm ' + attributes.class
-                        : 'form-control form-control-sm';
+                        ? 'form-control ' + attributes.class
+                        : 'form-control';
 
                     attributes.type = type;
                 }

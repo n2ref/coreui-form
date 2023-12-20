@@ -11,7 +11,6 @@ coreuiForm.lang.en = {
     "date_week": "week",
     "send_error": "An error has occurred. Please try again or contact your administrator",
     "required_field": "Required field",
-    "repeat": "repeat",
     "change": "change",
     "cancel": "cancel"
 }

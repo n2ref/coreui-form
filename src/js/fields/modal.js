@@ -267,7 +267,7 @@ coreuiForm.fields.modal = {
         let textAttr     = {
             type: 'text',
             readonly: 'readonly',
-            class: 'form-control form-control-sm coreui-form-modal-text',
+            class: 'form-control coreui-form-modal-text',
             value: this._text !== null ? this._text : ''
         };
 

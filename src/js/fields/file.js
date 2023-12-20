@@ -23,7 +23,7 @@ coreuiForm.fields.file = {
         errorText: null,
         attach: null,
         attr: {
-            class: 'form-control form-control-sm d-inline-block'
+            class: 'form-control d-inline-block'
         },
         required: null,
         invalidText: null,

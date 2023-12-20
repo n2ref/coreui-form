@@ -1,14 +1,14 @@
 <% if (field.readonly) { %>
-    <%= text %>
+    <div class="coreui-form__field-readonly pt-2"><%= text %></div>
 <% } else { %>
     <div class="input-group"<% if (render.width) { %> style="width:<%= render.width %>"<% } %>>
         <input <%- render.attr %>/>
         <input type="hidden" name="<%= field.name %>" value="<%= value %>" class="coreui-form-modal-value"/>
         <% if ( ! field.required) { %>
-        <button class="btn btn-sm btn-outline-secondary btn-modal-clear border-secondary-subtle" type="button">
+        <button class="btn btn-outline-secondary btn-modal-clear border-secondary-subtle" type="button">
             <i class="bi bi-x"></i>
         </button>
         <% } %>
-        <button class="btn btn-sm btn-outline-secondary btn-modal-select border-secondary-subtle" type="button"><%= lang.modal_select %></button>
+        <button class="btn btn-outline-secondary btn-modal-select border-secondary-subtle" type="button"><%= lang.modal_select %></button>
     </div>
 <% } %>

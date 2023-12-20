@@ -1,5 +1,5 @@
 <% if (field.readonly) { %>
-    <%= render.selectedOptions.join(', ') %>
+    <div class="coreui-form__field-readonly pt-2"><%= render.selectedOptions.join(', ') %></div>
 <% } else { %>
     <select <%- render.attr %>>
         <% $.each(render.options, function(key, option) { %>

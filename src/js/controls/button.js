@@ -15,7 +15,7 @@ coreuiForm.controls.button = {
         content: null,
         onClick: null,
         attr: {
-            class: 'btn btn-sm btn-secondary'
+            class: 'btn btn-secondary'
         }
     },
 

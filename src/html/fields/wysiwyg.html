@@ -1,5 +1,5 @@
 <% if (field.readonly) { %>
-    <%- value %>
+    <div class="coreui-form__field-readonly pt-2"><%- value %></div>
 <% } else { %>
     <textarea name="<%= field.name %>" id="editor-<%= editorHash %>"><%- value %></textarea>
 <% } %>

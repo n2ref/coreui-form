@@ -25,7 +25,7 @@ coreuiForm.fields.passwordRepeat = {
         attach: null,
         attr: {
             type: 'password',
-            class: 'form-control form-control-sm d-inline-block flex-shrink-0'
+            class: 'form-control d-inline-block flex-shrink-0'
         },
         required: null,
         invalidText: null,

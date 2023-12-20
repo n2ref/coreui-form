@@ -15,7 +15,7 @@ coreuiForm.controls.link = {
         content: null,
         onClick: null,
         attr: {
-            class: 'btn btn-sm btn-link'
+            class: 'btn btn-link'
         }
     },
 
