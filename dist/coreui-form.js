@@ -3276,7 +3276,7 @@ coreuiForm$1.fields.dataset = {
     errorText: null,
     attach: null,
     attr: {
-      "class": 'form-select form-select-sm d-inline-block'
+      "class": 'form-select d-inline-block'
     },
     required: null,
     readonly: null,
@@ -3317,7 +3317,7 @@ coreuiForm$1.fields.dataset = {
           attributes.required = 'required';
         }
         if (type === 'select') {
-          attributes["class"] = attributes.hasOwnProperty('class') ? 'form-select form-select-sm ' + attributes["class"] : 'form-select form-select-sm';
+          attributes["class"] = attributes.hasOwnProperty('class') ? 'form-select ' + attributes["class"] : 'form-select';
         } else if (type === 'switch') {
           attributes["class"] = attributes.hasOwnProperty('class') ? 'form-check-input ' + attributes["class"] : 'form-check-input';
           attributes.type = 'checkbox';
@@ -6031,7 +6031,7 @@ coreuiForm$1.fields.select = {
     errorText: null,
     attach: null,
     attr: {
-      "class": 'form-select form-select-sm d-inline-block'
+      "class": 'form-select d-inline-block'
     },
     required: null,
     readonly: null,

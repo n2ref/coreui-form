@@ -23,7 +23,7 @@ coreuiForm.fields.select = {
         errorText: null,
         attach: null,
         attr: {
-            class: 'form-select form-select-sm d-inline-block'
+            class: 'form-select d-inline-block'
         },
         required: null,
         readonly: null,

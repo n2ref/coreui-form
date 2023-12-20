@@ -23,7 +23,7 @@ coreuiForm.fields.dataset = {
         errorText: null,
         attach: null,
         attr: {
-            class: 'form-select form-select-sm d-inline-block'
+            class: 'form-select d-inline-block'
         },
         required: null,
         readonly: null,
@@ -88,8 +88,8 @@ coreuiForm.fields.dataset = {
 
                 if (type === 'select') {
                     attributes.class = attributes.hasOwnProperty('class')
-                        ? 'form-select form-select-sm ' + attributes.class
-                        : 'form-select form-select-sm';
+                        ? 'form-select ' + attributes.class
+                        : 'form-select';
 
                 } else if (type === 'switch') {
                     attributes.class = attributes.hasOwnProperty('class')
