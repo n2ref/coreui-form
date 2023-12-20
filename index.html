@@ -372,8 +372,8 @@
             controls: [
                 { type: "button", content: "Writable all",  onClick: function (form, e) { form.readonly(false); } },
                 { type: "button", content: "Readonly all",  onClick: function (form, e) { form.readonly(true); } },
-                { type: "button", content: "Text writable", onClick: function (form, e) { form.getField('text').readonly(false); }, attr: { class: 'btn btn-sm btn-success' } },
-                { type: "button", content: "Text readonly", onClick: function (form, e) { form.getField('text').readonly(true); },  attr: { class: 'btn btn-sm btn-success' } }
+                { type: "button", content: "Text writable", onClick: function (form, e) { form.getField('text').readonly(false); }, attr: { class: 'btn btn-success' } },
+                { type: "button", content: "Text readonly", onClick: function (form, e) { form.getField('text').readonly(true); },  attr: { class: 'btn btn-success' } }
             ]
         };
 
@@ -463,10 +463,10 @@
                 { type: "button", content: "getData",           onClick: function (form) { alert(JSON.stringify(form.getData())) } },
                 { type: "button", content: "showError",         onClick: function (form) { form.showError('Text error') } },
                 { type: "button", content: "hideError",         onClick: function (form) { form.hideError() } },
-                { type: "button", content: "getFields (log)",   onClick: function (form) { console.log(form.getFields()) }, attr: { class: 'btn btn-sm btn-dark' } },
-                { type: "button", content: "getField (log)",    onClick: function (form) { console.log(form.getField('text')) }, attr: { class: 'btn btn-sm btn-dark' } },
-                { type: "button", content: "getControls (log)", onClick: function (form) { console.log(form.getControls()) }, attr: { class: 'btn btn-sm btn-dark' } },
-                { type: "button", content: "getGroups (log)",   onClick: function (form) { console.log(form.getGroups()) }, attr: { class: 'btn btn-sm btn-dark' } },
+                { type: "button", content: "getFields (log)",   onClick: function (form) { console.log(form.getFields()) }, attr: { class: 'btn btn-dark' } },
+                { type: "button", content: "getField (log)",    onClick: function (form) { console.log(form.getField('text')) }, attr: { class: 'btn btn-dark' } },
+                { type: "button", content: "getControls (log)", onClick: function (form) { console.log(form.getControls()) }, attr: { class: 'btn btn-dark' } },
+                { type: "button", content: "getGroups (log)",   onClick: function (form) { console.log(form.getGroups()) }, attr: { class: 'btn btn-dark' } },
             ]
         };
 
