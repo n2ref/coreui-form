@@ -1,5 +1,5 @@
 <% if (field.readonly) { %>
-    <div class="coreui-form__field-readonly pt-2"><%= field.valueY == value ? lang.switch_yes : lang.switch_no %></div>
+    <div class="coreui-form__field-readonly col-form-label"><%= field.valueY == value ? lang.switch_yes : lang.switch_no %></div>
 <% } else { %>
     <div class="form-check form-switch pt-2">
         <input <%- render.attr %>/>
