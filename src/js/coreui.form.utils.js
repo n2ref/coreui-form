@@ -298,6 +298,18 @@ let coreuiFormUtils = {
 
 
     /**
+     * Проверка на объект
+     * @param value
+     */
+    isObject: function (value) {
+
+        return typeof value === 'object' &&
+            ! Array.isArray(value) &&
+            value !== null;
+    },
+
+
+    /**
      * Проверка на число
      * @param num
      * @returns {boolean}

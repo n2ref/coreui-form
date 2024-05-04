@@ -1,5 +1,5 @@
 
-import '../../../node_modules/ejs/ejs.min';
+import 'ejs/ejs.min';
 import coreuiForm    from "../coreui.form";
 import coreuiFormTpl from "../coreui.form.templates";
 

@@ -1,6 +1,6 @@
 
-import '../../../node_modules/ejs/ejs.min';
-import '../../../node_modules/jquery-mask-plugin/dist/jquery.mask';
+import 'ejs/ejs.min';
+import 'jquery-mask-plugin/dist/jquery.mask';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import coreuiForm      from "../coreui.form";

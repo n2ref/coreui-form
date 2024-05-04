@@ -1,8 +1,7 @@
 
-import '../../node_modules/ejs/ejs.min';
+import 'ejs/ejs.min';
 import coreuiFormTpl   from './coreui.form.templates';
 import coreuiFormUtils from './coreui.form.utils';
-import coreuiForm      from "./coreui.form";
 
 
 
@@ -12,6 +11,7 @@ let coreuiFormInstance = {
         id: null,
         title: '',
         lang: 'en',
+        langList: {},
         send: {
             url: '',
             method: 'POST',
@@ -46,21 +46,23 @@ let coreuiFormInstance = {
     _fields: [],
     _controls: [],
     _events: {},
+    _formWrapper: {},
 
 
     /**
      * Инициализация
+     * @param {object} formWrapper
      * @param {object} options
      * @private
      */
-    _init: function (options) {
+    _init: function (formWrapper, options) {
 
-        this._options.labelWidth    = coreuiForm.getSetting('labelWidth');
-        this._options.lang          = coreuiForm.getSetting('lang');
-        this._options.errorClass    = coreuiForm.getSetting('errorClass');
-        this._options.send.format = coreuiForm.getSetting('sendDataFormat');
+        this._options.labelWidth  = formWrapper.getSetting('labelWidth');
+        this._options.errorClass  = formWrapper.getSetting('errorClass');
+        this._options.send.format = formWrapper.getSetting('sendDataFormat');
 
-        this._options = $.extend(true, {}, this._options, options);
+        this._formWrapper = formWrapper;
+        this._options     = $.extend(true, {}, this._options, options);
 
         if ( ! this._options.id) {
             this._options.id = coreuiFormUtils.hashCode();
@@ -792,7 +794,7 @@ let coreuiFormInstance = {
 
 
         if ( ! options.hasOwnProperty('scroll') || options.scroll) {
-            let scrollOffset = coreuiForm.getSetting('errorMessageScrollOffset');
+            let scrollOffset = this._formWrapper.getSetting('errorMessageScrollOffset');
 
             $('html,body').animate({
                 scrollTop : formContainer.offset().top - scrollOffset
@@ -834,7 +836,7 @@ let coreuiFormInstance = {
     destruct: function () {
 
         $('#coreui-form-' + this._options.id).remove();
-        delete coreuiForm._instances[this.getId()];
+        delete this._formWrapper._instances[this.getId()];
     },
 
 
@@ -856,7 +858,7 @@ let coreuiFormInstance = {
             return null;
         }
 
-        if ( ! coreuiForm.fields.hasOwnProperty(type)) {
+        if ( ! this._formWrapper.fields.hasOwnProperty(type)) {
             type = 'input';
         }
 
@@ -877,7 +879,7 @@ let coreuiFormInstance = {
             readonly:      function () {},
             validate:      function () {},
             isValid:       function () {},
-        }, coreuiForm.fields[type]);
+        }, this._formWrapper.fields[type]);
 
         fieldInstance.init(this, field, this._fieldsIndex++);
 
@@ -911,7 +913,7 @@ let coreuiFormInstance = {
             getOptions: function () {},
             expand:     function () {},
             collapse:   function () {},
-        }, coreuiForm.fields[type]);
+        }, this._formWrapper.fields[type]);
 
         groupInstance.init(this, group, this._groupsIndex++);
 
@@ -935,7 +937,7 @@ let coreuiFormInstance = {
 
         let type = control.hasOwnProperty('type') && typeof control.type === 'string' ? control.type : null;
 
-        if ( ! type || ! coreuiForm.controls.hasOwnProperty(type)) {
+        if ( ! type || ! this._formWrapper.controls.hasOwnProperty(type)) {
             return null;
         }
 
@@ -950,7 +952,7 @@ let coreuiFormInstance = {
             getOptions: function () {},
             show:       function () {},
             hide:       function () {},
-        }, coreuiForm.controls[type]);
+        }, this._formWrapper.controls[type]);
 
         controlInstance.init(this, control, this._controlsIndex++);
 
@@ -966,9 +968,7 @@ let coreuiFormInstance = {
      */
     getLang: function () {
 
-        return coreuiForm.lang.hasOwnProperty(this._options.lang)
-            ? coreuiForm.lang[this._options.lang]
-            : coreuiForm.lang['ru'];
+        return $.extend(true, {}, this._options.langList);
     },
 
 
@@ -996,6 +996,7 @@ let coreuiFormInstance = {
 
                 if (this._events[name][i].singleExec) {
                     this._events[name].splice(i, 1);
+                    i--;
                 }
             }
         }
@@ -1014,8 +1015,8 @@ let coreuiFormInstance = {
         let content = '';
         let type    = control.hasOwnProperty('type') && typeof control.type === 'string' ? control.type : 'text';
 
-        if (coreuiForm.control.hasOwnProperty(type)) {
-            content = coreuiForm.control[type].render(control);
+        if (this._formWrapper.control.hasOwnProperty(type)) {
+            content = this._formWrapper.control[type].render(control);
         }
 
         return content;

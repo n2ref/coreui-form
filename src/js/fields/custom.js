@@ -1,5 +1,4 @@
 
-import '../../../node_modules/ejs/ejs.min';
 import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
@@ -98,80 +97,75 @@ coreuiForm.fields.custom = {
 
     /**
      * Формирование поля
-     * @returns {string}
+     * @returns {object}
      */
     render: function() {
 
+        let that         = this._hash;
         let options      = this.getOptions();
         let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form:  this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields
+        let field = $(
+            ejs.render(coreuiFormTpl['form-field-label.html'], {
+                id: this._id,
+                form:  this._form,
+                hash: this._hash,
+                field: options,
+                content: '',
+                attachFields: attachFields
+            })
+        );
+
+        $.each(this.renderContent(), function (i, content) {
+            field.find(".content-" + that._hash).append(content);
         });
+
+        return field;
     },
 
 
     /**
      * Формирование контента поля
-     * @return {*}
+     * @return {Array}
      */
     renderContent: function () {
 
-        let options         = this.getOptions();
-        let content         = '';
-        let alloyComponents = [
-            'coreui.table',
-            'coreui.layout',
-            'coreui.panel',
-            'coreui.tabs',
-            'coreui.info',
-            'coreui.chart',
-        ];
+        let content = this.getOptions().content;
+        let result  = [];
 
-        if (typeof options.content === 'string') {
-            content = options.content;
+        if (typeof content === 'string') {
+            result.push(content);
 
-        } else if (options.content instanceof Object) {
-            if ( ! Array.isArray(options.content)) {
-                options.content = [ options.content ];
+        } else if (content instanceof Object) {
+            if ( ! Array.isArray(content)) {
+                content = [ content ];
             }
 
-            let components = [];
+            for (let i = 0; i < content.length; i++) {
+                if (typeof content[i] === 'string') {
+                    result.push(content[i]);
 
-            for (let i = 0; i < options.content.length; i++) {
-                if (typeof options.content[i] === 'string') {
-                    components.push(options.content[i]);
-
-                } else if ( ! Array.isArray(options.content[i]) &&
-                        options.content[i].hasOwnProperty('component') &&
-                        alloyComponents.indexOf(options.content[i].component) >= 0
+                } else if ( ! Array.isArray(content[i]) &&
+                        content[i].hasOwnProperty('component') &&
+                        typeof content[i].component === 'string' &&
+                        content[i].component.substring(0, 6) === 'coreui'
                 ) {
-                    let name = options.content[i].component.split('.')[1];
+                    let name = content[i].component.split('.')[1];
 
                     if (CoreUI.hasOwnProperty(name) &&
-                        typeof CoreUI[name] === "object" &&
-                        CoreUI[name] !== null &&
-                        ! Array.isArray(CoreUI[name])
+                        coreuiFormUtils.isObject(CoreUI[name])
                     ) {
-                        let instance = CoreUI[name].create(options.content[i]);
-                        components.push(instance.render());
+                        let instance = CoreUI[name].create(content[i]);
+                        result.push(instance.render());
 
                         this._form.on('shown.coreui.form', instance.initEvents, instance, true);
                     }
+                } else {
+                    result.push(JSON.stringify(content[i]));
                 }
             }
-
-            content = components.join('');
         }
 
-
-        return ejs.render(coreuiFormTpl['fields/custom.html'], {
-            content: content
-        });
+        return result;
     }
 }

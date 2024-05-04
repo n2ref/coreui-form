@@ -1,5 +1,6 @@
 
 import coreuiFormInstance from './coreui.form.instance';
+import coreuiFormUtils    from "./coreui.form.utils";
 
 var coreuiForm = {
 
@@ -24,8 +25,17 @@ var coreuiForm = {
      */
     create: function (options) {
 
+        if ( ! options.hasOwnProperty('lang')) {
+            options.lang = this.getSetting('lang');
+        }
+
+        let langList     = this.lang.hasOwnProperty(options.lang) ? this.lang[options.lang] : {};
+        options.langList = options.hasOwnProperty('langList') && coreuiFormUtils.isObject(options.langList)
+            ? $.extend(true, {}, langList, options.langList)
+            : langList;
+
         let instance = $.extend(true, {}, coreuiFormInstance);
-        instance._init(options instanceof Object ? options : {});
+        instance._init(this, options instanceof Object ? options : {});
 
         let formId = instance.getId();
         this._instances[formId] = instance;
