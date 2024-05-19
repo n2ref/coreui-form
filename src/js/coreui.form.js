@@ -2,7 +2,7 @@
 import coreuiFormInstance from './coreui.form.instance';
 import coreuiFormUtils    from "./coreui.form.utils";
 
-var coreuiForm = {
+let coreuiForm = {
 
     lang: {},
     fields: {},
@@ -25,6 +25,12 @@ var coreuiForm = {
      */
     create: function (options) {
 
+        if ( ! coreuiFormUtils.isObject(options)) {
+            options = {};
+        }
+
+        options = $.extend(true, {}, options);
+
         if ( ! options.hasOwnProperty('lang')) {
             options.lang = this.getSetting('lang');
         }
@@ -34,8 +40,33 @@ var coreuiForm = {
             ? $.extend(true, {}, langList, options.langList)
             : langList;
 
+        options.errorMessageScrollOffset = options.hasOwnProperty('errorMessageScrollOffset') && coreuiFormUtils.isNumeric(options.errorMessageScrollOffset)
+            ? options.errorMessageScrollOffset
+            : this.getSetting('errorMessageScrollOffset');
+
+        options.labelWidth = options.hasOwnProperty('labelWidth')
+            ? options.labelWidth
+            : this.getSetting('labelWidth');
+
+        options.errorClass = options.hasOwnProperty('errorClass') && typeof options.errorClass === 'string'
+            ? options.errorClass
+            : this.getSetting('errorClass');
+
+        if ( ! options.hasOwnProperty('send') ||
+             ! coreuiFormUtils.isObject(options.send) ||
+             ! options.send.hasOwnProperty('format') ||
+            typeof options.send.format !== 'string'
+        ) {
+            if ( ! options.hasOwnProperty('send') || ! coreuiFormUtils.isObject(options.send)) {
+                options.send = {};
+            }
+
+            options.send.format = this.getSetting('sendDataFormat');
+        }
+
+
         let instance = $.extend(true, {}, coreuiFormInstance);
-        instance._init(this, options instanceof Object ? options : {});
+        instance._init(options);
 
         let formId = instance.getId();
         this._instances[formId] = instance;
@@ -55,7 +86,7 @@ var coreuiForm = {
             return null;
         }
 
-        if ($('#coreui-form-' + this._instances[id])[0]) {
+        if ( ! $('#coreui-form-' + id)[0]) {
             delete this._instances[id];
             return null;
         }

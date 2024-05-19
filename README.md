@@ -190,7 +190,7 @@
                 ]
             },
 
-            { type: 'custom',  label: 'Custom', content: "<i>html</i>" },
+            { type: 'custom',  label: 'Custom', content: '<div class="mt-2"><i>html</i></div>' },
             { type: 'wysiwyg', name: 'wysiwyg', label: 'Wysiwyg', width: 600, height: 300, options: 'simple' }
         ],
         controls: [

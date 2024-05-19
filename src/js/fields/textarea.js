@@ -26,7 +26,6 @@ coreuiForm.fields.textarea = {
         },
         required: null,
         readonly: null,
-        datalist: null,
         show: true,
         column: null
     },

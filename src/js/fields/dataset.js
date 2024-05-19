@@ -17,17 +17,12 @@ coreuiForm.fields.dataset = {
         name: null,
         label: null,
         labelWidth: null,
-        width: null,
         outContent: null,
         description: null,
         errorText: null,
         attach: null,
-        attr: {
-            class: 'form-select d-inline-block'
-        },
         required: null,
         readonly: null,
-        datalist: null,
         show: true,
         column: null
     },
@@ -49,7 +44,7 @@ coreuiForm.fields.dataset = {
 
         let that = this;
 
-        form.on('shown.coreui.form', function () {
+        form.on('show', function () {
             if ( ! that._options.readonly) {
                 that._initEvents();
             }
@@ -502,8 +497,8 @@ coreuiForm.fields.dataset = {
 
             if (option.type === 'select') {
                 $.each(option.items, function (key, item) {
-                    let title = item.hasOwnProperty('title') && ['string', 'numeric'].indexOf(typeof(item.title)) >= 0
-                        ? item.title
+                    let text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(typeof(item.text)) >= 0
+                        ? item.text
                         : '';
                     let itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(typeof(item.value)) >= 0
                         ? item.value
@@ -512,7 +507,7 @@ coreuiForm.fields.dataset = {
 
 
                     $.each(item, function (name, value) {
-                        if (name !== 'title') {
+                        if (name !== 'text') {
                             itemAttr[name] = value;
                         }
                     });
@@ -537,7 +532,7 @@ coreuiForm.fields.dataset = {
 
                     itemOptions.push({
                         attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                        title: title
+                        text: text
                     })
                 });
 
@@ -591,23 +586,23 @@ coreuiForm.fields.dataset = {
                 let itemOptions = [];
 
                 $.each(option.items, function (key, item) {
-                    let title = item.hasOwnProperty('title') && ['string', 'numeric'].indexOf(typeof(item.title)) >= 0
-                        ? item.title
+                    let text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(typeof(item.text)) >= 0
+                        ? item.text
                         : '';
                     let itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(typeof(item.value)) >= 0
                         ? item.value
                         : '';
 
-                    if (typeof(cellValue) === 'object' && Array.isArray(cellValue)) {
+                    if (Array.isArray(cellValue)) {
                         $.each(cellValue, function (key, cellItemValue) {
                             if (cellItemValue == itemValue) {
-                                itemOptions.push(itemValue);
+                                itemOptions.push(text);
                                 return false;
                             }
                         });
 
-                    } else if (cellValue == item.value) {
-                        itemOptions.push(cellValue);
+                    } else if (cellValue == itemValue) {
+                        itemOptions.push(text);
                     }
                 });
 

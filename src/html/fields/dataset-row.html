@@ -4,7 +4,7 @@
         <% if (option.type === 'select') { %>
             <select <%- option.attr %>>
                 <% $.each(option.items, function(key, item) { %>
-                <option <%- item.attr %>><%- item.title %></option>
+                <option <%- item.attr %>><%- item.text %></option>
                 <% }); %>
             </select>
         <% } else if (option.type === 'switch') { %>

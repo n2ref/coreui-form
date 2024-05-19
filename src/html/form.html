@@ -5,9 +5,7 @@
     <% } %>
 
     <form action="<%= form.send.url %>" method="<%= form.send.method %>"<%- formAttr %>>
-        <div class="coreui-form__fields d-flex justify-content-start flex-column flex-wrap">
-            <%- layout %>
-        </div>
+        <div class="coreui-form__fields d-flex justify-content-start flex-column flex-wrap"></div>
 
         <% if (controls) { %>
         <div class="coreui-form__controls d-flex justify-content-start flex-sm-wrap flex-md-nowrap">
@@ -19,7 +17,6 @@
                 <% $.each(controls, function(key, control) { %>
                 <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container"
                      <% if ( ! control.show) { %>style="display:none"<% } %>>
-                    <%- control.content %>
                 </div>
                 <% }); %>
             </div>

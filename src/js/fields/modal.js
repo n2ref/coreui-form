@@ -1,8 +1,9 @@
 
 import 'ejs/ejs.min';
-import coreuiForm      from "../coreui.form";
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import coreuiForm        from "../coreui.form";
+import coreuiFormTpl     from "../coreui.form.templates";
+import coreuiFormUtils   from "../coreui.form.utils";
+import coreuiFormPrivate from "../coreui.form.private";
 
 
 coreuiForm.fields.modal = {
@@ -65,7 +66,7 @@ coreuiForm.fields.modal = {
 
         let that = this;
 
-        form.on('shown.coreui.form', function () {
+        form.on('show', function () {
             that._initEvents();
         });
     },
@@ -170,7 +171,7 @@ coreuiForm.fields.modal = {
                     }
                 }
 
-                this._form._trigger('change-modal.coreui.form', this, [this]);
+                coreuiFormPrivate.trigger(this._form, 'change-modal.coreui.form', [this], this);
             }
         }
     },
@@ -322,7 +323,7 @@ coreuiForm.fields.modal = {
                 }
             }
 
-            that._form._trigger('clear-modal.coreui.form', that, [ that, e ]);
+            coreuiFormPrivate.trigger(that._form, 'modal_clear', [ that, e ], that);
 
             that.setValue('', '');
         });
@@ -386,22 +387,22 @@ coreuiForm.fields.modal = {
                 url: url,
                 method: 'GET',
                 beforeSend: function(xhr) {
-                    that._form._trigger('before-load-modal.coreui.form', that, [ that, xhr ]);
+                    coreuiFormPrivate.trigger(that._form, 'modal_load_before', [ that, xhr ], that);
                 },
                 success: function (result) {
                     $('#modal-' + modalId + ' .modal-body').html(result);
-                    that._form._trigger('success-load-modal.coreui.form', that, [ that, result ]);
+                    coreuiFormPrivate.trigger(that._form, 'modal_load_success', [ that, result ], that);
                 },
                 error: function(xhr, textStatus, errorThrown) {
-                    that._form._trigger('error-load-modal.coreui.form', that, [ that, xhr, textStatus, errorThrown ]);
+                    coreuiFormPrivate.trigger(that._form, 'modal_load_error', [ that, xhr, textStatus, errorThrown ], that);
                 },
                 complete: function(xhr, textStatus) {
-                    that._form._trigger('complete-load-modal.coreui.form', that, [ that, xhr, textStatus ]);
+                    coreuiFormPrivate.trigger(that._form, 'modal_load_complete', [ that, xhr, textStatus ], that);
                 },
             });
 
 
-            that._form._trigger('select-modal.coreui.form', that, [ that, e ]);
+            coreuiFormPrivate.trigger(that._form, 'modal_select', [ that, e ], that);
         });
     }
 }

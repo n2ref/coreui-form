@@ -10,7 +10,7 @@ coreuiForm.controls.link = {
     _index: null,
     _options: {
         type: 'link',
-        href: null,
+        url: null,
         content: null,
         onClick: null,
         attr: {
@@ -32,7 +32,7 @@ coreuiForm.controls.link = {
         this._index   = index;
         let that      = this;
 
-        form.on('shown.coreui.form', function () {
+        form.on('show', function () {
             that._initEvents();
         });
     },

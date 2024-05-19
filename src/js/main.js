@@ -30,5 +30,6 @@ import "./fields/textarea";
 import "./fields/wysiwyg";
 import "./fields/passwordRepeat";
 import "./fields/file";
+import "./fields/fileUpload";
 
 export default coreuiForm;

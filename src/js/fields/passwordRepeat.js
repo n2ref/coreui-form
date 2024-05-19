@@ -14,7 +14,7 @@ coreuiForm.fields.passwordRepeat = {
     _isChangeState: true,
     _value: '',
     _options: {
-        type: 'password',
+        type: 'password_repeat',
         name: null,
         label: null,
         labelWidth: null,
@@ -31,7 +31,6 @@ coreuiForm.fields.passwordRepeat = {
         invalidText: null,
         validText: null,
         readonly: null,
-        datalist: null,
         show: true,
         showBtn: true,
         column: null
@@ -56,7 +55,7 @@ coreuiForm.fields.passwordRepeat = {
 
         let that = this;
 
-        form.on('shown.coreui.form', function () {
+        form.on('show', function () {
             that._initEvents();
         });
     },
@@ -271,7 +270,6 @@ coreuiForm.fields.passwordRepeat = {
 
         let attributes  = [];
         let attributes2 = [];
-        let datalist    = [];
         let options     = this.getOptions();
 
         this._isChangeState = ! options.showBtn
@@ -325,8 +323,7 @@ coreuiForm.fields.passwordRepeat = {
             btn_text: this._isChangeState ? lang.cancel : lang.change,
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                attr2: attributes2.length > 0 ? (' ' + attributes2.join(' ')) : '',
-                datalist: datalist
+                attr2: attributes2.length > 0 ? (' ' + attributes2.join(' ')) : ''
             },
         });
     },

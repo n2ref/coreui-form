@@ -72,7 +72,7 @@ coreuiForm.fields.number = {
 
         let that = this;
 
-        form.on('shown.coreui.form', function () {
+        form.on('show', function () {
             if ( ! that._options.readonly) {
                 that._initEvents();
             }

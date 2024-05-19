@@ -9,7 +9,6 @@ coreuiForm.controls.submit = {
     _index: null,
     _options: {
         type: 'submit',
-        href: null,
         content: null,
         onClick: null,
         show: true,
@@ -32,7 +31,7 @@ coreuiForm.controls.submit = {
         this._index   = index;
         let that      = this;
 
-        form.on('shown.coreui.form', function () {
+        form.on('show', function () {
             that._initEvents();
         });
     },

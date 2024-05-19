@@ -27,7 +27,6 @@ coreuiForm.fields.select = {
         },
         required: null,
         readonly: null,
-        datalist: null,
         show: true,
         column: null
     },

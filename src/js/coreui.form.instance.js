@@ -1,7 +1,9 @@
 
 import 'ejs/ejs.min';
-import coreuiFormTpl   from './coreui.form.templates';
-import coreuiFormUtils from './coreui.form.utils';
+import coreuiForm        from './coreui.form';
+import coreuiFormTpl     from './coreui.form.templates';
+import coreuiFormUtils   from './coreui.form.utils';
+import coreuiFormPrivate from './coreui.form.private';
 
 
 
@@ -17,22 +19,24 @@ let coreuiFormInstance = {
             method: 'POST',
             format: 'form',
         },
-        width: null,
         validResponse: {
             headers: null,
             dataType: null,
         },
+        width: null,
         minWidth: null,
         maxWidth: null,
         labelWidth: 200,
+        fieldWidth: null,
         controlsOffset: null,
         readonly: false,
         validate: false,
         successLoadUrl: '',
         errorClass: '',
-        layout: '[column_default]',
+        layout: '[position_default]',
         onSubmit: null,
         onSubmitSuccess: null,
+        errorMessageScrollOffset: 70,
         record: {},
         fields: [],
         controls: []
@@ -46,23 +50,16 @@ let coreuiFormInstance = {
     _fields: [],
     _controls: [],
     _events: {},
-    _formWrapper: {},
 
 
     /**
      * Инициализация
-     * @param {object} formWrapper
      * @param {object} options
      * @private
      */
-    _init: function (formWrapper, options) {
+    _init: function (options) {
 
-        this._options.labelWidth  = formWrapper.getSetting('labelWidth');
-        this._options.errorClass  = formWrapper.getSetting('errorClass');
-        this._options.send.format = formWrapper.getSetting('sendDataFormat');
-
-        this._formWrapper = formWrapper;
-        this._options     = $.extend(true, {}, this._options, options);
+        this._options = $.extend(true, {}, this._options, options);
 
         if ( ! this._options.id) {
             this._options.id = coreuiFormUtils.hashCode();
@@ -87,7 +84,7 @@ let coreuiFormInstance = {
 
 
     /**
-     *
+     * Инициализация событий
      */
     initEvents: function () {
 
@@ -101,7 +98,7 @@ let coreuiFormInstance = {
             return false;
         });
 
-        this._trigger('shown.coreui.form');
+        coreuiFormPrivate.trigger(this, 'show');
     },
 
 
@@ -124,7 +121,7 @@ let coreuiFormInstance = {
 
         let that       = this;
         let widthSizes = [];
-        let layout     = this._options.layout;
+        let layout     = this._options.layout && typeof this._options.layout === 'string' ? this._options.layout : '[position_default]';
         let controls   = [];
         let formAttr   = [];
 
@@ -146,31 +143,32 @@ let coreuiFormInstance = {
         }
 
 
+        let positions       = [];
+        let positionMatches = Array.from(layout.matchAll(/\[position_([\w_\d]+)\]/g));
+
+        if (positionMatches.length > 0) {
+            $.each(positionMatches, function (key, match) {
+                positions.push(match[1]);
+                layout = layout.replace('[position_' + match[1] + ']', '<div class="coreui-form-position-' + match[1] + '"></div>');
+            });
+        }
+
+        let layoutObj = $(layout);
 
         // Поля
         if (typeof this._options.fields === 'object' &&
             Array.isArray(this._options.fields) &&
-            this._options.fields.length > 0 &&
-            layout &&
-            typeof layout === 'string'
+            this._options.fields.length > 0
         ) {
-            let matches        = Array.from(layout.matchAll(/\[column_([\w_\d]+)\]/g));
-            let columns        = [];
-            let columnsContent = {};
+            let positionsContent = {};
 
-            if (matches.length > 0) {
-                $.each(matches, function (key, match) {
-                    columns.push(match[1]);
-                });
-            }
-
-            if (columns.length > 0) {
+            if (positions.length > 0) {
                 $.each(this._options.fields, function (key, field) {
-                    let column = field.hasOwnProperty('column') && (typeof field.column === 'string' || typeof field.column === 'number')
-                        ? (columns.indexOf(field.column) >= 0 ? field.column : null)
+                    let position = field.hasOwnProperty('position') && (typeof field.position === 'string' || typeof field.position === 'number')
+                        ? (positions.indexOf(field.position) >= 0 ? field.position : null)
                         : 'default';
 
-                    if (typeof column !== 'string') {
+                    if (typeof position !== 'string') {
                         return;
                     }
 
@@ -178,10 +176,10 @@ let coreuiFormInstance = {
                     let instance = null;
 
                     if (type === 'group') {
-                        instance = that.initGroup(field);
+                        instance = coreuiFormPrivate.initGroup(that, field);
 
                     } else {
-                        instance = that.initField(field);
+                        instance = coreuiFormPrivate.initField(that, field);
                     }
 
 
@@ -189,17 +187,24 @@ let coreuiFormInstance = {
                         return;
                     }
 
-                    if ( ! columnsContent.hasOwnProperty(column)) {
-                        columnsContent[column] = [];
+                    if ( ! positionsContent.hasOwnProperty(position)) {
+                        positionsContent[position] = [];
                     }
-                    columnsContent[column].push(instance.render());
+                    positionsContent[position].push(instance.render());
                 });
             }
 
-            if (Object.keys(columnsContent).length >= 0) {
-                $.each(columnsContent, function (name, fieldContents) {
+            if (Object.keys(positionsContent).length >= 0) {
+                $.each(positionsContent, function (name, fieldContents) {
+                    $.each(fieldContents, function (key, fieldContent) {
+                        let container = layoutObj.closest('.coreui-form-position-' + name);
 
-                    layout = layout.replace('[column_' + name + ']', fieldContents.join(''));
+                        if ( ! container[0]) {
+                            container = layoutObj.find('.coreui-form-position-' + name);
+                        }
+
+                        container.append(fieldContent);
+                    });
                 });
             }
         }
@@ -211,7 +216,7 @@ let coreuiFormInstance = {
             this._options.controls.length > 0
         ) {
             $.each(this._options.controls, function (key, control) {
-                let instance = that.initControl(control);
+                let instance = coreuiFormPrivate.initControl(that, control);
 
                 if ( ! instance || typeof instance !== 'object') {
                     return;
@@ -230,36 +235,42 @@ let coreuiFormInstance = {
         }
 
 
-        let html = ejs.render(coreuiFormTpl['form.html'], {
-            form: this._options,
-            formAttr: formAttr ? ' ' + formAttr.join(' ') : '',
-            widthSizes: widthSizes,
-            layout: layout,
-            controls: controls,
+        let containerElement = $(
+            ejs.render(coreuiFormTpl['form.html'], {
+                form: this._options,
+                formAttr: formAttr ? ' ' + formAttr.join(' ') : '',
+                widthSizes: widthSizes,
+                controls: controls,
+            })
+        );
+
+        containerElement.find('.coreui-form__fields').append(layoutObj);
+
+        let formId = this.getId();
+
+        $.each(controls, function (key, control) {
+            containerElement.find('#coreui-form-' + formId + '-control-' + control.index).append(control.content);
         });
 
+
         if (element === undefined) {
-            return html;
+            return containerElement;
         }
 
         // Dom element
-        let domElement = {};
+        let domElement = null;
 
         if (typeof element === 'string') {
             domElement = document.getElementById(element);
-
-            if ( ! domElement) {
-                return '';
-            }
 
         } else if (element instanceof HTMLElement) {
             domElement = element;
         }
 
-
-        domElement.innerHTML = html;
-
-        this.initEvents();
+        if (domElement) {
+            $(domElement).html(containerElement);
+            this.initEvents();
+        }
     },
 
 
@@ -341,7 +352,7 @@ let coreuiFormInstance = {
         }
 
 
-        let results    = this._trigger('send.coreui.form', this, [ this, data ]);
+        let results    = coreuiFormPrivate.trigger(this, 'send', [ this, data ]);
         let isStopSend = false;
 
         $.each(results, function(key, result) {
@@ -398,7 +409,7 @@ let coreuiFormInstance = {
 
             that.hideError();
 
-            that._trigger('success-send.coreui.form', that, [ that, result ]);
+            coreuiFormPrivate.trigger(that, 'send_success', [ that, result ]);
 
             let jsonResponse = null;
 
@@ -518,7 +529,7 @@ let coreuiFormInstance = {
             }
 
             that.showError(errorMessage);
-            that._trigger('error-send.coreui.form', that, [ that, xhr, textStatus, errorThrown ]);
+            coreuiFormPrivate.trigger(that, 'send_error', [ that, xhr, textStatus, errorThrown ]);
         }
 
         $.ajax({
@@ -528,7 +539,7 @@ let coreuiFormInstance = {
             contentType: contentType,
             processData: false,
             beforeSend: function(xhr) {
-                that._trigger('start-send.coreui.form', that, [ that, xhr ]);
+                coreuiFormPrivate.trigger(that, 'send_start', [ that, xhr ]);
             },
             success: function (result, textStatus, xhr) {
 
@@ -589,7 +600,7 @@ let coreuiFormInstance = {
             error: errorSend,
             complete: function(xhr, textStatus) {
                 that.unlock();
-                that._trigger('end-send.coreui.form', that, [ that, xhr, textStatus ]);
+                coreuiFormPrivate.trigger(that, 'send_end', [ that, xhr, textStatus ]);
             },
         });
     },
@@ -670,7 +681,7 @@ let coreuiFormInstance = {
 
 
     /**
-     * Получение поля
+     * Получение поля по имени
      * @param {string} name
      * @returns {object}
      */
@@ -794,10 +805,8 @@ let coreuiFormInstance = {
 
 
         if ( ! options.hasOwnProperty('scroll') || options.scroll) {
-            let scrollOffset = this._formWrapper.getSetting('errorMessageScrollOffset');
-
             $('html,body').animate({
-                scrollTop : formContainer.offset().top - scrollOffset
+                scrollTop : formContainer.offset().top - options.errorMessageScrollOffset
             }, 'fast');
         }
     },
@@ -813,19 +822,37 @@ let coreuiFormInstance = {
 
 
     /**
-     * @param eventName
-     * @param callback
-     * @param context
-     * @param singleExec
+     * Подписка на событие
+     * @param {string}      eventName
+     * @param {function}    callback
+     * @param {object|null} context
      */
-    on: function(eventName, callback, context, singleExec) {
+    on: function(eventName, callback, context) {
         if (typeof this._events[eventName] !== 'object') {
             this._events[eventName] = [];
         }
         this._events[eventName].push({
             context : context || this,
             callback: callback,
-            singleExec: !! singleExec,
+            singleExec: false
+        });
+    },
+
+
+    /**
+     * Подписка на событие таким образом, что оно будет выполнено один раз
+     * @param {string}      eventName
+     * @param {function}    callback
+     * @param {object|null} context
+     */
+    one: function(eventName, callback, context) {
+        if (typeof this._events[eventName] !== 'object') {
+            this._events[eventName] = [];
+        }
+        this._events[eventName].push({
+            context : context || this,
+            callback: callback,
+            singleExec: true,
         });
     },
 
@@ -836,129 +863,7 @@ let coreuiFormInstance = {
     destruct: function () {
 
         $('#coreui-form-' + this._options.id).remove();
-        delete this._formWrapper._instances[this.getId()];
-    },
-
-
-    /**
-     * Инициализация поля
-     * @param field
-     * @return {object|null}
-     * @private
-     */
-    initField: function (field) {
-
-        if (typeof field !== 'object') {
-            return null;
-        }
-
-        let type = field.hasOwnProperty('type') && typeof field.type === 'string' ? field.type : 'input';
-
-        if (type === 'group') {
-            return null;
-        }
-
-        if ( ! this._formWrapper.fields.hasOwnProperty(type)) {
-            type = 'input';
-        }
-
-        if (this._options.readonly) {
-            field.readonly = true;
-        }
-
-
-        let fieldInstance = $.extend(true, {
-            render:        function () {},
-            renderContent: function () {},
-            init:          function () {},
-            getValue:      function () {},
-            setValue:      function () {},
-            getOptions:    function () {},
-            show:          function () {},
-            hide:          function () {},
-            readonly:      function () {},
-            validate:      function () {},
-            isValid:       function () {},
-        }, this._formWrapper.fields[type]);
-
-        fieldInstance.init(this, field, this._fieldsIndex++);
-
-        this._fields.push(fieldInstance);
-
-        return fieldInstance;
-    },
-
-
-    /**
-     * Инициализация группы
-     * @param group
-     * @return {object|null}
-     * @private
-     */
-    initGroup: function (group) {
-
-        if (typeof group !== 'object') {
-            return null;
-        }
-
-        let type = group.hasOwnProperty('type') && typeof group.type === 'string' ? group.type : '';
-
-        if (type !== 'group') {
-            return null;
-        }
-
-        let groupInstance = $.extend(true, {
-            render:     function () {},
-            init:       function () {},
-            getOptions: function () {},
-            expand:     function () {},
-            collapse:   function () {},
-        }, this._formWrapper.fields[type]);
-
-        groupInstance.init(this, group, this._groupsIndex++);
-
-        this._groups.push(groupInstance);
-
-        return groupInstance;
-    },
-
-
-    /**
-     * Инициализация контролов
-     * @param control
-     * @return {object|null}
-     * @private
-     */
-    initControl: function (control) {
-
-        if (typeof control !== 'object') {
-            return null;
-        }
-
-        let type = control.hasOwnProperty('type') && typeof control.type === 'string' ? control.type : null;
-
-        if ( ! type || ! this._formWrapper.controls.hasOwnProperty(type)) {
-            return null;
-        }
-
-        if (type === 'submit' && this._options.readonly) {
-            control.show = false;
-        }
-
-
-        let controlInstance = $.extend(true, {
-            render:     function () {},
-            init:       function () {},
-            getOptions: function () {},
-            show:       function () {},
-            hide:       function () {},
-        }, this._formWrapper.controls[type]);
-
-        controlInstance.init(this, control, this._controlsIndex++);
-
-        this._controls.push(controlInstance);
-
-        return controlInstance;
+        delete coreuiForm._instances[this.getId()];
     },
 
 
@@ -969,57 +874,6 @@ let coreuiFormInstance = {
     getLang: function () {
 
         return $.extend(true, {}, this._options.langList);
-    },
-
-
-    /**
-     * @param name
-     * @param context
-     * @param params
-     * @return {object}
-     * @private
-     */
-    _trigger: function(name, context, params) {
-
-        params = params || [];
-        let results = [];
-
-        if (this._events[name] instanceof Object && this._events[name].length > 0) {
-            for (var i = 0; i < this._events[name].length; i++) {
-                let callback = this._events[name][i].callback;
-
-                context = context || this._events[name][i].context;
-
-                results.push(
-                    callback.apply(context, params)
-                );
-
-                if (this._events[name][i].singleExec) {
-                    this._events[name].splice(i, 1);
-                    i--;
-                }
-            }
-        }
-
-        return results;
-    },
-
-
-    /**
-     * @param {object} control
-     * @return {string}
-     * @private
-     */
-    _renderControl: function (control) {
-
-        let content = '';
-        let type    = control.hasOwnProperty('type') && typeof control.type === 'string' ? control.type : 'text';
-
-        if (this._formWrapper.control.hasOwnProperty(type)) {
-            content = this._formWrapper.control[type].render(control);
-        }
-
-        return content;
     }
 }
 

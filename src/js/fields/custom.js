@@ -101,7 +101,7 @@ coreuiForm.fields.custom = {
      */
     render: function() {
 
-        let that         = this._hash;
+        let that         = this;
         let options      = this.getOptions();
         let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
 
@@ -158,7 +158,7 @@ coreuiForm.fields.custom = {
                         let instance = CoreUI[name].create(content[i]);
                         result.push(instance.render());
 
-                        this._form.on('shown.coreui.form', instance.initEvents, instance, true);
+                        this._form.on('show', instance.initEvents, instance, true);
                     }
                 } else {
                     result.push(JSON.stringify(content[i]));

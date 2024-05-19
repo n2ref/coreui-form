@@ -1,7 +1,8 @@
 
 import 'ejs/ejs.min';
-import coreuiForm    from "../coreui.form";
-import coreuiFormTpl from "../coreui.form.templates";
+import coreuiForm        from "../coreui.form";
+import coreuiFormTpl     from "../coreui.form.templates";
+import coreuiFormPrivate from "../coreui.form.private";
 
 
 coreuiForm.fields.group = {
@@ -34,7 +35,7 @@ coreuiForm.fields.group = {
 
         let that = this;
 
-        form.on('shown.coreui.form', function () {
+        form.on('show', function () {
             that._initEvents();
         });
     },
@@ -85,18 +86,28 @@ coreuiForm.fields.group = {
      */
     render: function() {
 
-        return ejs.render(coreuiFormTpl['form-field-group.html'], {
-            id: this._id,
-            form:  this._form,
-            group: this._options,
-            content: this.renderContent(),
+        let container = $(
+            ejs.render(coreuiFormTpl['form-field-group.html'], {
+                id: this._id,
+                form:  this._form,
+                group: this._options,
+            })
+        );
+
+        let fields       = this.renderContent();
+        let groupContent = container.find('.coreui-form__group_content');
+
+        $.each(fields, function (key, field) {
+            groupContent.append(field);
         });
+
+        return container;
     },
 
 
     /**
      * Формирование контента поля
-     * @return {string}
+     * @return {Array}
      */
     renderContent: function () {
 
@@ -105,7 +116,7 @@ coreuiForm.fields.group = {
 
         $.each(this._options.fields, function (key, field) {
 
-            let fieldInstance = that._form.initField(field);
+            let fieldInstance = coreuiFormPrivate.initField(that._form, field);
 
             if (typeof fieldInstance !== 'object') {
                 return;
@@ -114,7 +125,7 @@ coreuiForm.fields.group = {
             fields.push(fieldInstance.render());
         });
 
-        return fields.join('');
+        return fields;
     },
 
 

@@ -57,7 +57,7 @@ coreuiForm.fields.checkbox = {
 
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
     readonly: function (isReadonly) {
 

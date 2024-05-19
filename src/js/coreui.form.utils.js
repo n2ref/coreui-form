@@ -1,10 +1,11 @@
+import coreuiFormPrivate from "./coreui.form.private";
 
 let coreuiFormUtils = {
 
     /**
      * Получение значения поля
      * @param {coreuiFormInstance} form
-     * @param {object}               fieldOptions
+     * @param {object}             fieldOptions
      * @returns {string|number|null}
      */
     getFieldValue: function (form, fieldOptions) {
@@ -150,7 +151,7 @@ let coreuiFormUtils = {
             Array.isArray(options.fields)
         ) {
             $.each(options.fields, function (key, field) {
-                let instance = form.initField(field);
+                let instance = coreuiFormPrivate.initField(form, field);
 
                 if (typeof instance !== 'object') {
                     return;

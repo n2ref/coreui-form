@@ -29,7 +29,6 @@ coreuiForm.fields.file = {
         invalidText: null,
         validText: null,
         readonly: null,
-        datalist: null,
         show: true,
         column: null
     },
@@ -248,10 +247,8 @@ coreuiForm.fields.file = {
      */
     _renderContent: function () {
 
-        let attributes   = [];
-        let datalist     = [];
-        let options      = this.getOptions();
-        let datalistId   = coreuiFormUtils.hashCode();
+        let attributes = [];
+        let options    = this.getOptions();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -280,24 +277,6 @@ coreuiForm.fields.file = {
         }
 
 
-        if (options.hasOwnProperty('datalist') &&
-            typeof options.datalist === 'object' &&
-            Array.isArray(options.datalist)
-        ) {
-            options.attr.list = datalistId;
-
-            $.each(options.datalist, function (key, itemAttributes) {
-                let datalistAttr = [];
-
-                $.each(itemAttributes, function (name, value) {
-                    datalistAttr.push(name + '="' + value + '"');
-                });
-
-                datalist.push({
-                    attr: datalistAttr.length > 0 ? (' ' + datalistAttr.join(' ')) : ''
-                })
-            });
-        }
 
         $.each(options.attr, function (name, value) {
             attributes.push(name + '="' + value + '"');
@@ -305,11 +284,11 @@ coreuiForm.fields.file = {
 
         return ejs.render(coreuiFormTpl['fields/input.html'], {
             field: options,
-            datalistId: datalistId,
+            datalistId: '',
             value: this._value !== null ? this._value : '',
             render: {
                 attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                datalist: datalist
+                datalist: []
             },
         });
     },

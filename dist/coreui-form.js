@@ -1110,35 +1110,158 @@
     }, {}, [1])(1);
   });
 
-  var tpl = Object.create(null);
-  tpl['form-error.html'] = '<div class="coreui-form__error alert alert-danger alert-dismissible fade show mb-3 <%= options.class %>"> <%- message %> <% if (options.dismiss) { %> <button type="button" class="btn-close" data-bs-dismiss="alert"></button> <% } %> </div>';
-  tpl['form-field-content.html'] = '<%- content %>';
-  tpl['form-field-group.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__group_container mb-3"> <div class="coreui-form__group_label pe-2"> <h6 class="coreui-form__field_label_text col-form-label"> <%- group.label %> <% if (group.showCollapsible) { %> <button type="button" class="btn btn-link btn-collapsible text-dark"> <% if ( ! group.show) { %> <i class="bi bi-chevron-right"></i> <% } else { %> <i class="bi bi-chevron-down"></i> <% } %> </button> <% } %> </h6> </div> <div class="coreui-form__group_content"<% if ( ! group.show) { %> style="display:none"<% } %>> <%- content %> </div> </div>';
-  tpl['form-field-label.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__field_container d-flex flex-column flex-md-row mb-3" <% if ( ! field.show) { %> style="display:none"<% } %>> <% if (field.labelWidth !== 0 && field.labelWidth !== \'0px\') { %> <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>> <div class="coreui-form__field_label_content col-form-label"> <% if (field.required) { %> <span class="coreui-form__field_label_req text-danger">*</span> <% } %> <span class="coreui-form__field_label_text fw-medium"><%- field.label %></span> </div> <% if (field.description) { %> <div class="coreui-form__field_label_description text-muted"> <small><%- field.description %></small> </div> <% } %> </div> <% } %> <div class="coreui-form__field_content flex-fill"> <div class="d-inline-block content-<%= hash %>"> <%- content %> </div> <% if (field.outContent) { %> <span class="coreui-form__field-content-out d-inline-block align-top ps-1"> <%- field.outContent %> </span> <% } %> <% if (attachFields && attachFields.length > 0) { %> <% $.each(attachFields, function(key, attachField) { %> <div class="<% if (attachField.hasOwnProperty(\'direction\') && attachField.direction === \'column\') { %>d-block mt-2<% } else { %>d-inline-block<% } %> content-<%= attachField.hash %>"> <%- attachField.content %> </div> <% }); %> <% } %> </div> </div>';
-  tpl['form.html'] = '<div id="coreui-form-<%= form.id %>" class="coreui-form mb-2" <% if (widthSizes) { %>style="<%= widthSizes.join(\';\') %>"<% } %>> <% if (form.title) { %> <h5 class="mb-4"><%- form.title %></h5> <% } %> <form action="<%= form.send.url %>" method="<%= form.send.method %>"<%- formAttr %>> <div class="coreui-form__fields d-flex justify-content-start flex-column flex-wrap"> <%- layout %> </div> <% if (controls) { %> <div class="coreui-form__controls d-flex justify-content-start flex-sm-wrap flex-md-nowrap"> <% if (form.controlsOffset !== 0 && form.controlsOffset !== \'0px\') { %> <div class="d-none d-md-block" style="width:<%= form.controlsOffset %>;min-width:<%= form.controlsOffset %>"></div> <% } %> <div class="d-flex justify-content-start flex-wrap gap-2"> <% $.each(controls, function(key, control) { %> <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container" <% if ( ! control.show) { %>style="display:none"<% } %>> <%- control.content %> </div> <% }); %> </div> </div> <% } %> </form> </div>';
-  tpl['controls/button.html'] = '<button <%- render.attr %>><%- control.content %></button>';
-  tpl['controls/link.html'] = '<a href="<%- control.href %>"<%- render.attr %>><%- control.content %></a>';
-  tpl['fields/checkbox.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- render.selectedItems.join(\', \') %></div> <% } else { %> <div class="pt-2"> <% $.each(render.options, function(key, option) { %> <div class="form-check<% if (field.inline) { %> form-check-inline<% } %>"> <input <%- option.attr %>/> <label class="form-check-label" for="<%= option.id %>"><%= option.text %></label> </div> <% }); %> </div> <% } %>';
-  tpl['fields/color.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label rounded-1" style="width: 14px;height: 14px;background-color: <%= value %>"></div> <% } else { %> <input <%- render.attr %>/> <% if (render.datalist.length > 0) { %> <datalist id="<%= datalistId %>"> <% $.each(render.datalist, function(key, item) { %> <option <%- item.attr %>/> <% }); %> </datalist> <% } %> <% } %>';
-  tpl['fields/dataset-row-readonly.html'] = '<tr class="coreui-form__field-dataset-item"> <% $.each(options, function(key, option) { %> <td class="pe-2 pb-1"> <%- option.value %> </td> <% }); %> </tr>';
-  tpl['fields/dataset-row.html'] = '<tr class="coreui-form__field-dataset-item" id="dataset-item-<%= hashItem %>"> <% $.each(options, function(key, option) { %> <td class="pe-1 pb-1"> <% if (option.type === \'select\') { %> <select <%- option.attr %>> <% $.each(option.items, function(key, item) { %> <option <%- item.attr %>><%- item.title %></option> <% }); %> </select> <% } else if (option.type === \'switch\') { %> <div class="form-check form-switch"> <input <%- option.attr %>/> </div> <% } else { %> <input <%- option.attr %>> <% } %> </td> <% }); %> <td class="pb-1"> <button type="button" class="btn btn-link btn-dataset-remove" data-item-id="dataset-item-<%= hashItem %>"> <i class="bi bi-x text-muted"></i> </button> </td> </tr>';
-  tpl['fields/dataset.html'] = '<% if (field.readonly) { %> <table class="coreui-form__field-dataset-container" <% if (render.rows.length == 0) { %> style="display:none"<% } %>> <thead> <tr> <% $.each(render.headers, function(key, item) { %> <td class="text-muted pe-2"><small><%= item.title %></small></td> <% }); %> </tr> </thead> <tbody class="coreui-form__field-dataset-list"> <% $.each(render.rows, function(key, row) { %> <%- row %> <% }); %> </tbody> </table> <% } else { %> <table class="coreui-form__field-dataset-container" <% if (render.rows.length == 0) { %> style="display:none"<% } %>> <thead> <tr> <% $.each(render.headers, function(key, item) { %> <td class="text-muted"><small><%= item.title %></small></td> <% }); %> <td></td> </tr> </thead> <tbody class="coreui-form__field-dataset-list"> <% $.each(render.rows, function(key, row) { %> <%- row %> <% }); %> </tbody> </table> <button type="button" class="btn btn-link btn-dataset-add"><%= lang.dataset_add %></button> <% } %>';
-  tpl['fields/hidden.html'] = '<% if ( ! field.readonly) { %> <input <%- render.attr %>/> <% } %>';
-  tpl['fields/input.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- value %></div> <% } else { %> <input <%- render.attr %>/> <% if (render.datalist.length > 0) { %> <datalist id="<%= datalistId %>"> <% $.each(render.datalist, function(key, item) { %> <option <%- item.attr %>/> <% }); %> </datalist> <% } %> <% } %>';
-  tpl['fields/modal-loading.html'] = '<div class="py-4 d-flex justify-content-center align-items-center gap-2"> <div class="spinner-border mr-2"></div> <%= lang.modal_loading %> </div> ';
-  tpl['fields/modal.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%= text %></div> <% } else { %> <div class="input-group"<% if (render.width) { %> style="width:<%= render.width %>"<% } %>> <input <%- render.attr %>/> <input type="hidden" name="<%= field.name %>" value="<%= value %>" class="coreui-form-modal-value"/> <% if ( ! field.required) { %> <button class="btn btn-outline-secondary btn-modal-clear border-secondary-subtle" type="button"> <i class="bi bi-x"></i> </button> <% } %> <button class="btn btn-outline-secondary btn-modal-select border-secondary-subtle" type="button"><%= lang.modal_select %></button> </div> <% } %>';
-  tpl['fields/passwordRepeat.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- value %></div> <% } else { %> <div class="d-flex gap-1 align-items-center"> <input <%- render.attr %>/> <% if (field.showBtn) { %> <div class="input-group flex-nowrap"> <input <%- render.attr2 %>/> <button class="btn btn-outline-secondary border-secondary-subtle btn-password-change" type="button" data-change="<%- lang.change %>" data-cancel="<%- lang.cancel %>"><%= btn_text %></button> </div> <% } else { %> <input <%- render.attr2 %>/> <% } %> </div> <% } %>';
-  tpl['fields/radio.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- render.selectedItem %></div> <% } else { %> <div class="pt-2"> <% $.each(render.options, function(key, option) { %> <div class="form-check<% if (field.inline) { %> form-check-inline<% } %>"> <input <%- option.attr %>/> <label class="form-check-label" for="<%= option.id %>"><%= option.text %></label> </div> <% }); %> </div> <% } %>';
-  tpl['fields/select.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%= render.selectedOptions.join(\', \') %></div> <% } else { %> <select <%- render.attr %>> <% $.each(render.options, function(key, option) { %> <% if (option.type === \'group\') { %> <optgroup<%- option.attr %>/> <% $.each(option.options, function(key, groupOption) { %> <option <%- groupOption.attr %>/><%= groupOption.text %></option> <% }); %> </optgroup> <% } else { %> <option <%- option.attr %>/><%= option.text %></option> <% } %> <% }); %> </select> <% } %>';
-  tpl['fields/switch.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%= field.valueY == value ? lang.switch_yes : lang.switch_no %></div> <% } else { %> <div class="form-check form-switch pt-2"> <input <%- render.attr %>/> </div> <% } %>';
-  tpl['fields/textarea.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- value %></div> <% } else { %> <textarea <%- render.attr %>><%- value %></textarea> <% } %>';
-  tpl['fields/wysiwyg.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- value %></div> <% } else { %> <textarea name="<%= field.name %>" id="editor-<%= editorHash %>"><%- value %></textarea> <% } %>';
+  var tpl$1 = Object.create(null);
+  tpl$1['form-control.html'] = ' <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container" <% if ( ! control.show) { %>style="display:none"<% } %>> <%- control.content %> </div>';
+  tpl$1['form-error.html'] = '<div class="coreui-form__error alert alert-danger alert-dismissible fade show mb-3 <%= options.class %>"> <%- message %> <% if (options.dismiss) { %> <button type="button" class="btn-close" data-bs-dismiss="alert"></button> <% } %> </div>';
+  tpl$1['form-field-content.html'] = '<%- content %>';
+  tpl$1['form-field-group.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__group_container mb-3"> <div class="coreui-form__group_label pe-2"> <h6 class="coreui-form__field_label_text col-form-label"> <%- group.label %> <% if (group.showCollapsible) { %> <button type="button" class="btn btn-link btn-collapsible text-dark"> <% if ( ! group.show) { %> <i class="bi bi-chevron-right"></i> <% } else { %> <i class="bi bi-chevron-down"></i> <% } %> </button> <% } %> </h6> </div> <div class="coreui-form__group_content"<% if ( ! group.show) { %> style="display:none"<% } %>></div> </div>';
+  tpl$1['form-field-label.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__field_container d-flex flex-column flex-md-row mb-3" <% if ( ! field.show) { %> style="display:none"<% } %>> <% if (field.labelWidth !== 0 && field.labelWidth !== \'0px\') { %> <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>> <div class="coreui-form__field_label_content col-form-label"> <% if (field.required) { %> <span class="coreui-form__field_label_req text-danger">*</span> <% } %> <span class="coreui-form__field_label_text fw-medium"><%- field.label %></span> </div> <% if (field.description) { %> <div class="coreui-form__field_label_description text-muted"> <small><%- field.description %></small> </div> <% } %> </div> <% } %> <div class="coreui-form__field_content flex-fill"> <div class="d-inline-block content-<%= hash %>"> <%- content %> </div> <% if (field.outContent) { %> <span class="coreui-form__field-content-out d-inline-block align-top ps-1"> <%- field.outContent %> </span> <% } %> <% if (attachFields && attachFields.length > 0) { %> <% $.each(attachFields, function(key, attachField) { %> <div class="<% if (attachField.hasOwnProperty(\'direction\') && attachField.direction === \'column\') { %>d-block mt-2<% } else { %>d-inline-block<% } %> content-<%= attachField.hash %>"> <%- attachField.content %> </div> <% }); %> <% } %> </div> </div>';
+  tpl$1['form.html'] = '<div id="coreui-form-<%= form.id %>" class="coreui-form mb-2" <% if (widthSizes) { %>style="<%= widthSizes.join(\';\') %>"<% } %>> <% if (form.title) { %> <h5 class="mb-4"><%- form.title %></h5> <% } %> <form action="<%= form.send.url %>" method="<%= form.send.method %>"<%- formAttr %>> <div class="coreui-form__fields d-flex justify-content-start flex-column flex-wrap"></div> <% if (controls) { %> <div class="coreui-form__controls d-flex justify-content-start flex-sm-wrap flex-md-nowrap"> <% if (form.controlsOffset !== 0 && form.controlsOffset !== \'0px\') { %> <div class="d-none d-md-block" style="width:<%= form.controlsOffset %>;min-width:<%= form.controlsOffset %>"></div> <% } %> <div class="d-flex justify-content-start flex-wrap gap-2"> <% $.each(controls, function(key, control) { %> <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container" <% if ( ! control.show) { %>style="display:none"<% } %>> </div> <% }); %> </div> </div> <% } %> </form> </div>';
+  tpl$1['controls/button.html'] = '<button <%- render.attr %>><%- control.content %></button>';
+  tpl$1['controls/link.html'] = '<a href="<%- control.url %>"<%- render.attr %>><%- control.content %></a>';
+  tpl$1['fields/checkbox.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- render.selectedItems.join(\', \') %></div> <% } else { %> <div class="pt-2"> <% $.each(render.options, function(key, option) { %> <div class="form-check<% if (field.inline) { %> form-check-inline<% } %>"> <input <%- option.attr %>/> <label class="form-check-label" for="<%= option.id %>"><%= option.text %></label> </div> <% }); %> </div> <% } %>';
+  tpl$1['fields/color.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label rounded-1" style="width: 14px;height: 14px;background-color: <%= value %>"></div> <% } else { %> <input <%- render.attr %>/> <% if (render.datalist.length > 0) { %> <datalist id="<%= datalistId %>"> <% $.each(render.datalist, function(key, item) { %> <option <%- item.attr %>/> <% }); %> </datalist> <% } %> <% } %>';
+  tpl$1['fields/dataset-row-readonly.html'] = '<tr class="coreui-form__field-dataset-item"> <% $.each(options, function(key, option) { %> <td class="pe-2 pb-1"> <%- option.value %> </td> <% }); %> </tr>';
+  tpl$1['fields/dataset-row.html'] = '<tr class="coreui-form__field-dataset-item" id="dataset-item-<%= hashItem %>"> <% $.each(options, function(key, option) { %> <td class="pe-1 pb-1"> <% if (option.type === \'select\') { %> <select <%- option.attr %>> <% $.each(option.items, function(key, item) { %> <option <%- item.attr %>><%- item.text %></option> <% }); %> </select> <% } else if (option.type === \'switch\') { %> <div class="form-check form-switch"> <input <%- option.attr %>/> </div> <% } else { %> <input <%- option.attr %>> <% } %> </td> <% }); %> <td class="pb-1"> <button type="button" class="btn btn-link btn-dataset-remove" data-item-id="dataset-item-<%= hashItem %>"> <i class="bi bi-x text-muted"></i> </button> </td> </tr>';
+  tpl$1['fields/dataset.html'] = '<% if (field.readonly) { %> <table class="coreui-form__field-dataset-container" <% if (render.rows.length == 0) { %> style="display:none"<% } %>> <thead> <tr> <% $.each(render.headers, function(key, item) { %> <td class="text-muted pe-2"><small><%= item.title %></small></td> <% }); %> </tr> </thead> <tbody class="coreui-form__field-dataset-list"> <% $.each(render.rows, function(key, row) { %> <%- row %> <% }); %> </tbody> </table> <% } else { %> <table class="coreui-form__field-dataset-container" <% if (render.rows.length == 0) { %> style="display:none"<% } %>> <thead> <tr> <% $.each(render.headers, function(key, item) { %> <td class="text-muted"><small><%= item.title %></small></td> <% }); %> <td></td> </tr> </thead> <tbody class="coreui-form__field-dataset-list"> <% $.each(render.rows, function(key, row) { %> <%- row %> <% }); %> </tbody> </table> <button type="button" class="btn btn-link btn-dataset-add"><%= lang.dataset_add %></button> <% } %>';
+  tpl$1['fields/file-upload.html'] = ' <% if (showButton) { %> <button type="button" class="btn btn-outline-secondary fileup-btn"> <%= lang.file_upload_select %> <input type="file" id="fileup-<%= id %>"<% if (isMultiple) { %> multiple<% } %><% if (accept) { %> accept="<%= accept %>"<% } %>> </button> <% } else { %> <input type="file" id="fileup-<%= id %>"<% if (isMultiple) { %> multiple<% } %><% if (accept) { %> accept="<%= accept %>"<% } %> style="display:none"> <% } %> <% if (showDropzone) { %> <div id="fileup-<%= id %>-dropzone" class="fileup-dropzone p-4 d-inline-block text-primary-emphasis fs-5 rounded-4 text-center <% if (showButton) { %>mt-2<% } %>>"> <i class="bi bi-folder2-open"></i> <%= lang.file_upload_dropzone %> </div> <% } %> <div id="fileup-<%= id %>-queue"></div>';
+  tpl$1['fields/hidden.html'] = '<% if ( ! field.readonly) { %> <input <%- render.attr %>/> <% } %>';
+  tpl$1['fields/input.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- value %></div> <% } else { %> <input <%- render.attr %>/> <% if (render.datalist.length > 0) { %> <datalist id="<%= datalistId %>"> <% $.each(render.datalist, function(key, item) { %> <option <%- item.attr %>/> <% }); %> </datalist> <% } %> <% } %>';
+  tpl$1['fields/modal-loading.html'] = '<div class="py-4 d-flex justify-content-center align-items-center gap-2"> <div class="spinner-border mr-2"></div> <%= lang.modal_loading %> </div> ';
+  tpl$1['fields/modal.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%= text %></div> <% } else { %> <div class="input-group"<% if (render.width) { %> style="width:<%= render.width %>"<% } %>> <input <%- render.attr %>/> <input type="hidden" name="<%= field.name %>" value="<%= value %>" class="coreui-form-modal-value"/> <% if ( ! field.required) { %> <button class="btn btn-outline-secondary btn-modal-clear border-secondary-subtle" type="button"> <i class="bi bi-x"></i> </button> <% } %> <button class="btn btn-outline-secondary btn-modal-select border-secondary-subtle" type="button"><%= lang.modal_select %></button> </div> <% } %>';
+  tpl$1['fields/passwordRepeat.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- value %></div> <% } else { %> <div class="d-flex gap-1 align-items-center"> <input <%- render.attr %>/> <% if (field.showBtn) { %> <div class="input-group flex-nowrap"> <input <%- render.attr2 %>/> <button class="btn btn-outline-secondary border-secondary-subtle btn-password-change" type="button" data-change="<%- lang.change %>" data-cancel="<%- lang.cancel %>"><%= btn_text %></button> </div> <% } else { %> <input <%- render.attr2 %>/> <% } %> </div> <% } %>';
+  tpl$1['fields/radio.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- render.selectedItem %></div> <% } else { %> <div class="pt-2"> <% $.each(render.options, function(key, option) { %> <div class="form-check<% if (field.inline) { %> form-check-inline<% } %>"> <input <%- option.attr %>/> <label class="form-check-label" for="<%= option.id %>"><%= option.text %></label> </div> <% }); %> </div> <% } %>';
+  tpl$1['fields/select.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%= render.selectedOptions.join(\', \') %></div> <% } else { %> <select <%- render.attr %>> <% $.each(render.options, function(key, option) { %> <% if (option.type === \'group\') { %> <optgroup<%- option.attr %>/> <% $.each(option.options, function(key, groupOption) { %> <option <%- groupOption.attr %>/><%= groupOption.text %></option> <% }); %> </optgroup> <% } else { %> <option <%- option.attr %>/><%= option.text %></option> <% } %> <% }); %> </select> <% } %>';
+  tpl$1['fields/switch.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%= field.valueY == value ? lang.switch_yes : lang.switch_no %></div> <% } else { %> <div class="form-check form-switch pt-2"> <input <%- render.attr %>/> </div> <% } %>';
+  tpl$1['fields/textarea.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- value %></div> <% } else { %> <textarea <%- render.attr %>><%- value %></textarea> <% } %>';
+  tpl$1['fields/wysiwyg.html'] = '<% if (field.readonly) { %> <div class="coreui-form__field-readonly col-form-label"><%- value %></div> <% } else { %> <textarea name="<%= field.name %>" id="editor-<%= editorHash %>"><%- value %></textarea> <% } %>';
+
+  var coreuiFormPrivate = {
+    /**
+     * Выполнение событий
+     * @param {object}      form
+     * @param {string}      name
+     * @param {object|null} context
+     * @param {Array}       params
+     * @return {object}
+     * @private
+     */
+    trigger: function trigger(form, name, params, context) {
+      params = params || [];
+      var results = [];
+      if (form._events[name] instanceof Object && form._events[name].length > 0) {
+        for (var i = 0; i < form._events[name].length; i++) {
+          var callback = form._events[name][i].callback;
+          var funcContext = form._events[name][i].context || context || form;
+          results.push(callback.apply(funcContext, params));
+          if (form._events[name][i].singleExec) {
+            form._events[name].splice(i, 1);
+            i--;
+          }
+        }
+      }
+      return results;
+    },
+    /**
+     * Инициализация поля
+     * @param {object} form
+     * @param {object} field
+     * @return {object|null}
+     * @private
+     */
+    initField: function initField(form, field) {
+      if (_typeof(field) !== 'object') {
+        return null;
+      }
+      var type = field.hasOwnProperty('type') && typeof field.type === 'string' ? field.type : 'input';
+      if (type === 'group') {
+        return null;
+      }
+      if (!coreuiForm.fields.hasOwnProperty(type)) {
+        type = 'input';
+      }
+      if (form._options.readonly) {
+        field.readonly = true;
+      }
+      var fieldInstance = $.extend(true, {
+        render: function render() {},
+        renderContent: function renderContent() {},
+        init: function init() {},
+        getValue: function getValue() {},
+        setValue: function setValue() {},
+        getOptions: function getOptions() {},
+        show: function show() {},
+        hide: function hide() {},
+        readonly: function readonly() {},
+        validate: function validate() {},
+        isValid: function isValid() {}
+      }, coreuiForm.fields[type]);
+      fieldInstance.init(form, field, form._fieldsIndex++);
+      form._fields.push(fieldInstance);
+      return fieldInstance;
+    },
+    /**
+     * Инициализация группы
+     * @param {object} form
+     * @param {object} group
+     * @return {object|null}
+     * @private
+     */
+    initGroup: function initGroup(form, group) {
+      if (_typeof(group) !== 'object') {
+        return null;
+      }
+      var type = group.hasOwnProperty('type') && typeof group.type === 'string' ? group.type : '';
+      if (type !== 'group') {
+        return null;
+      }
+      var groupInstance = $.extend(true, {
+        render: function render() {},
+        init: function init() {},
+        getOptions: function getOptions() {},
+        expand: function expand() {},
+        collapse: function collapse() {}
+      }, coreuiForm.fields[type]);
+      groupInstance.init(form, group, form._groupsIndex++);
+      form._groups.push(groupInstance);
+      return groupInstance;
+    },
+    /**
+     * Инициализация контролов
+     * @param {object} form
+     * @param {object} control
+     * @return {object|null}
+     * @private
+     */
+    initControl: function initControl(form, control) {
+      if (_typeof(control) !== 'object') {
+        return null;
+      }
+      var type = control.hasOwnProperty('type') && typeof control.type === 'string' ? control.type : null;
+      if (!type || !coreuiForm.controls.hasOwnProperty(type)) {
+        return null;
+      }
+      if (type === 'submit' && form._options.readonly) {
+        control.show = false;
+      }
+      var controlInstance = $.extend(true, {
+        render: function render() {},
+        init: function init() {},
+        getOptions: function getOptions() {},
+        show: function show() {},
+        hide: function hide() {}
+      }, coreuiForm.controls[type]);
+      controlInstance.init(form, control, form._controlsIndex++);
+      form._controls.push(controlInstance);
+      return controlInstance;
+    }
+  };
 
   var coreuiFormUtils = {
     /**
      * Получение значения поля
      * @param {coreuiFormInstance} form
-     * @param {object}               fieldOptions
+     * @param {object}             fieldOptions
      * @returns {string|number|null}
      */
     getFieldValue: function getFieldValue(form, fieldOptions) {
@@ -1241,7 +1364,7 @@
       var fields = [];
       if (_typeof(options) === 'object' && _typeof(options.fields) === 'object' && Array.isArray(options.fields)) {
         $.each(options.fields, function (key, field) {
-          var instance = form.initField(field);
+          var instance = coreuiFormPrivate.initField(form, field);
           if (_typeof(instance) !== 'object') {
             return;
           }
@@ -1423,22 +1546,24 @@
         method: 'POST',
         format: 'form'
       },
-      width: null,
       validResponse: {
         headers: null,
         dataType: null
       },
+      width: null,
       minWidth: null,
       maxWidth: null,
       labelWidth: 200,
+      fieldWidth: null,
       controlsOffset: null,
       readonly: false,
       validate: false,
       successLoadUrl: '',
       errorClass: '',
-      layout: '[column_default]',
+      layout: '[position_default]',
       onSubmit: null,
       onSubmitSuccess: null,
+      errorMessageScrollOffset: 70,
       record: {},
       fields: [],
       controls: []
@@ -1451,18 +1576,12 @@
     _fields: [],
     _controls: [],
     _events: {},
-    _formWrapper: {},
     /**
      * Инициализация
-     * @param {object} formWrapper
      * @param {object} options
      * @private
      */
-    _init: function _init(formWrapper, options) {
-      this._options.labelWidth = formWrapper.getSetting('labelWidth');
-      this._options.errorClass = formWrapper.getSetting('errorClass');
-      this._options.send.format = formWrapper.getSetting('sendDataFormat');
-      this._formWrapper = formWrapper;
+    _init: function _init(options) {
       this._options = $.extend(true, {}, this._options, options);
       if (!this._options.id) {
         this._options.id = coreuiFormUtils.hashCode();
@@ -1483,7 +1602,7 @@
       }
     },
     /**
-     *
+     * Инициализация событий
      */
     initEvents: function initEvents() {
       var that = this;
@@ -1494,7 +1613,7 @@
         }, 0);
         return false;
       });
-      this._trigger('shown.coreui.form');
+      coreuiFormPrivate.trigger(this, 'show');
     },
     /**
      * Получение id формы
@@ -1511,7 +1630,7 @@
     render: function render(element) {
       var that = this;
       var widthSizes = [];
-      var layout = this._options.layout;
+      var layout = this._options.layout && typeof this._options.layout === 'string' ? this._options.layout : '[position_default]';
       var controls = [];
       var formAttr = [];
       if (this._options.width) {
@@ -1526,42 +1645,50 @@
         var _unit3 = typeof this._options.maxWidth === 'number' ? 'px' : '';
         widthSizes.push('max-width:' + this._options.maxWidth + _unit3);
       }
+      var positions = [];
+      var positionMatches = Array.from(layout.matchAll(/\[position_([\w_\d]+)\]/g));
+      if (positionMatches.length > 0) {
+        $.each(positionMatches, function (key, match) {
+          positions.push(match[1]);
+          layout = layout.replace('[position_' + match[1] + ']', '<div class="coreui-form-position-' + match[1] + '"></div>');
+        });
+      }
+      var layoutObj = $(layout);
 
       // Поля
-      if (_typeof(this._options.fields) === 'object' && Array.isArray(this._options.fields) && this._options.fields.length > 0 && layout && typeof layout === 'string') {
-        var matches = Array.from(layout.matchAll(/\[column_([\w_\d]+)\]/g));
-        var columns = [];
-        var columnsContent = {};
-        if (matches.length > 0) {
-          $.each(matches, function (key, match) {
-            columns.push(match[1]);
-          });
-        }
-        if (columns.length > 0) {
+      if (_typeof(this._options.fields) === 'object' && Array.isArray(this._options.fields) && this._options.fields.length > 0) {
+        var positionsContent = {};
+        if (positions.length > 0) {
           $.each(this._options.fields, function (key, field) {
-            var column = field.hasOwnProperty('column') && (typeof field.column === 'string' || typeof field.column === 'number') ? columns.indexOf(field.column) >= 0 ? field.column : null : 'default';
-            if (typeof column !== 'string') {
+            var position = field.hasOwnProperty('position') && (typeof field.position === 'string' || typeof field.position === 'number') ? positions.indexOf(field.position) >= 0 ? field.position : null : 'default';
+            if (typeof position !== 'string') {
               return;
             }
             var type = field.hasOwnProperty('type') && typeof field.type === 'string' ? field.type : '';
             var instance = null;
             if (type === 'group') {
-              instance = that.initGroup(field);
+              instance = coreuiFormPrivate.initGroup(that, field);
             } else {
-              instance = that.initField(field);
+              instance = coreuiFormPrivate.initField(that, field);
             }
             if (!instance || _typeof(instance) !== 'object') {
               return;
             }
-            if (!columnsContent.hasOwnProperty(column)) {
-              columnsContent[column] = [];
+            if (!positionsContent.hasOwnProperty(position)) {
+              positionsContent[position] = [];
             }
-            columnsContent[column].push(instance.render());
+            positionsContent[position].push(instance.render());
           });
         }
-        if (Object.keys(columnsContent).length >= 0) {
-          $.each(columnsContent, function (name, fieldContents) {
-            layout = layout.replace('[column_' + name + ']', fieldContents.join(''));
+        if (Object.keys(positionsContent).length >= 0) {
+          $.each(positionsContent, function (name, fieldContents) {
+            $.each(fieldContents, function (key, fieldContent) {
+              var container = layoutObj.closest('.coreui-form-position-' + name);
+              if (!container[0]) {
+                container = layoutObj.find('.coreui-form-position-' + name);
+              }
+              container.append(fieldContent);
+            });
           });
         }
       }
@@ -1569,7 +1696,7 @@
       // Элементы управления
       if (_typeof(this._options.controls) === 'object' && Array.isArray(this._options.controls) && this._options.controls.length > 0) {
         $.each(this._options.controls, function (key, control) {
-          var instance = that.initControl(control);
+          var instance = coreuiFormPrivate.initControl(that, control);
           if (!instance || _typeof(instance) !== 'object') {
             return;
           }
@@ -1583,29 +1710,32 @@
       if (typeof this._options.validate === 'boolean' && this._options.validate) {
         formAttr.push('novalidate');
       }
-      var html = ejs.render(tpl['form.html'], {
+      var containerElement = $(ejs.render(tpl$1['form.html'], {
         form: this._options,
         formAttr: formAttr ? ' ' + formAttr.join(' ') : '',
         widthSizes: widthSizes,
-        layout: layout,
         controls: controls
+      }));
+      containerElement.find('.coreui-form__fields').append(layoutObj);
+      var formId = this.getId();
+      $.each(controls, function (key, control) {
+        containerElement.find('#coreui-form-' + formId + '-control-' + control.index).append(control.content);
       });
       if (element === undefined) {
-        return html;
+        return containerElement;
       }
 
       // Dom element
-      var domElement = {};
+      var domElement = null;
       if (typeof element === 'string') {
         domElement = document.getElementById(element);
-        if (!domElement) {
-          return '';
-        }
       } else if (element instanceof HTMLElement) {
         domElement = element;
       }
-      domElement.innerHTML = html;
-      this.initEvents();
+      if (domElement) {
+        $(domElement).html(containerElement);
+        this.initEvents();
+      }
     },
     /**
      *
@@ -1662,7 +1792,7 @@
           return;
         }
       }
-      var results = this._trigger('send.coreui.form', this, [this, data]);
+      var results = coreuiFormPrivate.trigger(this, 'send', [this, data]);
       var isStopSend = false;
       $.each(results, function (key, result) {
         if (result === false) {
@@ -1703,7 +1833,7 @@
        */
       var successSend = function successSend(result) {
         that.hideError();
-        that._trigger('success-send.coreui.form', that, [that, result]);
+        coreuiFormPrivate.trigger(that, 'send_success', [that, result]);
         var jsonResponse = null;
         if (typeof result === 'string') {
           try {
@@ -1783,7 +1913,7 @@
           errorMessage = data.error_message;
         }
         that.showError(errorMessage);
-        that._trigger('error-send.coreui.form', that, [that, xhr, textStatus, errorThrown]);
+        coreuiFormPrivate.trigger(that, 'send_error', [that, xhr, textStatus, errorThrown]);
       };
       $.ajax({
         url: this._options.send.url,
@@ -1792,7 +1922,7 @@
         contentType: contentType,
         processData: false,
         beforeSend: function beforeSend(xhr) {
-          that._trigger('start-send.coreui.form', that, [that, xhr]);
+          coreuiFormPrivate.trigger(that, 'send_start', [that, xhr]);
         },
         success: function success(result, textStatus, xhr) {
           var isValidResponse = true;
@@ -1840,7 +1970,7 @@
         error: errorSend,
         complete: function complete(xhr, textStatus) {
           that.unlock();
-          that._trigger('end-send.coreui.form', that, [that, xhr, textStatus]);
+          coreuiFormPrivate.trigger(that, 'send_end', [that, xhr, textStatus]);
         }
       });
     },
@@ -1900,7 +2030,7 @@
       return this._groups;
     },
     /**
-     * Получение поля
+     * Получение поля по имени
      * @param {string} name
      * @returns {object}
      */
@@ -1984,14 +2114,13 @@
         "class": options.hasOwnProperty('class') && typeof options["class"] === 'string' ? options["class"] : '',
         dismiss: options.hasOwnProperty('dismiss') ? !!options.dismiss : true
       };
-      formContainer.prepend(ejs.render(tpl['form-error.html'], {
+      formContainer.prepend(ejs.render(tpl$1['form-error.html'], {
         message: message,
         options: errorOptions
       }));
       if (!options.hasOwnProperty('scroll') || options.scroll) {
-        var scrollOffset = this._formWrapper.getSetting('errorMessageScrollOffset');
         $('html,body').animate({
-          scrollTop: formContainer.offset().top - scrollOffset
+          scrollTop: formContainer.offset().top - options.errorMessageScrollOffset
         }, 'fast');
       }
     },
@@ -2002,19 +2131,35 @@
       $('#coreui-form-' + this._options.id + ' > form > .coreui-form__error').remove();
     },
     /**
-     * @param eventName
-     * @param callback
-     * @param context
-     * @param singleExec
+     * Подписка на событие
+     * @param {string}      eventName
+     * @param {function}    callback
+     * @param {object|null} context
      */
-    on: function on(eventName, callback, context, singleExec) {
+    on: function on(eventName, callback, context) {
       if (_typeof(this._events[eventName]) !== 'object') {
         this._events[eventName] = [];
       }
       this._events[eventName].push({
         context: context || this,
         callback: callback,
-        singleExec: !!singleExec
+        singleExec: false
+      });
+    },
+    /**
+     * Подписка на событие таким образом, что оно будет выполнено один раз
+     * @param {string}      eventName
+     * @param {function}    callback
+     * @param {object|null} context
+     */
+    one: function one(eventName, callback, context) {
+      if (_typeof(this._events[eventName]) !== 'object') {
+        this._events[eventName] = [];
+      }
+      this._events[eventName].push({
+        context: context || this,
+        callback: callback,
+        singleExec: true
       });
     },
     /**
@@ -2022,97 +2167,7 @@
      */
     destruct: function destruct() {
       $('#coreui-form-' + this._options.id).remove();
-      delete this._formWrapper._instances[this.getId()];
-    },
-    /**
-     * Инициализация поля
-     * @param field
-     * @return {object|null}
-     * @private
-     */
-    initField: function initField(field) {
-      if (_typeof(field) !== 'object') {
-        return null;
-      }
-      var type = field.hasOwnProperty('type') && typeof field.type === 'string' ? field.type : 'input';
-      if (type === 'group') {
-        return null;
-      }
-      if (!this._formWrapper.fields.hasOwnProperty(type)) {
-        type = 'input';
-      }
-      if (this._options.readonly) {
-        field.readonly = true;
-      }
-      var fieldInstance = $.extend(true, {
-        render: function render() {},
-        renderContent: function renderContent() {},
-        init: function init() {},
-        getValue: function getValue() {},
-        setValue: function setValue() {},
-        getOptions: function getOptions() {},
-        show: function show() {},
-        hide: function hide() {},
-        readonly: function readonly() {},
-        validate: function validate() {},
-        isValid: function isValid() {}
-      }, this._formWrapper.fields[type]);
-      fieldInstance.init(this, field, this._fieldsIndex++);
-      this._fields.push(fieldInstance);
-      return fieldInstance;
-    },
-    /**
-     * Инициализация группы
-     * @param group
-     * @return {object|null}
-     * @private
-     */
-    initGroup: function initGroup(group) {
-      if (_typeof(group) !== 'object') {
-        return null;
-      }
-      var type = group.hasOwnProperty('type') && typeof group.type === 'string' ? group.type : '';
-      if (type !== 'group') {
-        return null;
-      }
-      var groupInstance = $.extend(true, {
-        render: function render() {},
-        init: function init() {},
-        getOptions: function getOptions() {},
-        expand: function expand() {},
-        collapse: function collapse() {}
-      }, this._formWrapper.fields[type]);
-      groupInstance.init(this, group, this._groupsIndex++);
-      this._groups.push(groupInstance);
-      return groupInstance;
-    },
-    /**
-     * Инициализация контролов
-     * @param control
-     * @return {object|null}
-     * @private
-     */
-    initControl: function initControl(control) {
-      if (_typeof(control) !== 'object') {
-        return null;
-      }
-      var type = control.hasOwnProperty('type') && typeof control.type === 'string' ? control.type : null;
-      if (!type || !this._formWrapper.controls.hasOwnProperty(type)) {
-        return null;
-      }
-      if (type === 'submit' && this._options.readonly) {
-        control.show = false;
-      }
-      var controlInstance = $.extend(true, {
-        render: function render() {},
-        init: function init() {},
-        getOptions: function getOptions() {},
-        show: function show() {},
-        hide: function hide() {}
-      }, this._formWrapper.controls[type]);
-      controlInstance.init(this, control, this._controlsIndex++);
-      this._controls.push(controlInstance);
-      return controlInstance;
+      delete coreuiForm._instances[this.getId()];
     },
     /**
      * Получение настроек языка
@@ -2120,42 +2175,6 @@
      */
     getLang: function getLang() {
       return $.extend(true, {}, this._options.langList);
-    },
-    /**
-     * @param name
-     * @param context
-     * @param params
-     * @return {object}
-     * @private
-     */
-    _trigger: function _trigger(name, context, params) {
-      params = params || [];
-      var results = [];
-      if (this._events[name] instanceof Object && this._events[name].length > 0) {
-        for (var i = 0; i < this._events[name].length; i++) {
-          var callback = this._events[name][i].callback;
-          context = context || this._events[name][i].context;
-          results.push(callback.apply(context, params));
-          if (this._events[name][i].singleExec) {
-            this._events[name].splice(i, 1);
-            i--;
-          }
-        }
-      }
-      return results;
-    },
-    /**
-     * @param {object} control
-     * @return {string}
-     * @private
-     */
-    _renderControl: function _renderControl(control) {
-      var content = '';
-      var type = control.hasOwnProperty('type') && typeof control.type === 'string' ? control.type : 'text';
-      if (this._formWrapper.control.hasOwnProperty(type)) {
-        content = this._formWrapper.control[type].render(control);
-      }
-      return content;
     }
   };
 
@@ -2177,13 +2196,26 @@
      * @returns {coreuiFormInstance}
      */
     create: function create(options) {
+      if (!coreuiFormUtils.isObject(options)) {
+        options = {};
+      }
+      options = $.extend(true, {}, options);
       if (!options.hasOwnProperty('lang')) {
         options.lang = this.getSetting('lang');
       }
       var langList = this.lang.hasOwnProperty(options.lang) ? this.lang[options.lang] : {};
       options.langList = options.hasOwnProperty('langList') && coreuiFormUtils.isObject(options.langList) ? $.extend(true, {}, langList, options.langList) : langList;
+      options.errorMessageScrollOffset = options.hasOwnProperty('errorMessageScrollOffset') && coreuiFormUtils.isNumeric(options.errorMessageScrollOffset) ? options.errorMessageScrollOffset : this.getSetting('errorMessageScrollOffset');
+      options.labelWidth = options.hasOwnProperty('labelWidth') ? options.labelWidth : this.getSetting('labelWidth');
+      options.errorClass = options.hasOwnProperty('errorClass') && typeof options.errorClass === 'string' ? options.errorClass : this.getSetting('errorClass');
+      if (!options.hasOwnProperty('send') || !coreuiFormUtils.isObject(options.send) || !options.send.hasOwnProperty('format') || typeof options.send.format !== 'string') {
+        if (!options.hasOwnProperty('send') || !coreuiFormUtils.isObject(options.send)) {
+          options.send = {};
+        }
+        options.send.format = this.getSetting('sendDataFormat');
+      }
       var instance = $.extend(true, {}, coreuiFormInstance);
-      instance._init(this, options instanceof Object ? options : {});
+      instance._init(options);
       var formId = instance.getId();
       this._instances[formId] = instance;
       return instance;
@@ -2197,7 +2229,7 @@
       if (!this._instances.hasOwnProperty(id)) {
         return null;
       }
-      if ($('#coreui-form-' + this._instances[id])[0]) {
+      if (!$('#coreui-form-' + id)[0]) {
         delete this._instances[id];
         return null;
       }
@@ -2231,6 +2263,8 @@
     "dataset_add": "Добавить",
     "date_months": ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
     "date_week": "неделя",
+    "file_upload_select": "Выберите файл",
+    "file_upload_dropzone": "Поместите сюда свои файлы",
     "send_error": "Произошла ошибка. Попробуйте снова или обратитесь к администратору",
     "required_field": "Обязательное поле",
     "change": "изменить",
@@ -2245,6 +2279,8 @@
     "dataset_add": "Add",
     "date_months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     "date_week": "week",
+    "file_upload_select": "Выберите файл",
+    "file_upload_dropzone": "Drop your files here",
     "send_error": "An error has occurred. Please try again or contact your administrator",
     "required_field": "Required field",
     "change": "change",
@@ -2256,7 +2292,6 @@
     _index: null,
     _options: {
       type: 'button',
-      href: null,
       content: null,
       onClick: null,
       attr: {
@@ -2274,7 +2309,7 @@
       this._form = form;
       this._index = index;
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         that._initEvents();
       });
     },
@@ -2296,7 +2331,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['controls/button.html'], {
+      return ejs.render(tpl$1['controls/button.html'], {
         control: this._options,
         render: {
           attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
@@ -2399,7 +2434,7 @@
     _index: null,
     _options: {
       type: 'link',
-      href: null,
+      url: null,
       content: null,
       onClick: null,
       attr: {
@@ -2417,7 +2452,7 @@
       this._form = form;
       this._index = index;
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         that._initEvents();
       });
     },
@@ -2464,7 +2499,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['controls/link.html'], {
+      return ejs.render(tpl$1['controls/link.html'], {
         control: this._options,
         render: {
           attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
@@ -2493,7 +2528,6 @@
     _index: null,
     _options: {
       type: 'submit',
-      href: null,
       content: null,
       onClick: null,
       show: true,
@@ -2512,7 +2546,7 @@
       this._form = form;
       this._index = index;
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         that._initEvents();
       });
     },
@@ -2568,7 +2602,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['controls/button.html'], {
+      return ejs.render(tpl$1['controls/button.html'], {
         control: this._options,
         render: {
           attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
@@ -2636,7 +2670,7 @@
     },
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
     readonly: function readonly(isReadonly) {
       this._value = this.getValue();
@@ -2782,7 +2816,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -2851,7 +2885,7 @@
         });
       }
       var value = _typeof(this._value) === 'object' && Array.isArray(this._value) ? this._value.join(', ') : this._value;
-      return ejs.render(tpl['fields/checkbox.html'], {
+      return ejs.render(tpl$1['fields/checkbox.html'], {
         field: fieldOptions,
         value: value,
         render: {
@@ -3010,7 +3044,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -3067,7 +3101,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/color.html'], {
+      return ejs.render(tpl$1['fields/color.html'], {
         field: options,
         datalistId: datalistId,
         value: this._value,
@@ -3084,7 +3118,7 @@
      */
     _renderContentReadonly: function _renderContentReadonly() {
       var options = this.getOptions();
-      return ejs.render(tpl['fields/color.html'], {
+      return ejs.render(tpl$1['fields/color.html'], {
         field: options,
         value: this._value
       });
@@ -3158,13 +3192,13 @@
     setValue: function setValue(value) {},
     /**
      * Формирование поля
-     * @returns {string}
+     * @returns {object}
      */
     render: function render() {
-      var that = this._hash;
+      var that = this;
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      var field = $(ejs.render(tpl['form-field-label.html'], {
+      var field = $(ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -3198,7 +3232,7 @@
             if (CoreUI.hasOwnProperty(name) && coreuiFormUtils.isObject(CoreUI[name])) {
               var instance = CoreUI[name].create(content[i]);
               result.push(instance.render());
-              this._form.on('shown.coreui.form', instance.initEvents, instance, true);
+              this._form.on('show', instance.initEvents, instance, true);
             }
           } else {
             result.push(JSON.stringify(content[i]));
@@ -3220,17 +3254,12 @@
       name: null,
       label: null,
       labelWidth: null,
-      width: null,
       outContent: null,
       description: null,
       errorText: null,
       attach: null,
-      attr: {
-        "class": 'form-select d-inline-block'
-      },
       required: null,
       readonly: null,
-      datalist: null,
       show: true,
       column: null
     },
@@ -3247,7 +3276,7 @@
       this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
       this._hash = coreuiFormUtils.hashCode();
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         if (!that._options.readonly) {
           that._initEvents();
         }
@@ -3428,7 +3457,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -3472,7 +3501,7 @@
           });
         }
       }
-      return ejs.render(tpl['fields/dataset.html'], {
+      return ejs.render(tpl$1['fields/dataset.html'], {
         field: options,
         value: this._value !== null ? this._value : '',
         lang: this._form.getLang(),
@@ -3510,7 +3539,7 @@
           });
         }
       }
-      return ejs.render(tpl['fields/dataset.html'], {
+      return ejs.render(tpl$1['fields/dataset.html'], {
         field: options,
         value: this._value !== null ? this._value : '',
         lang: this._form.getLang(),
@@ -3565,11 +3594,11 @@
         var cellValue = row.hasOwnProperty(option.name) ? row[option.name] : '';
         if (option.type === 'select') {
           $.each(option.items, function (key, item) {
-            var title = item.hasOwnProperty('title') && ['string', 'numeric'].indexOf(_typeof(item.title)) >= 0 ? item.title : '';
+            var text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
             var itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
             var itemAttr = {};
             $.each(item, function (name, value) {
-              if (name !== 'title') {
+              if (name !== 'text') {
                 itemAttr[name] = value;
               }
             });
@@ -3589,7 +3618,7 @@
             });
             itemOptions.push({
               attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-              title: title
+              text: text
             });
           });
         } else if (option.type === 'switch') {
@@ -3611,7 +3640,7 @@
           items: itemOptions
         });
       });
-      return ejs.render(tpl['fields/dataset-row.html'], {
+      return ejs.render(tpl$1['fields/dataset-row.html'], {
         hashItem: coreuiFormUtils.hashCode(),
         options: rowOptions
       });
@@ -3630,17 +3659,17 @@
         if (option.type === 'select') {
           var itemOptions = [];
           $.each(option.items, function (key, item) {
-            item.hasOwnProperty('title') && ['string', 'numeric'].indexOf(_typeof(item.title)) >= 0 ? item.title : '';
+            var text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
             var itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
-            if (_typeof(cellValue) === 'object' && Array.isArray(cellValue)) {
+            if (Array.isArray(cellValue)) {
               $.each(cellValue, function (key, cellItemValue) {
                 if (cellItemValue == itemValue) {
-                  itemOptions.push(itemValue);
+                  itemOptions.push(text);
                   return false;
                 }
               });
-            } else if (cellValue == item.value) {
-              itemOptions.push(cellValue);
+            } else if (cellValue == itemValue) {
+              itemOptions.push(text);
             }
           });
         } else if (option.type === 'switch') {
@@ -3674,7 +3703,7 @@
           value: optionValue
         });
       });
-      return ejs.render(tpl['fields/dataset-row-readonly.html'], {
+      return ejs.render(tpl$1['fields/dataset-row-readonly.html'], {
         options: rowOptions
       });
     }
@@ -3704,7 +3733,7 @@
       this._id = form.getId() + "-group-" + index;
       this._options = $.extend(true, {}, this._options, options);
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         that._initEvents();
       });
     },
@@ -3740,28 +3769,33 @@
      * @returns {string}
      */
     render: function render() {
-      return ejs.render(tpl['form-field-group.html'], {
+      var container = $(ejs.render(tpl$1['form-field-group.html'], {
         id: this._id,
         form: this._form,
-        group: this._options,
-        content: this.renderContent()
+        group: this._options
+      }));
+      var fields = this.renderContent();
+      var groupContent = container.find('.coreui-form__group_content');
+      $.each(fields, function (key, field) {
+        groupContent.append(field);
       });
+      return container;
     },
     /**
      * Формирование контента поля
-     * @return {string}
+     * @return {Array}
      */
     renderContent: function renderContent() {
       var fields = [];
       var that = this;
       $.each(this._options.fields, function (key, field) {
-        var fieldInstance = that._form.initField(field);
+        var fieldInstance = coreuiFormPrivate.initField(that._form, field);
         if (_typeof(fieldInstance) !== 'object') {
           return;
         }
         fields.push(fieldInstance.render());
       });
-      return fields.join('');
+      return fields;
     },
     /**
      * Инициализация событий
@@ -3838,7 +3872,7 @@
      * @returns {string}
      */
     render: function render() {
-      return ejs.render(tpl['form-field-content.html'], {
+      return ejs.render(tpl$1['form-field-content.html'], {
         content: this.renderContent()
       });
     },
@@ -3861,7 +3895,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/hidden.html'], {
+      return ejs.render(tpl$1['fields/hidden.html'], {
         value: this._value !== null ? this._value : '',
         field: options,
         render: {
@@ -4022,7 +4056,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -4078,7 +4112,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/input.html'], {
+      return ejs.render(tpl$1['fields/input.html'], {
         field: options,
         datalistId: datalistId,
         value: this._value !== null ? this._value : '',
@@ -4120,7 +4154,7 @@
         // ignore
       }
 
-      return ejs.render(tpl['fields/input.html'], {
+      return ejs.render(tpl$1['fields/input.html'], {
         field: options,
         value: value,
         hash: this._hash
@@ -4738,7 +4772,7 @@
       this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
       this._hash = coreuiFormUtils.hashCode();
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         if (!that._options.readonly) {
           that._initEvents();
         }
@@ -4858,7 +4892,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -4915,7 +4949,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/input.html'], {
+      return ejs.render(tpl$1['fields/input.html'], {
         field: options,
         datalistId: datalistId,
         value: this._value !== null ? this._value : '',
@@ -4931,7 +4965,7 @@
      */
     _renderContentReadonly: function _renderContentReadonly() {
       var options = this.getOptions();
-      return ejs.render(tpl['fields/input.html'], {
+      return ejs.render(tpl$1['fields/input.html'], {
         field: options,
         value: this._value !== null ? this._value : ''
       });
@@ -4992,7 +5026,7 @@
         this._text = record.hasOwnProperty('text') && ['number', 'string'].indexOf(_typeof(record.text)) >= 0 ? record.text : '';
       }
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         that._initEvents();
       });
     },
@@ -5063,7 +5097,7 @@
               new Function('modal', modal.onChange)(this);
             }
           }
-          this._form._trigger('change-modal.coreui.form', this, [this]);
+          coreuiFormPrivate.trigger(this._form, 'change-modal.coreui.form', [this], this);
         }
       }
     },
@@ -5119,7 +5153,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -5150,7 +5184,7 @@
       $.each(textAttr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/modal.html'], {
+      return ejs.render(tpl$1['fields/modal.html'], {
         field: fieldOptions,
         value: this._value !== null ? this._value : '',
         text: this._text !== null ? this._text : '',
@@ -5178,7 +5212,7 @@
             new Function('field', modal.onClear)(that);
           }
         }
-        that._form._trigger('clear-modal.coreui.form', that, [that, e]);
+        coreuiFormPrivate.trigger(that._form, 'modal_clear', [that, e], that);
         that.setValue('', '');
       });
 
@@ -5191,7 +5225,7 @@
           return;
         }
         var modalId = coreuiFormUtils.hashCode();
-        var modalLoading = ejs.render(tpl['fields/modal-loading.html'], {
+        var modalLoading = ejs.render(tpl$1['fields/modal-loading.html'], {
           lang: that._form.getLang()
         });
         if (CoreUI.hasOwnProperty('modal')) {
@@ -5222,20 +5256,20 @@
           url: url,
           method: 'GET',
           beforeSend: function beforeSend(xhr) {
-            that._form._trigger('before-load-modal.coreui.form', that, [that, xhr]);
+            coreuiFormPrivate.trigger(that._form, 'modal_load_before', [that, xhr], that);
           },
           success: function success(result) {
             $('#modal-' + modalId + ' .modal-body').html(result);
-            that._form._trigger('success-load-modal.coreui.form', that, [that, result]);
+            coreuiFormPrivate.trigger(that._form, 'modal_load_success', [that, result], that);
           },
           error: function error(xhr, textStatus, errorThrown) {
-            that._form._trigger('error-load-modal.coreui.form', that, [that, xhr, textStatus, errorThrown]);
+            coreuiFormPrivate.trigger(that._form, 'modal_load_error', [that, xhr, textStatus, errorThrown], that);
           },
           complete: function complete(xhr, textStatus) {
-            that._form._trigger('complete-load-modal.coreui.form', that, [that, xhr, textStatus]);
+            coreuiFormPrivate.trigger(that._form, 'modal_load_complete', [that, xhr, textStatus], that);
           }
         });
-        that._form._trigger('select-modal.coreui.form', that, [that, e]);
+        coreuiFormPrivate.trigger(that._form, 'modal_select', [that, e], that);
       });
     }
   };
@@ -5293,7 +5327,7 @@
         this._options.precision = precision;
       }
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         if (!that._options.readonly) {
           that._initEvents();
         }
@@ -5421,7 +5455,7 @@
     render: function render() {
       var options = $.extend(true, {}, this._options);
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -5470,7 +5504,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/input.html'], {
+      return ejs.render(tpl$1['fields/input.html'], {
         field: options,
         datalistId: datalistId,
         value: this._value !== null ? this._value : '',
@@ -5684,7 +5718,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -5742,7 +5776,7 @@
           });
         });
       }
-      return ejs.render(tpl['fields/radio.html'], {
+      return ejs.render(tpl$1['fields/radio.html'], {
         field: fieldOptions,
         value: this._value,
         render: {
@@ -5902,7 +5936,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -5951,7 +5985,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/input.html'], {
+      return ejs.render(tpl$1['fields/input.html'], {
         field: options,
         datalistId: datalistId,
         value: this._value,
@@ -5984,7 +6018,6 @@
       },
       required: null,
       readonly: null,
-      datalist: null,
       show: true,
       column: null
     },
@@ -6164,7 +6197,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -6246,7 +6279,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/select.html'], {
+      return ejs.render(tpl$1['fields/select.html'], {
         field: options,
         value: this._value,
         render: {
@@ -6304,7 +6337,7 @@
           }
         });
       }
-      return ejs.render(tpl['fields/select.html'], {
+      return ejs.render(tpl$1['fields/select.html'], {
         field: options,
         render: {
           selectedOptions: selectedOptions
@@ -6492,7 +6525,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -6528,7 +6561,7 @@
       $.each(itemAttr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/switch.html'], {
+      return ejs.render(tpl$1['fields/switch.html'], {
         field: options,
         value: this._value,
         lang: this._form.getLang(),
@@ -6559,7 +6592,6 @@
       },
       required: null,
       readonly: null,
-      datalist: null,
       show: true,
       column: null
     },
@@ -6686,7 +6718,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -6719,7 +6751,7 @@
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/textarea.html'], {
+      return ejs.render(tpl$1['fields/textarea.html'], {
         field: options,
         value: this._value !== null ? this._value : '',
         render: {
@@ -6769,7 +6801,7 @@
       this._value = coreuiFormUtils.getFieldValue(form, options);
       this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         if (!that._options.readonly) {
           that._initEvents();
         }
@@ -6885,7 +6917,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -6900,7 +6932,7 @@
      */
     renderContent: function renderContent() {
       var options = this.getOptions();
-      return ejs.render(tpl['fields/wysiwyg.html'], {
+      return ejs.render(tpl$1['fields/wysiwyg.html'], {
         field: options,
         value: this._value !== null ? this._value : '',
         editorHash: this._editorHash
@@ -6968,7 +7000,7 @@
     _isChangeState: true,
     _value: '',
     _options: {
-      type: 'password',
+      type: 'password_repeat',
       name: null,
       label: null,
       labelWidth: null,
@@ -6985,7 +7017,6 @@
       invalidText: null,
       validText: null,
       readonly: null,
-      datalist: null,
       show: true,
       showBtn: true,
       column: null
@@ -7004,7 +7035,7 @@
       this._value = coreuiFormUtils.getFieldValue(form, options);
       this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
       var that = this;
-      form.on('shown.coreui.form', function () {
+      form.on('show', function () {
         that._initEvents();
       });
     },
@@ -7138,7 +7169,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -7161,7 +7192,6 @@
     _renderContent: function _renderContent() {
       var attributes = [];
       var attributes2 = [];
-      var datalist = [];
       var options = this.getOptions();
       this._isChangeState = !options.showBtn ? true : !this._value;
       if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
@@ -7191,15 +7221,14 @@
         }
       });
       var lang = this._form.getLang();
-      return ejs.render(tpl['fields/passwordRepeat.html'], {
+      return ejs.render(tpl$1['fields/passwordRepeat.html'], {
         field: options,
         value: this._value !== null ? this._value : '',
         lang: lang,
         btn_text: this._isChangeState ? lang.cancel : lang.change,
         render: {
           attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          attr2: attributes2.length > 0 ? ' ' + attributes2.join(' ') : '',
-          datalist: datalist
+          attr2: attributes2.length > 0 ? ' ' + attributes2.join(' ') : ''
         }
       });
     },
@@ -7209,7 +7238,7 @@
      */
     _renderContentReadonly: function _renderContentReadonly() {
       var options = this.getOptions();
-      return ejs.render(tpl['fields/passwordRepeat.html'], {
+      return ejs.render(tpl$1['fields/passwordRepeat.html'], {
         field: options,
         value: this._value ? '******' : '',
         hash: this._hash
@@ -7260,7 +7289,6 @@
       invalidText: null,
       validText: null,
       readonly: null,
-      datalist: null,
       show: true,
       column: null
     },
@@ -7398,7 +7426,7 @@
     render: function render() {
       var options = this.getOptions();
       var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl['form-field-label.html'], {
+      return ejs.render(tpl$1['form-field-label.html'], {
         id: this._id,
         form: this._form,
         hash: this._hash,
@@ -7420,9 +7448,7 @@
      */
     _renderContent: function _renderContent() {
       var attributes = [];
-      var datalist = [];
       var options = this.getOptions();
-      var datalistId = coreuiFormUtils.hashCode();
       if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
         options.attr = {};
       }
@@ -7439,28 +7465,16 @@
       if (options.required) {
         options.attr.required = 'required';
       }
-      if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
-        options.attr.list = datalistId;
-        $.each(options.datalist, function (key, itemAttributes) {
-          var datalistAttr = [];
-          $.each(itemAttributes, function (name, value) {
-            datalistAttr.push(name + '="' + value + '"');
-          });
-          datalist.push({
-            attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
-          });
-        });
-      }
       $.each(options.attr, function (name, value) {
         attributes.push(name + '="' + value + '"');
       });
-      return ejs.render(tpl['fields/input.html'], {
+      return ejs.render(tpl$1['fields/input.html'], {
         field: options,
-        datalistId: datalistId,
+        datalistId: '',
         value: this._value !== null ? this._value : '',
         render: {
           attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          datalist: datalist
+          datalist: []
         }
       });
     },
@@ -7496,11 +7510,1655 @@
         // ignore
       }
 
-      return ejs.render(tpl['fields/input.html'], {
+      return ejs.render(tpl$1['fields/input.html'], {
         field: options,
         value: value,
         hash: this._hash
       });
+    }
+  };
+
+  let fileUpUtils = {
+    /**
+     * Проверка на объект
+     * @param value
+     */
+    isObject: function (value) {
+      return typeof value === 'object' && !Array.isArray(value) && value !== null;
+    },
+    /**
+     * Проверка на число
+     * @param num
+     * @returns {boolean}
+     * @private
+     */
+    isNumeric: function (num) {
+      return (typeof num === 'number' || typeof num === "string" && num.trim() !== '') && !isNaN(num);
+    },
+    /**
+     * Получение размера файла в байтах
+     * @param {File} file
+     * @return {int|null}
+     */
+    getFileSize: function (file) {
+      if (!(file instanceof File)) {
+        return null;
+      }
+      return file.size || file.fileSize;
+    },
+    /**
+     * Получение названия файла
+     * @param {File} file
+     * @return {string|null}
+     */
+    getFileName: function (file) {
+      if (!(file instanceof File)) {
+        return null;
+      }
+      return file.name || file.fileName;
+    },
+    /**
+     * Formatting size
+     * @param {int} size
+     * @returns {string}
+     */
+    getSizeHuman: function (size) {
+      if (!fileUpUtils.isNumeric(size)) {
+        return '';
+      }
+      size = Number(size);
+      let result = '';
+      if (size >= 1073741824) {
+        result = (size / 1073741824).toFixed(2) + ' Gb';
+      } else if (size >= 1048576) {
+        result = (size / 1048576).toFixed(2) + ' Mb';
+      } else if (size >= 1024) {
+        result = (size / 1024).toFixed(2) + ' Kb';
+      } else if (size >= 0) {
+        result = size + ' bytes';
+      }
+      return result;
+    },
+    /**
+     * Создание уникальной строки хэша
+     * @returns {string}
+     * @private
+     */
+    hashCode: function () {
+      return this.crc32((new Date().getTime() + Math.random()).toString()).toString(16);
+    },
+    /**
+     * Hash crc32
+     * @param str
+     * @returns {number}
+     * @private
+     */
+    crc32: function (str) {
+      for (var a, o = [], c = 0; c < 256; c++) {
+        a = c;
+        for (var f = 0; f < 8; f++) {
+          a = 1 & a ? 3988292384 ^ a >>> 1 : a >>> 1;
+        }
+        o[c] = a;
+      }
+      for (var n = -1, t = 0; t < str.length; t++) {
+        n = n >>> 8 ^ o[255 & (n ^ str.charCodeAt(t))];
+      }
+      return (-1 ^ n) >>> 0;
+    }
+  };
+
+  let fileUpEvents = {
+    /**
+     * Событие начала загрузки
+     * @param {object} file
+     */
+    onLoadStart: function (file) {
+      let $file = file.getElement();
+      if ($file) {
+        $file.find('.fileup-upload').hide();
+        $file.find('.fileup-abort').show();
+        $file.find('.fileup-result').removeClass('fileup-error').removeClass('fileup-success').text('');
+      }
+    },
+    /**
+     * Событие начала изменения прогресса загрузки
+     * @param {object}        file
+     * @param {ProgressEvent} ProgressEvent
+     */
+    onLoadProgress: function (file, ProgressEvent) {
+      if (ProgressEvent.lengthComputable) {
+        let percent = Math.ceil(ProgressEvent.loaded / ProgressEvent.total * 100);
+        let $file = file.getElement();
+        if ($file) {
+          $file.find('.fileup-progress-bar').css('width', percent + "%");
+        }
+      }
+    },
+    /**
+     * Событие начала загрузки
+     * @param {object} file
+     */
+    onLoadAbort: function (file) {
+      let $file = file.getElement();
+      if ($file) {
+        $file.find('.fileup-abort').hide();
+        $file.find('.fileup-upload').show();
+        $file.find('.fileup-result').removeClass('fileup-error').removeClass('fileup-success').text('');
+      }
+    },
+    /**
+     * Событие успешной загрузки файла
+     * @param {object} file
+     */
+    onSuccess: function (file) {
+      let $file = file.getElement();
+      if ($file) {
+        let lang = this.getLang();
+        $file.find('.fileup-abort').hide();
+        $file.find('.fileup-upload').hide();
+        $file.find('.fileup-result').removeClass('fileup-error').addClass('fileup-success').text(lang.complete);
+      }
+    },
+    /**
+     * Событие ошибки
+     * @param {string} eventName
+     * @param {object} options
+     */
+    onError: function (eventName, options) {
+      let lang = this.getLang();
+      switch (eventName) {
+        case 'files_limit':
+          alert(lang.errorFilesLimit.replace(/%filesLimit%/g, options.filesLimit));
+          break;
+        case 'size_limit':
+          let size = fileUpUtils.getSizeHuman(options.sizeLimit);
+          let message = lang.errorSizeLimit;
+          message = message.replace(/%sizeLimit%/g, size);
+          message = message.replace(/%fileName%/g, fileUpUtils.getFileName(options.fileData));
+          alert(message);
+          break;
+        case 'file_type':
+          alert(lang.errorFileType.replace(/%fileName%/g, fileUpUtils.getFileName(options.fileData)));
+          break;
+        case 'load_bad_status':
+        case 'load_error':
+        case 'load_timeout':
+          let $file = options.file.getElement();
+          if ($file) {
+            let message = eventName === 'load_bad_status' ? lang.errorBadStatus : lang.errorLoad;
+            $file.find('.fileup-abort').hide();
+            $file.find('.fileup-upload').show();
+            $file.find('.fileup-result').addClass('fileup-error').text(message);
+          }
+          break;
+        case 'old_browser':
+          alert(lang.errorOldBrowser);
+          break;
+      }
+    },
+    /**
+     * Событие переноса файла через dropzone
+     * @param {Event} event
+     */
+    onDragOver: function (event) {
+      event.stopPropagation();
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+      let dropzone = this.getDropzone();
+      if (dropzone) {
+        dropzone.addClass('over');
+      }
+    },
+    /**
+     * Событие завершения перетаскивания с отпускаем кнопки мыши
+     * @param {Event} event
+     */
+    onDragLeave: function (event) {
+      let dropzone = this.getDropzone();
+      if (dropzone) {
+        dropzone.removeClass('over');
+      }
+    },
+    /**
+     * Событие когда перетаскиваемый элемент или выделенный текст покидают допустимую цель перетаскивания
+     * @param {Event} event
+     */
+    onDragEnd: function (event) {
+      let dropzone = this.getDropzone();
+      if (dropzone) {
+        dropzone.removeClass('over');
+      }
+    },
+    /**
+     * Событие переноса файла в dropzone
+     * @param {Event} event
+     */
+    onDragEnter: function (event) {
+      event.stopPropagation();
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    }
+  };
+
+  let fileUpPrivate = {
+    /**
+     *
+     * @param {object} fileUp
+     */
+    initInput: function (fileUp) {
+      let input = null;
+      if (fileUp._options.input instanceof HTMLElement || fileUp._options.input instanceof jQuery) {
+        input = $(fileUp._options.input);
+      } else if (typeof fileUp._options.input === 'string' && fileUp._options.input) {
+        input = $('#' + fileUp._options.input);
+      }
+      if (!input || !$(input)[0] || $(input)[0].type !== 'file') {
+        throw new Error('Not found input element');
+      }
+      fileUp._input = input;
+    },
+    /**
+     *
+     * @param {object} fileUp
+     */
+    initQueue: function (fileUp) {
+      let queue = null;
+      if (fileUp._options.queue instanceof HTMLElement || fileUp._options.queue instanceof jQuery) {
+        queue = $(fileUp._options.queue);
+      } else if (typeof fileUp._options.queue === 'string' && fileUp._options.queue) {
+        queue = $('#' + fileUp._options.queue);
+      }
+      if (!queue || !$(queue)[0]) {
+        throw new Error('Not found queue element');
+      }
+      fileUp._queue = queue;
+    },
+    /**
+     *
+     * @param {object} fileUp
+     */
+    initDropzone: function (fileUp) {
+      let dropzone = null;
+      if (fileUp._options.dropzone instanceof HTMLElement || fileUp._options.dropzone instanceof jQuery) {
+        dropzone = $(fileUp._options.dropzone);
+      } else if (typeof fileUp._options.dropzone === 'string' && fileUp._options.dropzone) {
+        dropzone = $('#' + fileUp._options.dropzone);
+      }
+      if (dropzone) {
+        fileUp._dropzone = dropzone;
+        let that = this;
+        dropzone.on('click', function () {
+          fileUp.getInput().click();
+        });
+        dropzone[0].addEventListener('dragover', function (event) {
+          that.trigger(fileUp, 'drag_over', [event]);
+        });
+        dropzone[0].addEventListener('dragleave', function (event) {
+          that.trigger(fileUp, 'drag_leave', [event]);
+        });
+        dropzone[0].addEventListener('dragenter', function (event) {
+          that.trigger(fileUp, 'drag_enter', [event]);
+        });
+        dropzone[0].addEventListener('dragend', function (event) {
+          that.trigger(fileUp, 'drag_end', [event]);
+        });
+        dropzone[0].addEventListener('drop', function (event) {
+          fileUp.getInput()[0].files = event.target.files || event.dataTransfer.files;
+          that.appendFiles(fileUp, event);
+        });
+      }
+    },
+    /**
+     * Инициализация событий
+     * @param {object} fileUp
+     */
+    initEvents: function (fileUp) {
+      /**
+       * @param {string}          name
+       * @param {function|string} func
+       */
+      function setEvent(name, func) {
+        let event = null;
+        if (typeof func === 'function') {
+          event = func;
+        } else if (typeof func === 'string') {
+          event = new Function(func);
+        }
+        if (event) {
+          fileUp.on(name, event);
+        }
+      }
+      let options = fileUp.getOptions();
+      let that = this;
+      setEvent('load_start', fileUpEvents.onLoadStart);
+      setEvent('load_progress', fileUpEvents.onLoadProgress);
+      setEvent('load_abort', fileUpEvents.onLoadAbort);
+      setEvent('load_success', fileUpEvents.onSuccess);
+      setEvent('error', fileUpEvents.onError);
+      setEvent('drag_over', fileUpEvents.onDragOver);
+      setEvent('drag_leave', fileUpEvents.onDragEnter);
+      setEvent('drag_end', fileUpEvents.onDragLeave);
+      setEvent('drag_enter', fileUpEvents.onDragEnd);
+      if (options.onSelect) {
+        setEvent('select', options.onSelect);
+      }
+      if (options.onRemove) {
+        setEvent('remove', options.onRemove);
+      }
+      if (options.onBeforeStart) {
+        setEvent('load_before_start', options.onBeforeStart);
+      }
+      if (options.onStart) {
+        setEvent('load_start', options.onStart);
+      }
+      if (options.onProgress) {
+        setEvent('load_progress', options.onProgress);
+      }
+      if (options.onAbort) {
+        setEvent('load_abort', options.onAbort);
+      }
+      if (options.onSuccess) {
+        setEvent('load_success', options.onSuccess);
+      }
+      if (options.onFinish) {
+        setEvent('load_finish', options.onFinish);
+      }
+      if (options.onError) {
+        setEvent('error', options.onError);
+      }
+      if (options.onDragOver) {
+        setEvent('drag_over', options.onDragOver);
+      }
+      if (options.onDragLeave) {
+        setEvent('drag_leave', options.onDragLeave);
+      }
+      if (options.onDragEnd) {
+        setEvent('drag_end', options.onDragEnd);
+      }
+      if (options.onDragEnter) {
+        setEvent('drag_enter', options.onDragEnter);
+      }
+      fileUp.getInput().on('change', function (event) {
+        that.appendFiles(fileUp, event);
+      });
+    },
+    /**
+     * Формирование списка ранее загруженных файлов
+     * @param {object} fileUp
+     */
+    renderFiles: function (fileUp) {
+      let options = fileUp.getOptions();
+      if (Array.isArray(options.files) && options.files.length > 0) {
+        for (var i = 0; i < options.files.length; i++) {
+          if (!fileUpUtils.isObject(options.files[i])) {
+            continue;
+          }
+          fileUp.appendFileByData(options.files[i]);
+        }
+      }
+    },
+    /**
+     * @param fileUp
+     * @param name
+     * @param params
+     * @return {object}
+     * @private
+     */
+    trigger: function (fileUp, name, params) {
+      params = params || [];
+      let results = [];
+      if (fileUp._events[name] instanceof Object && fileUp._events[name].length > 0) {
+        for (var i = 0; i < fileUp._events[name].length; i++) {
+          let callback = fileUp._events[name][i].callback;
+          results.push(callback.apply(fileUp._events[name][i].context || fileUp, params));
+          if (fileUp._events[name][i].singleExec) {
+            fileUp._events[name].splice(i, 1);
+            i--;
+          }
+        }
+      }
+      return results;
+    },
+    /**
+     * Append files in queue
+     * @param {object} fileUp
+     * @param {Event}  event
+     */
+    appendFiles: function (fileUp, event) {
+      event.preventDefault();
+      event.stopPropagation();
+      let options = fileUp.getOptions();
+      let input = fileUp.getInput();
+      let files = input[0].files;
+      let multiple = input.is("[multiple]");
+      if (files.length > 0) {
+        for (var i = 0; i < files.length; i++) {
+          let file = files[i];
+          if (options.sizeLimit > 0 && fileUpUtils.getFileSize(file) > options.sizeLimit) {
+            this.trigger(fileUp, 'error', ['size_limit', {
+              fileData: file,
+              sizeLimit: options.sizeLimit
+            }]);
+            continue;
+          }
+          if (options.filesLimit > 0 && Object.keys(fileUp._files).length >= options.filesLimit) {
+            this.trigger(fileUp, 'error', ['files_limit', {
+              fileData: file,
+              filesLimit: options.filesLimit
+            }]);
+            break;
+          }
+          if (typeof input[0].accept === 'string') {
+            let accept = input[0].accept;
+            if (accept && /[^\w]+/.test(accept)) {
+              let isAccept = false;
+              let types = accept.split(',');
+              if (types.length > 0) {
+                for (var t = 0; t < types.length; t++) {
+                  types[t] = types[t].replace(/\s/g, '');
+                  if (new RegExp(types[t].replace('*', '.*')).test(file.type) || new RegExp(types[t].replace('.', '.*/')).test(file.type)) {
+                    isAccept = true;
+                    break;
+                  }
+                }
+              }
+              if (!isAccept) {
+                this.trigger(fileUp, 'error', ['file_type', {
+                  fileData: file
+                }]);
+                continue;
+              }
+            }
+          }
+          let results = this.trigger(fileUp, 'select', [file]);
+          if (results) {
+            let isContinue = false;
+            $.each(results, function (key, result) {
+              if (result === false) {
+                isContinue = true;
+                return false;
+              }
+            });
+            if (isContinue) {
+              continue;
+            }
+          }
+          if (!multiple) {
+            fileUp.removeAll();
+          }
+          fileUp.appendFile(file);
+          if (!multiple) {
+            break;
+          }
+        }
+        input.val('');
+      }
+      this.trigger(fileUp, 'dragEnd', [event]);
+    }
+  };
+
+  let fileUpFile = {
+    _options: {
+      name: null,
+      size: null,
+      urlPreview: null,
+      urlDownload: null
+    },
+    _id: '',
+    _status: 'stand_by',
+    _fileElement: null,
+    _file: null,
+    _fileUp: null,
+    _xhr: null,
+    /**
+     * Инициализация
+     * @param {object} fileUp
+     * @param {int}    id
+     * @param {object} options
+     * @param {File}   file
+     * @private
+     */
+    _init: function (fileUp, id, options, file) {
+      if (!fileUpUtils.isObject(options)) {
+        throw new Error('File incorrect options param');
+      }
+      if (typeof id !== 'number' || id < 0) {
+        throw new Error('File dont set or incorrect id param');
+      }
+      if (typeof options.name !== 'string' || !options.name) {
+        throw new Error('File dont set name param');
+      }
+      this._fileUp = fileUp;
+      this._options = $.extend(true, {}, this._options, options);
+      this._id = id;
+      if (file instanceof File) {
+        let xhr = null;
+        if (window.XMLHttpRequest) {
+          xhr = "onload" in new XMLHttpRequest() ? new XMLHttpRequest() : new XDomainRequest();
+        } else if (window.ActiveXObject) {
+          try {
+            xhr = new ActiveXObject("Msxml2.XMLHTTP");
+          } catch (e) {
+            try {
+              xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {
+              fileUpPrivate.trigger(fileUp, 'error', ['old_browser', {
+                file: this
+              }]);
+            }
+          }
+        } else {
+          fileUpPrivate.trigger(fileUp, 'error', ['old_browser', {
+            file: this
+          }]);
+        }
+        if (!xhr) {
+          throw new Error('xhr dont created. Check your browser');
+        }
+        this._xhr = xhr;
+        this._file = file;
+      } else {
+        this._status = 'finish';
+      }
+    },
+    /**
+     * Получение id файла
+     * @return {null}
+     */
+    getId: function () {
+      return this._id;
+    },
+    /**
+     * Получение name
+     * @return {string|null}
+     */
+    getName: function () {
+      return this._file ? fileUpUtils.getFileName(this._file) : this._options.name;
+    },
+    /**
+     * Получение элемента файла
+     * @return {jQuery|null}
+     */
+    getElement: function () {
+      return this._fileElement;
+    },
+    /**
+     * Получение urlPreview
+     * @return {string|null}
+     */
+    getUrlPreview: function () {
+      return this._options.urlPreview;
+    },
+    /**
+     * Получение urlDownload
+     * @return {string|null}
+     */
+    getUrlDownload: function () {
+      return this._options.urlDownload;
+    },
+    /**
+     * Получение size
+     * @return {int|null}
+     */
+    getSize: function () {
+      return this._file ? fileUpUtils.getFileSize(this._file) : this._options.size;
+    },
+    /**
+     * Formatting size
+     * @returns {string}
+     */
+    getSizeHuman: function () {
+      let size = this.getSize();
+      return fileUpUtils.getSizeHuman(size);
+    },
+    /**
+     * Получение xhr
+     * @return {XMLHttpRequest|null}
+     */
+    getXhr: function () {
+      return this._xhr;
+    },
+    /**
+     * Получение файла
+     * @return {File|null}
+     */
+    getFile: function () {
+      if (!(this._file instanceof File)) {
+        return null;
+      }
+      return this._file;
+    },
+    /**
+     * Получение статуса
+     * @return {string}
+     */
+    getStatus: function () {
+      return this._status;
+    },
+    /**
+     * Установка статуса
+     * @param {string} status
+     */
+    setStatus: function (status) {
+      if (typeof status !== 'string') {
+        return;
+      }
+      this._status = status;
+    },
+    /**
+     * Получение параметров
+     *
+     * @returns {object}
+     */
+    getOptions: function () {
+      return this._options;
+    },
+    /**
+     * Получение параметра
+     * @param {string} name
+     * @returns {*}
+     */
+    getOption: function (name) {
+      if (typeof name !== 'string' || !this._options.hasOwnProperty(name)) {
+        return null;
+      }
+      return this._options[name];
+    },
+    /**
+     * Установка параметра
+     * @param {string} name
+     * @param {*}      value
+     */
+    setOption: function (name, value) {
+      if (typeof name !== 'string') {
+        return;
+      }
+      this._options[name] = value;
+    },
+    /**
+     * Показ сообщения об ошибке
+     * @param {string} message
+     */
+    showError: function (message) {
+      if (typeof message !== 'string') {
+        return;
+      }
+      let element = this.getElement();
+      if (element) {
+        element.find('.fileup-result').removeClass('fileup-success').addClass('fileup-error').text(message);
+      }
+    },
+    /**
+     * Показ сообщения об успехе
+     * @param {string} message
+     */
+    showSuccess: function (message) {
+      if (typeof message !== 'string') {
+        return;
+      }
+      let element = this.getElement();
+      if (element) {
+        element.find('.fileup-result').removeClass('fileup-error').addClass('fileup-success').text(message);
+      }
+    },
+    /**
+     * Удаление файла на странице и из памяти
+     */
+    remove: function () {
+      this.abort();
+      if (this._fileElement) {
+        this._fileElement.fadeOut('fast', function () {
+          this.remove();
+        });
+      }
+      let fileId = this.getId();
+      if (this._fileUp._files.hasOwnProperty(fileId)) {
+        delete this._fileUp._files[fileId];
+      }
+      fileUpPrivate.trigger(this._fileUp, 'remove', [this]);
+    },
+    /**
+     * Загрузка файла
+     * @return {boolean}
+     */
+    upload: function () {
+      let file = this.getFile();
+      let xhr = this.getXhr();
+      if (!file || !xhr) {
+        return false;
+      }
+      let options = this._fileUp.getOptions();
+      let that = this;
+      if (typeof options.timeout === 'number') {
+        xhr.timeout = options.timeout;
+      }
+
+      // запрос начат
+      xhr.onloadstart = function () {
+        that.setStatus('load_start');
+        fileUpPrivate.trigger(that._fileUp, 'load_start', [that]);
+      };
+
+      // браузер получил очередной пакет данных
+      xhr.upload.onprogress = function (ProgressEvent) {
+        fileUpPrivate.trigger(that._fileUp, 'load_progress', [that, ProgressEvent]);
+      };
+
+      // запрос был успешно (без ошибок) завершён
+      xhr.onload = function () {
+        that.setStatus('loaded');
+        if (xhr.status === 200) {
+          fileUpPrivate.trigger(that._fileUp, 'load_success', [that, xhr.responseText]);
+        } else {
+          fileUpPrivate.trigger(that._fileUp, 'error', ['load_bad_status', {
+            file: that,
+            fileData: file,
+            response: xhr.responseText,
+            xhr: xhr
+          }]);
+        }
+      };
+
+      // запрос был завершён (успешно или неуспешно)
+      xhr.onloadend = function () {
+        that.setStatus('finish');
+        fileUpPrivate.trigger(that._fileUp, 'load_finish', [that]);
+      };
+
+      // запрос был отменён вызовом xhr.abort()
+      xhr.onabort = function () {
+        that.setStatus('stand_by');
+        fileUpPrivate.trigger(that._fileUp, 'load_abort', [that]);
+      };
+
+      // запрос был прекращён по таймауту
+      xhr.ontimeout = function () {
+        that.setStatus('stand_by');
+        fileUpPrivate.trigger(that._fileUp, 'error', ['load_timeout', {
+          file: that,
+          fileData: file
+        }]);
+      };
+
+      // произошла ошибка
+      xhr.onerror = function (event) {
+        that.setStatus('stand_by');
+        fileUpPrivate.trigger(that._fileUp, 'error', ['load_error', {
+          file: that,
+          fileData: file,
+          event: event
+        }]);
+      };
+      xhr.open(options.httpMethod || 'post', options.url, true);
+      xhr.setRequestHeader('Cache-Control', 'no-cache');
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      fileUpPrivate.trigger(that._fileUp, 'load_before_start', [that, xhr]);
+      if (window.FormData !== undefined) {
+        let formData = new FormData();
+        formData.append(options.fieldName, file);
+        if (Object.keys(options.extraFields).length) {
+          $.each(options.extraFields, function (name, value) {
+            formData.append(name, value);
+          });
+        }
+        return xhr.send(formData);
+      } else {
+        // IE 8,9
+        return xhr.send(file);
+      }
+    },
+    /**
+     * Отмена загрузки
+     */
+    abort: function () {
+      if (this._xhr) {
+        this._xhr.abort();
+      }
+    },
+    /**
+     * Рендер элемента
+     * @param {string} tpl
+     * @return {string|null}
+     */
+    render: function (tpl) {
+      if (!tpl || typeof tpl !== 'string') {
+        return null;
+      }
+      let lang = this._fileUp.getLang();
+      let options = this._fileUp.getOptions();
+      let that = this;
+      let isNoPreview = false;
+      let mimeTypes = fileUpUtils.isObject(options.mimeTypes) ? options.mimeTypes : {};
+      let iconDefault = typeof options.iconDefault === 'string' ? options.iconDefault : '';
+      let showRemove = typeof options.showRemove === 'boolean' ? options.showRemove : true;
+      let size = this.getSizeHuman();
+      let icon = null;
+      let fileType = null;
+      let fileExt = null;
+      tpl = tpl.replace(/\[NAME\]/g, this.getName());
+      tpl = tpl.replace(/\[SIZE\]/g, size);
+      tpl = tpl.replace(/\[UPLOAD\]/g, lang.upload);
+      tpl = tpl.replace(/\[REMOVE\]/g, lang.remove);
+      tpl = tpl.replace(/\[ABORT\]/g, lang.abort);
+      if (this._file && this._file instanceof File) {
+        if (this._file.type && typeof this._file.type === 'string' && this._file.type.match(/^image\/.*/)) {
+          if (typeof FileReader !== 'undefined') {
+            let reader = new FileReader();
+            reader.onload = function (ProgressEvent) {
+              if (that._fileElement) {
+                let preview = that._fileElement.find('.fileup-preview');
+                preview.removeClass('no-preview').find('img').attr('src', ProgressEvent.target.result);
+              }
+            };
+            reader.readAsDataURL(this._file);
+          }
+          isNoPreview = true;
+          tpl = tpl.replace(/\[PREVIEW_SRC\]/g, '');
+          tpl = tpl.replace(/\[TYPE\]/g, 'fileup-image fileup-no-preview');
+        } else {
+          tpl = tpl.replace(/\[PREVIEW_SRC\]/g, '');
+          tpl = tpl.replace(/\[TYPE\]/g, 'fileup-doc');
+          fileType = this._file.type;
+          fileExt = this.getName().split('.').pop();
+        }
+      } else {
+        let urlPreview = this.getUrlPreview();
+        tpl = tpl.replace(/\[PREVIEW_SRC\]/g, urlPreview ? urlPreview : '');
+        tpl = tpl.replace(/\[TYPE\]/g, urlPreview ? 'fileup-image' : 'fileup-doc');
+        fileExt = this.getName() ? this.getName().split('.').pop().toLowerCase() : '';
+      }
+      this._fileElement = $(tpl);
+      if (isNoPreview) {
+        this._fileElement.find('.fileup-preview').addClass('no-preview');
+      }
+      if (!size) {
+        this._fileElement.find('.fileup-size').hide();
+      }
+      if (fileType || fileExt) {
+        $.each(mimeTypes, function (name, type) {
+          if (!fileUpUtils.isObject(type) || !type.hasOwnProperty('icon') || typeof type.icon !== 'string' || type.icon === '') {
+            return;
+          }
+          if (fileType && type.hasOwnProperty('mime')) {
+            if (typeof type.mime === 'string') {
+              if (type.mime === fileType) {
+                icon = type.icon;
+                return false;
+              }
+            } else if (Array.isArray(type.mime)) {
+              $.each(type.mime, function (key, mime) {
+                if (typeof mime === 'string' && mime === fileType) {
+                  icon = type.icon;
+                  return false;
+                }
+              });
+              if (icon) {
+                return false;
+              }
+            } else if (type.mime instanceof RegExp) {
+              if (type.mime.test(fileType)) {
+                icon = type.icon;
+                return false;
+              }
+            }
+          }
+          if (fileExt && type.hasOwnProperty('ext') && Array.isArray(type.ext)) {
+            $.each(type.ext, function (key, ext) {
+              if (typeof ext === 'string' && ext === fileExt) {
+                icon = type.icon;
+                return false;
+              }
+            });
+            if (icon) {
+              return false;
+            }
+          }
+        });
+      }
+      if (!icon) {
+        icon = iconDefault;
+      }
+      this._fileElement.find('.fileup-icon').addClass(icon);
+      if (!showRemove) {
+        this._fileElement.find('.fileup-remove').hide();
+      }
+      if (this.getUrlDownload()) {
+        let $name = this._fileElement.find('.fileup-name');
+        if ($name[0]) {
+          $name.replaceWith('<a href="' + this.getUrlDownload() + '" class="fileup-name" download="' + this.getName() + '">' + this.getName() + '</a>');
+        }
+      }
+      if (this._status === 'finish') {
+        this._fileElement.find('.fileup-upload').hide();
+        this._fileElement.find('.fileup-abort').hide();
+        this._fileElement.find('.fileup-progress').hide();
+      } else {
+        this._fileElement.find('.fileup-upload').click(function () {
+          that.upload();
+        });
+        this._fileElement.find('.fileup-abort').click(function () {
+          that.abort();
+        });
+      }
+      this._fileElement.find('.fileup-remove').click(function () {
+        that.remove();
+      });
+      return this._fileElement;
+    }
+  };
+
+  let tpl = Object.create(null);
+  tpl['file.html'] = '<div class="fileup-file [TYPE] mb-2 p-1 d-flex flex-nowrap gap-2 bg-light border border-secondary-subtle rounded rounded-1"> <div class="fileup-preview"> <img src="[PREVIEW_SRC]" alt="[NAME]" class="border rounded"/> <i class="fileup-icon fs-4 text-secondary"></i> </div> <div class="flex-fill"> <div class="fileup-description"> <span class="fileup-name">[NAME]</span> <small class="fileup-size text-nowrap text-secondary">([SIZE])</small> </div> <div class="fileup-controls mt-1 d-flex gap-2"> <span class="fileup-remove" title="[REMOVE]">✕</span> <span class="fileup-upload link-primary">[UPLOAD]</span> <span class="fileup-abort link-primary" style="display:none">[ABORT]</span> </div> <div class="fileup-result"></div> <div class="fileup-progress progress mt-2 mb-1"> <div class="fileup-progress-bar progress-bar"></div> </div> </div> </div>';
+
+  let fileUpInstance = {
+    _options: {
+      id: null,
+      url: null,
+      input: null,
+      queue: null,
+      dropzone: null,
+      files: [],
+      fieldName: 'file',
+      extraFields: {},
+      lang: 'en',
+      langItems: null,
+      sizeLimit: 0,
+      filesLimit: 0,
+      httpMethod: 'post',
+      timeout: null,
+      autostart: false,
+      showRemove: true,
+      templateFile: null,
+      onSelect: null,
+      onRemove: null,
+      onBeforeStart: null,
+      onStart: null,
+      onProgress: null,
+      onAbort: null,
+      onSuccess: null,
+      onFinish: null,
+      onError: null,
+      onDragOver: null,
+      onDragLeave: null,
+      onDragEnd: null,
+      onDragEnter: null,
+      iconDefault: 'bi bi-file-earmark-text',
+      mimeTypes: {
+        archive: {
+          mime: ['application/zip', 'application/gzip', 'application/x-bzip', 'application/x-bzip2', 'application/x-7z-compressed'],
+          ext: ['zip', '7z', 'bz', 'bz2', 'gz', 'jar', 'rar', 'tar'],
+          icon: 'bi bi-file-earmark-zip'
+        },
+        word: {
+          mime: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+          ext: ['doc', 'docx'],
+          icon: 'bi bi-file-earmark-word'
+        },
+        excel: {
+          mime: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+          ext: ['xls', 'xlsx'],
+          icon: 'bi bi-file-earmark-excel'
+        },
+        image: {
+          mime: /image\/.*/,
+          ext: ['jpg', 'jpeg', 'png', 'bmp', 'gif', 'raw', 'webp', 'heic', 'ico'],
+          icon: 'bi bi-file-earmark-image'
+        },
+        video: {
+          mime: /video\/.*/,
+          ext: ['avi', 'mp4', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2', 'mkv'],
+          icon: 'bi bi-file-earmark-play'
+        },
+        audio: {
+          mime: /audio\/.*/,
+          ext: ['avi', 'mp4', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2', 'mkv'],
+          icon: 'bi bi-file-earmark-music'
+        },
+        pdf: {
+          mime: ['application/pdf'],
+          ext: ['pdf'],
+          icon: 'bi bi-file-earmark-pdf'
+        },
+        binary: {
+          mime: ['application\/octet-stream'],
+          ext: ['bin', 'exe', 'dat', 'dll'],
+          icon: 'bi bi-file-earmark-binary'
+        }
+      }
+    },
+    _id: null,
+    _fileUp: null,
+    _fileIndex: 0,
+    _input: null,
+    _queue: null,
+    _dropzone: null,
+    _files: {},
+    _events: {},
+    /**
+     * Инициализация
+     * @param {object} fileUp
+     * @param {object} options
+     * @private
+     */
+    _init: function (fileUp, options) {
+      if (typeof options.url !== 'string' || !options.url) {
+        throw new Error('Dont set url param');
+      }
+      this._fileUp = fileUp;
+      this._options = $.extend(true, {}, this._options, options);
+      this._id = typeof this._options.id === 'string' && this._options.id ? this._options.id : fileUpUtils.hashCode();
+      if (!this._options.templateFile || typeof this._options.templateFile !== 'string') {
+        this._options.templateFile = tpl['file.html'];
+      }
+      fileUpPrivate.initInput(this);
+      fileUpPrivate.initQueue(this);
+      fileUpPrivate.initDropzone(this);
+      fileUpPrivate.initEvents(this);
+      fileUpPrivate.renderFiles(this);
+    },
+    /**
+     * Разрушение экземпляра
+     */
+    destruct: function () {
+      let id = this.getId();
+      if (!this._fileUp._instances.hasOwnProperty(id)) {
+        return;
+      }
+      delete this._fileUp._instances[id];
+    },
+    /**
+     * Получение параметров
+     * @returns {object}
+     */
+    getOptions: function () {
+      return this._options;
+    },
+    /**
+     * Получение id
+     * @return {string|null}
+     */
+    getId: function () {
+      return this._id;
+    },
+    /**
+     * Получение input
+     * @return {jQuery|null}
+     */
+    getInput: function () {
+      return this._input;
+    },
+    /**
+     * Получение queue
+     * @return {jQuery|null}
+     */
+    getQueue: function () {
+      return this._queue;
+    },
+    /**
+     * Получение dropzone
+     * @return {jQuery|null}
+     */
+    getDropzone: function () {
+      return this._dropzone;
+    },
+    /**
+     * Подписка на событие
+     * @param {string}           eventName
+     * @param {function|string}  callback
+     * @param {object|undefined} context
+     */
+    on: function (eventName, callback, context) {
+      if (typeof this._events[eventName] !== 'object') {
+        this._events[eventName] = [];
+      }
+      this._events[eventName].push({
+        context: context || this,
+        callback: callback,
+        singleExec: false
+      });
+    },
+    /**
+     * Подписка на событие таким образом, что выполнение произойдет лишь один раз
+     * @param {string}           eventName
+     * @param {function|string}  callback
+     * @param {object|undefined} context
+     */
+    one: function (eventName, callback, context) {
+      if (typeof this._events[eventName] !== 'object') {
+        this._events[eventName] = [];
+      }
+      this._events[eventName].push({
+        context: context || this,
+        callback: callback,
+        singleExec: true
+      });
+    },
+    /**
+     * Получение настроек языка
+     */
+    getLang: function () {
+      return $.extend(true, {}, this._options.langItems);
+    },
+    /**
+     * Получение всех файлов
+     * @return {object}
+     */
+    getFiles: function () {
+      return this._files;
+    },
+    /**
+     * Получение файла по его id
+     * @param {int} fileId
+     * @return {object|null}
+     */
+    getFileById: function (fileId) {
+      let result = null;
+      $.each(this._files, function (key, file) {
+        if (fileId === file.getId()) {
+          result = file;
+        }
+      });
+      return result;
+    },
+    /**
+     * Удаление всех файлов
+     */
+    removeAll: function () {
+      $.each(this._files, function (key, file) {
+        file.remove();
+      });
+    },
+    /**
+     * Загрузка всех файлов
+     */
+    uploadAll: function () {
+      $.each(this._files, function (key, file) {
+        file.upload();
+      });
+    },
+    /**
+     * Отмена загрузки всех файлов
+     */
+    abortAll: function () {
+      $.each(this._files, function (key, file) {
+        file.abort();
+      });
+    },
+    /**
+     * Добавление файла в список из объекта File
+     * @param {object} file
+     * @result {boolean}
+     */
+    appendFile: function (file) {
+      if (!(file instanceof File)) {
+        return false;
+      }
+      let fileInstance = $.extend(true, {}, fileUpFile);
+      let data = {
+        name: fileUpUtils.getFileName(file),
+        size: fileUpUtils.getFileSize(file),
+        type: file.type
+      };
+      fileInstance._init(this, this._fileIndex, data, file);
+      this._files[this._fileIndex] = fileInstance;
+      let queue = this.getQueue();
+      if (queue) {
+        queue.append(fileInstance.render(this._options.templateFile));
+      }
+      this._fileIndex++;
+      if (typeof this._options.autostart === 'boolean' && this._options.autostart) {
+        fileInstance.upload();
+      }
+      return true;
+    },
+    /**
+     * Добавление файла в список из данных
+     * @param {object} data
+     * @result {boolean}
+     */
+    appendFileByData: function (data) {
+      if (!fileUpUtils.isObject(data)) {
+        return false;
+      }
+      let fileInstance = $.extend(true, {}, fileUpFile);
+      fileInstance._init(this, this._fileIndex, data);
+      fileInstance.setStatus('finish');
+      this._files[this._fileIndex] = fileInstance;
+      let queue = this.getQueue();
+      if (queue) {
+        queue.append(fileInstance.render(this._options.templateFile));
+      }
+      this._fileIndex++;
+      return true;
+    }
+  };
+
+  let fileUp = {
+    lang: {},
+    _instances: {},
+    /**
+     * Создание экземпляра
+     * @param {object} options
+     * @returns {object}
+     */
+    create: function (options) {
+      options = fileUpUtils.isObject(options) ? options : {};
+      if (!options.hasOwnProperty('lang')) {
+        options.lang = 'en';
+      }
+      let langList = this.lang.hasOwnProperty(options.lang) ? this.lang[options.lang] : {};
+      options.langItems = options.hasOwnProperty('langItems') && fileUpUtils.isObject(options.langItems) ? $.extend(true, {}, langList, options.langItems) : langList;
+      let instance = $.extend(true, {}, fileUpInstance);
+      instance._init(this, options);
+      let id = instance.getId();
+      this._instances[id] = instance;
+      return instance;
+    },
+    /**
+     * Получение экземпляра по id
+     * @param {string} id
+     * @returns {object|null}
+     */
+    get: function (id) {
+      if (!this._instances.hasOwnProperty(id)) {
+        return null;
+      }
+      if (!$.contains(document, this._instances[id]._input[0])) {
+        delete this._instances[id];
+        return null;
+      }
+      return this._instances[id];
+    }
+  };
+
+  fileUp.lang.en = {
+    upload: 'Upload',
+    abort: 'Abort',
+    remove: 'Remove',
+    complete: 'Complete',
+    error: 'Error',
+    errorLoad: 'Error uploading file',
+    errorBadStatus: 'Error uploading file. Bad request.',
+    errorFilesLimit: 'The number of selected files exceeds the limit (%filesLimit%)',
+    errorSizeLimit: 'File "%fileName%" exceeds the size limit (%sizeLimit%)',
+    errorFileType: 'File "%fileName%" is incorrect',
+    errorOldBrowser: 'Your browser can not upload files. Update to the latest version'
+  };
+
+  fileUp.lang.ru = {
+    upload: 'Загрузить',
+    abort: 'Остановить',
+    remove: 'Удалить',
+    complete: 'Готово',
+    error: 'Ошибка',
+    errorLoad: 'Ошибка при загрузке файла',
+    errorBadStatus: 'Ошибка при загрузке файла. Некорректный запрос.',
+    errorFilesLimit: 'Количество выбранных файлов превышает лимит (%filesLimit%)',
+    errorSizeLimit: 'Файл "%fileName%" превышает предельный размер (%sizeLimit%)',
+    errorFileType: 'Файл "%fileName%" является некорректным',
+    errorOldBrowser: 'Обновите ваш браузер до последней версии'
+  };
+
+  fileUp.lang.es = {
+    upload: 'Subir',
+    abort: 'Cancelar',
+    remove: 'Eliminar',
+    complete: 'Cargado',
+    error: 'Error',
+    errorLoad: 'Error al cargar el archivo',
+    errorBadStatus: 'Error al cargar el archivo. Solicitud no válida.',
+    errorFilesLimit: 'El número de archivo selecccionados excede el límite (%filesLimit%)',
+    errorSizeLimit: 'El archivo "%fileName%" excede el limite de tamaño (%sizeLimit%)',
+    errorFileType: 'El archivo "%fileName%" es inválido',
+    errorOldBrowser: 'Tu navegador no puede subir archivos. Actualiza a la última versión'
+  };
+
+  fileUp.lang.pt = {
+    upload: 'Enviar',
+    abort: 'Cancelar',
+    remove: 'Remover',
+    complete: 'Enviado',
+    error: 'Erro',
+    errorLoad: 'Erro ao carregar o arquivo',
+    errorBadStatus: 'Erro ao carregar o arquivo. Pedido inválido.',
+    errorFilesLimit: 'O número de arquivos selecionados excede o limite (%filesLimit%)',
+    errorSizeLimit: 'Arquivo "%fileName%" excede o limite (%sizeLimit%)',
+    errorFileType: 'Arquivo "%fileName%" inválido',
+    errorOldBrowser: 'Seu navegador não pode enviar os arquivos. Atualize para a versão mais recente'
+  };
+
+  coreuiForm.fields.fileUpload = {
+    _id: '',
+    _hash: '',
+    _form: null,
+    _index: 0,
+    _value: null,
+    _fileUp: null,
+    _options: {
+      type: 'fileUpload',
+      name: null,
+      label: null,
+      labelWidth: null,
+      width: null,
+      outContent: null,
+      description: null,
+      errorText: null,
+      attach: null,
+      required: null,
+      invalidText: null,
+      validText: null,
+      readonly: null,
+      show: true,
+      column: null,
+      options: {
+        url: '',
+        httpMethod: 'post',
+        fieldName: 'file',
+        showButton: true,
+        showDropzone: false,
+        autostart: true,
+        accept: null,
+        timeout: null,
+        filesLimit: null,
+        sizeLimit: null,
+        templateFile: null
+      }
+    },
+    /**
+     * Инициализация
+     * @param {coreuiFormInstance} form
+     * @param {object}             options
+     * @param {int}                index Порядковый номер на форме
+     */
+    init: function init(form, options, index) {
+      this._form = form;
+      this._index = index;
+      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
+      this._hash = coreuiFormUtils.hashCode();
+      this._value = coreuiFormUtils.getFieldValue(form, options);
+      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+      var that = this;
+      form.on('show', function () {
+        that._initEvents();
+      });
+    },
+    /**
+     * Получение параметров
+     * @returns {object}
+     */
+    getOptions: function getOptions() {
+      return $.extend(true, {}, this._options);
+    },
+    /**
+     * Изменение режима поля только для чтения
+     * @param {boolean} isReadonly
+     */
+    readonly: function readonly(isReadonly) {
+      this._value = this._getFiles();
+      this._options.readonly = !!isReadonly;
+      if (this._fileUp) {
+        this._fileUp.destruct();
+      }
+      $('.content-' + this._hash).html(this.renderContent());
+      this._initEvents();
+    },
+    /**
+     * Скрытие поля
+     * @param {int} duration
+     */
+    hide: function hide(duration) {
+      $('#coreui-form-' + this._id).hide(duration);
+    },
+    /**
+     * Показ поля
+     * @param {int} duration
+     */
+    show: function show(duration) {
+      $('#coreui-form-' + this._id).show(duration);
+    },
+    /**
+     * Получение значения из поля
+     * @returns {Array}
+     */
+    getValue: function getValue() {
+      var files = this._getFiles();
+      $.each(files, function (key, file) {
+        if (file.hasOwnProperty('urlPreview')) {
+          delete file.urlPreview;
+        }
+        if (file.hasOwnProperty('urlDownload')) {
+          delete file.urlDownload;
+        }
+      });
+      return files;
+    },
+    /**
+     * Установка значения в поле
+     * @param {Array} value
+     */
+    setValue: function setValue(value) {
+      if (!Array.isArray(value)) {
+        return;
+      }
+      var that = this;
+      this._fileUp.removeAll();
+      $.each(value, function (key, item) {
+        if (item instanceof File) {
+          that._fileUp.appendFile(item);
+        } else if (coreuiFormUtils.isObject(item)) {
+          that._fileUp.appendFileByData(item);
+        }
+      });
+    },
+    /**
+     * Установка валидности поля
+     * @param {boolean|null} isValid
+     * @param {text} text
+     */
+    validate: function validate(isValid, text) {
+      if (this._options.readonly) {
+        return;
+      }
+      var container = $('.content-' + this._hash);
+      container.find('> .validate-content').remove();
+      if (isValid) {
+        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+          text = this._options.validText;
+        }
+        if (typeof text === 'string') {
+          container.append('<div class="validate-content text-success">' + text + '</div>');
+        }
+      } else if (isValid === false) {
+        if (typeof text === 'undefined') {
+          if (typeof this._options.invalidText === 'string') {
+            text = this._options.invalidText;
+          } else if (!text && this._options.required) {
+            text = this._form.getLang().required_field;
+          }
+        }
+        if (typeof text === 'string') {
+          container.append('<div class="validate-content text-danger">' + text + '</div>');
+        }
+      }
+    },
+    /**
+     * Проверка валидности поля
+     * @return {boolean|null}
+     */
+    isValid: function isValid() {
+      if (this._options.required && this._fileUp) {
+        return this._getFiles().length > 0;
+      }
+      return null;
+    },
+    /**
+     * Получение экземпляра fileUp
+     * @return {null}
+     */
+    getFileUp: function getFileUp() {
+      return this._fileUp;
+    },
+    /**
+     * Формирование поля
+     * @returns {string}
+     */
+    render: function render() {
+      var options = this.getOptions();
+      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
+      return ejs.render(tpl$1['form-field-label.html'], {
+        id: this._id,
+        form: this._form,
+        hash: this._hash,
+        field: options,
+        content: this.renderContent(),
+        attachFields: attachFields
+      });
+    },
+    /**
+     * Формирование контента поля
+     * @return {*}
+     */
+    renderContent: function renderContent() {
+      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
+    },
+    /**
+     * Сборка содержимого
+     * @private
+     */
+    _renderContent: function _renderContent() {
+      var lang = this._form.getLang();
+      var fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
+      var isMultiple = !(coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
+      var accept = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
+      return ejs.render(tpl$1['fields/file-upload.html'], {
+        id: this._hash,
+        showButton: !!fileUpOptions.showButton,
+        showDropzone: !!fileUpOptions.showDropzone,
+        isMultiple: isMultiple,
+        accept: accept,
+        lang: lang
+      });
+    },
+    /**
+     * Сборка содержимого только для просмотра
+     * @private
+     */
+    _renderContentReadonly: function _renderContentReadonly() {
+      var lang = this._form.getLang();
+      var fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
+      var isMultiple = !(coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
+      var accept = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
+      return ejs.render(tpl$1['fields/file-upload.html'], {
+        id: this._hash,
+        showButton: false,
+        showDropzone: false,
+        isMultiple: isMultiple,
+        accept: accept,
+        lang: lang
+      });
+    },
+    /**
+     * Инициализация событий
+     * @private
+     */
+    _initEvents: function _initEvents() {
+      var options = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
+      var formOptions = this._form.getOptions();
+      var queue = $('#fileup-' + this._hash + '-queue');
+      var createOptions = {
+        url: typeof options.url === 'string' ? options.url : '',
+        input: 'fileup-' + this._hash,
+        queue: queue
+      };
+      if (formOptions.showDropzone) {
+        createOptions.dropzone = 'fileup-' + this._hash + '-dropzone';
+      }
+      if (typeof formOptions.lang === 'string') {
+        createOptions.lang = formOptions.lang;
+      }
+      if (typeof options.fieldName === 'string') {
+        createOptions.fieldName = options.fieldName;
+      }
+      if (typeof options.httpMethod === 'string') {
+        createOptions.httpMethod = options.httpMethod;
+      }
+      if (coreuiFormUtils.isObject(options.extraFields)) {
+        createOptions.extraFields = options.extraFields;
+      }
+      if (coreuiFormUtils.isNumeric(options.sizeLimit)) {
+        createOptions.sizeLimit = options.sizeLimit;
+      }
+      if (coreuiFormUtils.isNumeric(options.filesLimit)) {
+        createOptions.filesLimit = options.filesLimit;
+      }
+      if (coreuiFormUtils.isNumeric(options.timeout)) {
+        createOptions.timeout = options.timeout;
+      }
+      if (typeof options.autostart === 'boolean') {
+        createOptions.autostart = options.autostart;
+      }
+      if (typeof options.templateFile === 'string') {
+        createOptions.templateFile = options.templateFile;
+      }
+      if (this._options.readonly) {
+        createOptions.showRemove = false;
+      }
+      if (Array.isArray(this._value)) {
+        createOptions.files = this._value;
+      }
+      this._fileUp = fileUp.create(createOptions);
+      if (Array.isArray(this._value) && this._value.length > 0) {
+        queue.addClass('mt-2');
+      }
+      this._fileUp.on('select', function (file) {
+        queue.addClass('mt-2');
+      });
+      this._fileUp.on('remove', function (file) {
+        if (Object.keys(this.getFiles()).length === 0) {
+          setTimeout(function () {
+            queue.removeClass('mt-2');
+          }, 150);
+        }
+      });
+      this._fileUp.on('load_success', function (file, response) {
+        var data = null;
+        if (response) {
+          try {
+            data = JSON.parse(response);
+          } catch (e) {
+            file.showError('Incorrect response JSON format');
+          }
+        }
+        if (data) {
+          file.setOption('upload', data);
+        }
+      });
+    },
+    /**
+     * Получение текущего списка файлов
+     * @return {*[]}
+     * @private
+     */
+    _getFiles: function _getFiles() {
+      if (!this._fileUp) {
+        return [];
+      }
+      var files = this._fileUp.getFiles();
+      var results = [];
+      if (Object.keys(files).length > 0) {
+        $.each(files, function (key, file) {
+          var fileBinary = file.getFile();
+          var result = file.getOptions();
+          result.name = file.getName();
+          result.size = file.getSize();
+          if (fileBinary && fileBinary instanceof File) {
+            result.type = fileBinary.type;
+          }
+          results.push(result);
+        });
+      }
+      return results;
     }
   };
 

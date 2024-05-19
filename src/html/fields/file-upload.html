@@ -1,0 +1,17 @@
+
+<% if (showButton) { %>
+    <button type="button" class="btn btn-outline-secondary fileup-btn">
+        <%= lang.file_upload_select %>
+        <input type="file" id="fileup-<%= id %>"<% if (isMultiple) { %> multiple<% } %><% if (accept) { %> accept="<%= accept %>"<% } %>>
+    </button>
+<% } else { %>
+    <input type="file" id="fileup-<%= id %>"<% if (isMultiple) { %> multiple<% } %><% if (accept) { %> accept="<%= accept %>"<% } %> style="display:none">
+<% } %>
+
+<% if (showDropzone) { %>
+    <div id="fileup-<%= id %>-dropzone" class="fileup-dropzone p-4 d-inline-block text-primary-emphasis fs-5 rounded-4 text-center <% if (showButton) { %>mt-2<% } %>>">
+        <i class="bi bi-folder2-open"></i> <%= lang.file_upload_dropzone %>
+    </div>
+<% } %>
+
+<div id="fileup-<%= id %>-queue"></div>

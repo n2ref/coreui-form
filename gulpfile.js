@@ -4,6 +4,7 @@ const sourcemaps       = require('gulp-sourcemaps');
 const uglify           = require('gulp-uglify');
 const htmlToJs         = require('gulp-html-to-js');
 const wrapFile         = require('gulp-wrap-file');
+const sass             = require('gulp-sass')(require('sass'));
 const rollup           = require('@rollup/stream');
 const rollupSourcemaps = require('rollup-plugin-sourcemaps');
 const rollupBabel      = require('@rollup/plugin-babel');
@@ -18,7 +19,15 @@ var conf = {
         file: 'coreui-form.js',
         fileMin: 'coreui-form.min.js',
         main: 'src/js/main.js',
-        src: 'src/js/*.js'
+        src: 'src/js/**/*.js'
+    },
+    css: {
+        fileMin: 'coreui.form.min.css',
+        file: 'coreui.form.css',
+        main: 'src/css/main.scss',
+        src: [
+            'src/css/**/*.scss',
+        ]
     },
     tpl: {
         file: 'coreui.form.templates.js',
@@ -31,6 +40,31 @@ var conf = {
 };
 
 
+
+gulp.task('build_css_min', function(){
+    return gulp.src(conf.css.main)
+        .pipe(sourcemaps.init())
+        .pipe(sass({includePaths: ['node_modules'], outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(concat(conf.css.fileMin))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(conf.dist));
+});
+
+gulp.task('build_css_min_fast', function(){
+    return gulp.src(conf.css.main)
+        .pipe(sass({includePaths: ['node_modules']}).on('error', sass.logError))
+        .pipe(concat(conf.css.fileMin))
+        .pipe(gulp.dest(conf.dist));
+});
+
+gulp.task('build_css', function(){
+    return gulp.src(conf.css.main)
+        .pipe(sass({includePaths: ['node_modules']}).on('error', sass.logError))
+        .pipe(concat(conf.css.file))
+        .pipe(gulp.dest(conf.dist));
+});
+
+
 gulp.task('build_js', function() {
     return rollup({
         input: conf.js.main,
@@ -38,6 +72,12 @@ gulp.task('build_js', function() {
             sourcemap: false,
             format: 'umd',
             name: "CoreUI.form"
+        },
+        onwarn: function (log, handler) {
+            if (log.code === 'CIRCULAR_DEPENDENCY') {
+                return; // Ignore circular dependency warnings
+            }
+            handler(log.message);
         },
         context: "window",
         plugins: [
@@ -57,6 +97,12 @@ gulp.task('build_js_min_fast', function() {
             sourcemap: false,
             format: 'umd',
             name: "CoreUI.form"
+        },
+        onwarn: function (log, handler) {
+            if (log.code === 'CIRCULAR_DEPENDENCY') {
+                return; // Ignore circular dependency warnings
+            }
+            handler(log.message);
         },
         context: "window",
         plugins: [
@@ -78,6 +124,12 @@ gulp.task('build_js_min', function() {
             sourcemap: false,
             format: 'umd',
             name: "CoreUI.form"
+        },
+        onwarn: function (log, handler) {
+            if (log.code === 'CIRCULAR_DEPENDENCY') {
+                return; // Ignore circular dependency warnings
+            }
+            handler(log.message);
         },
         context: "window",
         plugins: [
@@ -112,6 +164,7 @@ gulp.task('build_tpl', function() {
 gulp.task('build_watch', function() {
     gulp.watch(conf.tpl.src, gulp.series(['build_tpl', 'build_js_min_fast']));
     gulp.watch(conf.js.src, gulp.parallel(['build_js_min_fast']));
+    gulp.watch(conf.css.src, gulp.parallel(['build_css_min_fast']));
 });
 
 gulp.task("default", gulp.series([ 'build_tpl', 'build_js_min', 'build_js']));

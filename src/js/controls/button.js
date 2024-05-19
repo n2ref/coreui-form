@@ -10,7 +10,6 @@ coreuiForm.controls.button = {
     _index: null,
     _options: {
         type: 'button',
-        href: null,
         content: null,
         onClick: null,
         attr: {
@@ -32,7 +31,7 @@ coreuiForm.controls.button = {
         this._index   = index;
         let that      = this;
 
-        form.on('shown.coreui.form', function () {
+        form.on('show', function () {
             that._initEvents();
         });
     },
