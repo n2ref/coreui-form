@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html id="page-content">
+<html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,9 +7,11 @@
     <title>CoreUI Form</title>
 
     <link href="dist/page.min.css" rel="stylesheet"/>
+
     <script src="dist/page.min.js"></script>
     <script src="dist/tinymce/tinymce.min.js"></script>
 
+    <link href="dist/coreui.form.min.css" rel="stylesheet"/>
     <script src="dist/coreui-form.min.js"></script>
 
     <script src="src/js/examples.js"></script>
@@ -67,6 +69,7 @@
                                     <li><a href="#example-validation">Validation</a></li>
                                     <li><a href="#example-methods">Other methods</a></li>
                                     <li><a href="#example-events">Events</a></li>
+                                    <li><a href="#example-file-upload">File upload</a></li>
                                     <li><a href="#example-all">All options</a></li>
                                 </ul>
                             </li>
@@ -103,7 +106,7 @@
                     <h2 id="examples" class="section-margin">Examples</h2>
                     <div>
                         <h3 id="example-simple">Simple form</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-simple"></div>
                             </div>
@@ -139,11 +142,10 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
 
 
                         <h3 id="example-groups">Groups</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-groups"></div>
                             </div>
@@ -175,11 +177,10 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
 
 
                         <h3 id="example-controls">Control types</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-controls"></div>
                             </div>
@@ -196,7 +197,7 @@
             controls: [
                 { type: "submit", content: "Submit", onClick: function (form, e) { console.log('submit click') } },
                 { type: "button", content: "Button", onClick: function (form, e) { console.log('button click') } },
-                { type: "link",   content: "Link",   href: "#link-url", onClick: function (form, e) { console.log('link click') } },
+                { type: "link",   content: "Link",   url: "#link-url", onClick: function (form, e) { console.log('link click') } },
                 { type: "custom", content:
                     '&lt;div class="form-check"&gt;' +
                         '&lt;label class="form-check-label"&gt;' +
@@ -213,11 +214,10 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
 
 
                         <h3 id="example-attache">Attache fields</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-attache"></div>
                             </div>
@@ -276,11 +276,10 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
 
 
                         <h3 id="example-layout">Layout</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-layout"></div>
                             </div>
@@ -298,20 +297,20 @@
             layout:
                 '&lt;div class="d-flex flex-wrap"&gt;' +
                     '&lt;div class="rounded-3 border border-1 shadow-sm p-2 me-3 mb-3" style="width: 315px"&gt;' +
-                        '&lt;h6&gt;Column left&lt;/h6&gt;' +
-                        '[column_left]' +
+                        '&lt;h6&gt;Position left&lt;/h6&gt;' +
+                        '[position_left]' +
                     '&lt;/div&gt;' +
 
                     '&lt;div class="flex-fill rounded-3 border border-1 shadow-sm p-2 mb-3"&gt;' +
-                        '&lt;h6&gt;Column right&lt;/h6&gt;' +
-                        '[column_right]' +
+                        '&lt;h6&gt;Position right&lt;/h6&gt;' +
+                        '[position_right]' +
                     '&lt;/div&gt;' +
 
                     '&lt;div class="w-100 text-center text-success m-3"&gt;custom html content&lt;/div&gt;' +
 
                     '&lt;div class="w-100 rounded-3 border border-1 shadow-sm p-2 mb-3"&gt;' +
-                        '&lt;h6&gt;Column default&lt;/h6&gt;' +
-                        '[column_default]' +
+                        '&lt;h6&gt;Position default&lt;/h6&gt;' +
+                        '[position_default]' +
                     '&lt;/div&gt;' +
                 '&lt;/div&gt;',
             fields: [
@@ -336,11 +335,10 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
 
 
                         <h3 id="example-readonly">Readonly</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-readonly"></div>
                             </div>
@@ -384,11 +382,10 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
 
 
                         <h3 id="example-validation">Validation</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-validation"></div>
                             </div>
@@ -428,11 +425,10 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
 
 
                         <h3 id="example-methods">Other methods</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-methods"></div>
                             </div>
@@ -477,11 +473,10 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
 
 
                         <h3 id="example-events">Events</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-events"></div>
                             </div>
@@ -523,29 +518,89 @@
 
         let formEvents = CoreUI.form.create(eventsOptions);
 
-        formEvents.on('before-load-modal.coreui.form',   function(modal, xhr) {                          console.log('modal before-load-modal') } );
-        formEvents.on('success-load-modal.coreui.form',  function(modal, result) {                       console.log('modal success-load-modal') } );
-        formEvents.on('error-load-modal.coreui.form',    function(modal, xhr, textStatus, errorThrown) { console.log('modal error-load-modal') } );
-        formEvents.on('complete-load-modal.coreui.form', function(modal, xhr, textStatus) {              console.log('modal complete-load-modal') } );
-        formEvents.on('select-modal.coreui.form',        function(modal, xhr, textStatus) {              console.log('modal select-modal') } );
+        formEvents.on('modal_load_before',   function(modal, xhr) {                          console.log('modal before-load-modal') } );
+        formEvents.on('modal_load_success',  function(modal, result) {                       console.log('modal success-load-modal') } );
+        formEvents.on('modal_load_error',    function(modal, xhr, textStatus, errorThrown) { console.log('modal error-load-modal') } );
+        formEvents.on('modal_load_complete', function(modal, xhr, textStatus) {              console.log('modal complete-load-modal') } );
+        formEvents.on('modal_select',        function(modal, xhr, textStatus) {              console.log('modal select-modal') } );
 
-        formEvents.on('shown.coreui.form',        function() {                                   console.log('form shown') } );
-        formEvents.on('send.coreui.form',         function(form, data) {                         console.log('form send') } );
-        formEvents.on('start-send.coreui.form',   function(form, xhr) {                          console.log('form start-send') } );
-        formEvents.on('success-send.coreui.form', function(form, result) {                       console.log('form success-send') } );
-        formEvents.on('error-send.coreui.form',   function(form, xhr, textStatus, errorThrown) { console.log('form error-send') } );
-        formEvents.on('end-send.coreui.form',     function(form, xhr, textStatus) {              console.log('form end-send') } );
+        formEvents.on('show',        function() {                                   console.log('form shown') } );
+        formEvents.on('send',         function(form, data) {                         console.log('form send') } );
+        formEvents.on('send_start',   function(form, xhr) {                          console.log('form start-send') } );
+        formEvents.on('send_success', function(form, result) {                       console.log('form success-send') } );
+        formEvents.on('send_error',   function(form, xhr, textStatus, errorThrown) { console.log('form error-send') } );
+        formEvents.on('send_end',     function(form, xhr, textStatus) {              console.log('form end-send') } );
 
         formEvents.render('form-events');
     &lt;/script&gt;
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
+
+
+                        <h3 id="example-file-upload">File upload</h3>
+                        <div class="mb-3">
+                            <div class="content-example">
+                                <div id="form-file-upload"></div>
+                            </div>
+                            <div class="content-markup">
+                                <pre><code class="html">
+    &lt;div id="form-file-upload"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        let formFileUploads = CoreUI.form.create({
+            send: {
+                url: '/path/to/object/1',
+                method: 'post'
+            },
+            record: {
+                text: "Text value",
+                files: [
+                    {
+                        id: 1,
+                        name: 'Cat.jpg',
+                        size: 254361,
+                        urlPreview: 'data/img/cat.jpg',
+                        urlDownload: 'data/img/cat.jpg',
+                    },
+                    {
+                        id: 2,
+                        name: 'Flower.jpg',
+                        size: 924160,
+                        urlPreview: 'data/img/flower.jpg',
+                        urlDownload: 'data/img/flower.jpg',
+                    },
+                ]
+            },
+            fields: [
+                { type: 'text',  name: 'text',  label: 'Text',  width: 250 },
+                { type: 'fileUpload', name: 'files', label: 'File',
+                    options: {
+                        url: 'data/file.json',
+                        fieldName: 'file',
+                        sizeLimit: 1024 * 1024,
+                        filesLimit: 0
+                    }
+                },
+            ],
+            onSubmit: function(form) {
+                alert(JSON.stringify(form.getData()));
+                return false;
+            },
+            controls: [
+                { type: "submit", content: "Submit" },
+            ]
+        });
+
+        formFileUploads.render('form-file-upload');
+    &lt;/script&gt;
+                                </code></pre>
+                            </div>
+                        </div>
 
 
                         <h3 id="example-all">All options</h3>
-                        <div>
+                        <div class="mb-3">
                             <div class="content-example">
                                 <div id="form-all"></div>
                             </div>
@@ -572,7 +627,7 @@
             width: '100%',
             minWidth: 500,
             maxWidth: '100%',
-            controlsWidth: 150,
+            controlsOffset: 150,
             labelWidth: 150,
             fieldWidth: 200,
             readonly: false,
@@ -581,10 +636,10 @@
             onSubmit: function(form, data) { console.log(data); return false; },
             layout:
                 '&lt;div class="d-flex flex-wrap"&gt;' +
-                    '&lt;div style="width: 500px"&gt;[column_left]&lt;/div&gt;' +
-                    '&lt;div class="flex-fill"&gt;[column_right]&lt;/div&gt;' +
+                    '&lt;div style="width: 500px"&gt;[position_left]&lt;/div&gt;' +
+                    '&lt;div class="flex-fill"&gt;[position_right]&lt;/div&gt;' +
                     '&lt;div class="border-bottom w-100 my-4"&gt;&lt;/div&gt;' +
-                    '&lt;div class="w-100"&gt;[column_default]&lt;/div&gt;' +
+                    '&lt;div class="w-100"&gt;[position_default]&lt;/div&gt;' +
                 '&lt;/div&gt;',
             record: {
                 text: 'default text value',
@@ -738,13 +793,14 @@
                     ]
                 },
 
+                { type: 'custom',  label: 'Custom', content: '&lt;div class="mt-2"&gt;&lt;i&gt;html&lt;/i&gt;&lt;/div&gt;' },
                 { type: 'custom',  label: 'Custom', content: "&lt;i&gt;html&lt;/i&gt;" },
                 { type: 'wysiwyg', name: 'wysiwyg', label: 'Wysiwyg', width: 600, height: 300, options: 'simple' }
             ],
             controls: [
                 { type: "submit", content: "Save",   onClick: function (e) { } },
                 { type: "button", content: "Button", onClick: function (e) { } },
-                { type: "link",   content: "Link", href: "#" },
+                { type: "link",   content: "Link", url: "#" },
                 { type: "custom", content:
                     '&lt;div class="form-check"&gt;' +
                         '&lt;label class="form-check-label"&gt;' +
@@ -762,7 +818,6 @@
                                 </code></pre>
                             </div>
                         </div>
-                        <br><br>
                     </div>
 
 
@@ -818,7 +873,7 @@
                                 <td>Ширина для названий полей формы по умолчанию</td>
                             </tr>
                             <tr>
-                                <th>controlsWidth</th> <td>string|number</td> <td></td>
+                                <th>controlsOffset</th> <td>string|number</td> <td></td>
                                 <td>Ширина отступа для элементов управления. По умолчанию равна значения заданному в <code>labelWidth</code></td>
                             </tr>
                             <tr>
@@ -845,7 +900,7 @@
                                 <td>Css классы которые будут добавлены в сообщение об ошибке</td>
                             </tr>
                             <tr>
-                                <th>layout</th> <td>string</td> <td><code>[column_default]</code></td>
+                                <th>layout</th> <td>string</td> <td><code>[position_default]</code></td>
                                 <td>Макет с html разметкой для настройки внешнего вида формы</td>
                             </tr>
                             <tr>
@@ -1300,77 +1355,84 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td class="text-nowrap">shown.coreui.form</td>
+                                <td class="text-nowrap">show</td>
                                 <td>Показ формы на странице. Происходит один раз при отображении</td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">send.coreui.form</td>
+                                <td class="text-nowrap">send</td>
                                 <td>
                                     Выполняется перед отправкой данных формы.<br>
-                                    В качестве параметров передаются <code>form.on('send.coreui.form', function (form, data).</code><br>
+                                    В качестве параметров передаются <code>form.on('send', function (form, data).</code><br>
                                     Если функция вернет false, то отправка будет прекращена</td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">start-send.coreui.form</td>
+                                <td class="text-nowrap">send_start</td>
                                 <td>
                                     Выполняется перед началом запроса для отправки данных формы.<br>
-                                    В качестве параметров передаются <code>form.on('start-send.coreui.form', function (form, xhr)</code>
+                                    В качестве параметров передаются <code>form.on('send_start', function (form, xhr)</code>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">success-send.coreui.form</td>
+                                <td class="text-nowrap">send_success</td>
                                 <td>
                                     Выполняется после успешного запроса для отправки данных формы.<br>
-                                    В качестве параметров передаются <code>form.on('success-send.coreui.form', function (form, result)</code>
+                                    В качестве параметров передаются <code>form.on('send_success', function (form, result)</code>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">error-send.coreui.form</td>
+                                <td class="text-nowrap">send_error</td>
                                 <td>
                                     Выполняется после не успешного запроса для отправки данных формы.<br>
-                                    В качестве параметров передаются <code>form.on('error-send.coreui.form', function (form, xhr, textStatus, errorThrown)</code>
+                                    В качестве параметров передаются <code>form.on('send_error', function (form, xhr, textStatus, errorThrown)</code>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">end-send.coreui.form</td>
+                                <td class="text-nowrap">send_end</td>
                                 <td>
                                     Выполняется после запроса для отправки данных формы.<br>
-                                    В качестве параметров передаются <code>form.on('end-send.coreui.form', function (form, xhr, textStatus)</code>
+                                    В качестве параметров передаются <code>form.on('send_end', function (form, xhr, textStatus)</code>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">before-load-modal.coreui.form</td>
+                                <td class="text-nowrap">modal_load_before</td>
                                 <td>
                                     Выполняется перед началом запроса для получения данных для модала.<br>
-                                    В качестве параметров передаются <code>form.on('before-load-modal.coreui.form', function (modal, xhr)</code>
+                                    В качестве параметров передаются <code>form.on('modal_load_before', function (modal, xhr)</code>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">success-load-modal.coreui.form</td>
+                                <td class="text-nowrap">modal_load_success</td>
                                 <td>
                                     Выполняется после успешного запроса для получения данных для модала.<br>
-                                    В качестве параметров передаются <code>form.on('success-load-modal.coreui.form', function (modal, result)</code>
+                                    В качестве параметров передаются <code>form.on('modal_load_success', function (modal, result)</code>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">error-load-modal.coreui.form</td>
+                                <td class="text-nowrap">modal_load_error</td>
                                 <td>
                                     Выполняется после не успешного запроса для получения данных для модала.<br>
-                                    В качестве параметров передаются <code>form.on('error-load-modal.coreui.form', function (modal, xhr, textStatus, errorThrown)</code>
+                                    В качестве параметров передаются <code>form.on('modal_load_error', function (modal, xhr, textStatus, errorThrown)</code>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">complete-load-modal.coreui.form</td>
+                                <td class="text-nowrap">modal_load_complete</td>
                                 <td>
                                     Выполняется после запроса для получения данных для модала.<br>
-                                    В качестве параметров передаются <code>form.on('complete-load-modal.coreui.form', function (modal, xhr, textStatus)</code>
+                                    В качестве параметров передаются <code>form.on('modal_load_complete', function (modal, xhr, textStatus)</code>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-nowrap">select-load-modal.coreui.form</td>
+                                <td class="text-nowrap">modal_select</td>
                                 <td>
                                     Выполняется при нажатии на кнопку открытия модала.<br>
-                                    В качестве параметров передаются <code>form.on('>select-load-modal.coreui.form', function (modal, xhr, textStatus)</code>
+                                    В качестве параметров передаются <code>form.on('modal_select', function (modal, event)</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-nowrap">modal_clear</td>
+                                <td>
+                                    Выполняется при очистке выбранного значения в модале.<br>
+                                    В качестве параметров передаются <code>form.on('modal_clear', function (modal, event)</code>
                                 </td>
                             </tr>
                             </tbody>

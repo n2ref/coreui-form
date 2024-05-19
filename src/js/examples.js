@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
         controls: [
             { type: "submit", content: "Submit", onClick: function (form, e) { console.log('submit click') } },
             { type: "button", content: "Button", onClick: function (form, e) { console.log('button click') } },
-            { type: "link",   content: "Link",   href: "#link-url", onClick: function (form, e) { console.log('link click') } },
+            { type: "link",   content: "Link",   url: "#link-url", onClick: function (form, e) { console.log('link click') } },
             { type: "custom", content:
                 '<div class="form-check">' +
                     '<label class="form-check-label">' +
@@ -131,26 +131,26 @@ document.addEventListener('DOMContentLoaded', function () {
         layout:
             '<div class="d-flex flex-wrap">' +
                 '<div class="rounded-3 border border-1 shadow-sm p-2 me-3 mb-3" style="width: 315px">' +
-                    '<h6>Column left</h6>' +
-                    '[column_left]' +
+                    '<h6>Position left</h6>' +
+                    '[position_left]' +
                 '</div>' +
 
                 '<div class="flex-fill rounded-3 border border-1 shadow-sm p-2 mb-3">' +
-                    '<h6>Column right</h6>' +
-                    '[column_right]' +
+                    '<h6>Position right</h6>' +
+                    '[position_right]' +
                 '</div>' +
 
                 '<div class="w-100 text-center text-success m-3">custom html content</div>' +
 
                 '<div class="w-100 rounded-3 border border-1 shadow-sm p-2 mb-3">' +
-                    '<h6>Column default</h6>' +
-                    '[column_default]' +
+                    '<h6>Position default</h6>' +
+                    '[position_default]' +
                 '</div>' +
             '</div>',
         fields: [
-            { type: 'text',   column: 'left',  name: 'text',   label: 'Text',   labelWidth: 100, width: 180 },
-            { type: 'number', column: 'left',  name: 'number', label: 'Number', labelWidth: 100, width: 180 },
-            { type: 'date',   column: 'right', name: 'date',   label: 'Date',   labelWidth: 100, width: 180 },
+            { type: 'text',   position: 'left',  name: 'text',   label: 'Text',   labelWidth: 100, width: 180 },
+            { type: 'number', position: 'left',  name: 'number', label: 'Number', labelWidth: 100, width: 180 },
+            { type: 'date',   position: 'right', name: 'date',   label: 'Date',   labelWidth: 100, width: 180 },
             { type: 'group',  label: 'Group 2', show: true,
                 fields: [
                     { type: 'textarea', name: 'textarea', label: 'Text Area', labelWidth: 150, width: 180, attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' }
@@ -300,20 +300,68 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let formEvents = CoreUI.form.create(eventsOptions);
 
-    formEvents.on('before-load-modal.coreui.form',   function(modal, xhr) {                          console.log('modal before-load-modal') } );
-    formEvents.on('success-load-modal.coreui.form',  function(modal, result) {                       console.log('modal success-load-modal') } );
-    formEvents.on('error-load-modal.coreui.form',    function(modal, xhr, textStatus, errorThrown) { console.log('modal error-load-modal') } );
-    formEvents.on('complete-load-modal.coreui.form', function(modal, xhr, textStatus) {              console.log('modal complete-load-modal') } );
-    formEvents.on('select-modal.coreui.form',        function(modal, xhr, textStatus) {              console.log('modal select-modal') } );
+    formEvents.on('modal_load_before',   function(modal, xhr) {                          console.log('modal before-load-modal') } );
+    formEvents.on('modal_load_success',  function(modal, result) {                       console.log('modal success-load-modal') } );
+    formEvents.on('modal_load_error',    function(modal, xhr, textStatus, errorThrown) { console.log('modal error-load-modal') } );
+    formEvents.on('modal_load_complete', function(modal, xhr, textStatus) {              console.log('modal complete-load-modal') } );
+    formEvents.on('modal_select',        function(modal, xhr, textStatus) {              console.log('modal select-modal') } );
 
-    formEvents.on('shown.coreui.form',        function() {                                   console.log('form shown') } );
-    formEvents.on('send.coreui.form',         function(form, data) {                         console.log('form send') } );
-    formEvents.on('start-send.coreui.form',   function(form, xhr) {                          console.log('form start-send') } );
-    formEvents.on('success-send.coreui.form', function(form, result) {                       console.log('form success-send') } );
-    formEvents.on('error-send.coreui.form',   function(form, xhr, textStatus, errorThrown) { console.log('form error-send') } );
-    formEvents.on('end-send.coreui.form',     function(form, xhr, textStatus) {              console.log('form end-send') } );
+    formEvents.on('show',        function() {                                   console.log('form shown') } );
+    formEvents.on('send',         function(form, data) {                         console.log('form send') } );
+    formEvents.on('send_start',   function(form, xhr) {                          console.log('form start-send') } );
+    formEvents.on('send_success', function(form, result) {                       console.log('form success-send') } );
+    formEvents.on('send_error',   function(form, xhr, textStatus, errorThrown) { console.log('form error-send') } );
+    formEvents.on('send_end',     function(form, xhr, textStatus) {              console.log('form end-send') } );
 
     formEvents.render('form-events');
+
+
+    // File uploads
+    let formFileUploads = CoreUI.form.create({
+        send: {
+            url: '/path/to/object/1',
+            method: 'post'
+        },
+        record: {
+            text: "Text value",
+            files: [
+                {
+                    id: 1,
+                    name: 'Cat.jpg',
+                    size: 254361,
+                    urlPreview: 'data/img/cat.jpg',
+                    urlDownload: 'data/img/cat.jpg',
+                },
+                {
+                    id: 2,
+                    name: 'Flower.jpg',
+                    size: 924160,
+                    urlPreview: 'data/img/flower.jpg',
+                    urlDownload: 'data/img/flower.jpg',
+                },
+            ]
+        },
+        fields: [
+            { type: 'text',  name: 'text',  label: 'Text',  width: 250 },
+            { type: 'fileUpload', name: 'files', label: 'File',
+                options: {
+                    url: 'data/file.json',
+                    fieldName: 'file',
+                    sizeLimit: 1024 * 1024,
+                    filesLimit: 0
+                }
+            },
+        ],
+        onSubmit: function(form) {
+            alert(JSON.stringify(form.getData()));
+            return false;
+        },
+        controls: [
+            { type: "submit", content: "Submit" },
+        ]
+    });
+
+    formFileUploads.render('form-file-upload');
 
 
     // All
@@ -335,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function () {
         width: '100%',
         minWidth: 500,
         maxWidth: '100%',
-        controlsWidth: 150,
+        controlsOffset: 150,
         labelWidth: 150,
         fieldWidth: 200,
         readonly: false,
@@ -344,10 +392,10 @@ document.addEventListener('DOMContentLoaded', function () {
         onSubmit: function(form, data) { console.log(data); return false; },
         layout:
             '<div class="d-flex flex-wrap">' +
-                '<div style="width: 500px">[column_left]</div>' +
-                '<div class="flex-fill">[column_right]</div>' +
+                '<div style="width: 500px">[position_left]</div>' +
+                '<div class="flex-fill">[position_right]</div>' +
                 '<div class="border-bottom w-100 my-4"></div>' +
-                '<div class="w-100">[column_default]</div>' +
+                '<div class="w-100">[position_default]</div>' +
             '</div>',
         record: {
             text: 'default text value',
@@ -383,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
             wysiwyg: 'Simple wysiwyg editor'
         },
         fields: [
-            { type: 'group', label: 'Text and numbers', show: true, showCollapsible: true, column: 'left',
+            { type: 'group', label: 'Text and numbers', show: true, showCollapsible: true, position: 'left',
                 fields: [
                     { type: 'text', name: 'text', label: 'Text', attr: { minlength: 3, maxlength: 255 }, required: true, invalidText: 'Required field',
                         datalist: [
@@ -407,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ]
             },
 
-            { type: 'group', label: 'Date and time', column: 'right', id: 'group_id',
+            { type: 'group', label: 'Date and time', position: 'right', id: 'group_id',
                 fields: [
                     { type: 'date',           name: 'date',       label: 'Date',       width: 110, },
                     { type: 'time',           name: 'time',       label: 'time',       width: 110, },
@@ -432,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ]
             },
 
-            { type: 'select', name: 'select', label: 'Select', width: 200, column: 'default',
+            { type: 'select', name: 'select', label: 'Select', width: 200, position: 'default',
                 options: [
                     { value: '', text: 'No value' },
                     { type: "group", label: 'Group 1',
@@ -502,13 +550,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 ]
             },
 
-            { type: 'custom',  label: 'Custom', content: "<i>html</i>" },
+            { type: 'custom',  label: 'Custom', content: '<div class="mt-2"><i>html</i></div>' },
             { type: 'wysiwyg', name: 'wysiwyg', label: 'Wysiwyg', width: 600, height: 300, options: 'simple' }
         ],
         controls: [
             { type: "submit", content: "Save",   onClick: function (e) { } },
             { type: "button", content: "Button", onClick: function (e) { } },
-            { type: "link",   content: "Link", href: "#" },
+            { type: "link",   content: "Link",   url: "#" },
             { type: "custom", content:
                 '<div class="form-check">' +
                     '<label class="form-check-label">' +
