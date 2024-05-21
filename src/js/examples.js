@@ -352,8 +352,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
         ],
-        onSubmit: function(form) {
-            alert(JSON.stringify(form.getData()));
+        onSubmit: function(form, data) {
+            alert(JSON.stringify(data));
             return false;
         },
         controls: [
