@@ -114,7 +114,12 @@ coreuiForm.fields.number = {
      */
     hide: function (duration) {
 
-        $('#coreui-form-' + this._id).hide(duration);
+        $('#coreui-form-' + this._id).animate({
+            opacity: 0,
+            duration: duration || 0,
+        }, function () {
+            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+        });
     },
 
 
@@ -124,7 +129,15 @@ coreuiForm.fields.number = {
      */
     show: function (duration) {
 
-        $('#coreui-form-' + this._id).show(duration);
+        $('#coreui-form-' + this._id)
+            .addClass('d-flex')
+            .removeClass('d-none')
+            .animate({
+                opacity: 1,
+                duration: duration || 0,
+            }, function () {
+                $(this).css('opacity', '');
+            });
     },
 
 

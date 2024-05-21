@@ -2688,14 +2688,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -2961,14 +2971,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -3178,14 +3198,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения из поля
@@ -3346,14 +3376,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -3973,14 +4013,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -4808,14 +4858,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -5060,14 +5120,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -5363,14 +5433,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -5620,14 +5700,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -5853,14 +5943,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -6062,14 +6162,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения из поля
@@ -6439,14 +6549,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -6636,14 +6756,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -6837,14 +6967,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration || 0);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration || 0);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения из поля
@@ -7069,14 +7209,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -7333,14 +7483,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения в поле
@@ -8915,14 +9075,24 @@
      * @param {int} duration
      */
     hide: function hide(duration) {
-      $('#coreui-form-' + this._id).hide(duration);
+      $('#coreui-form-' + this._id).animate({
+        opacity: 0,
+        duration: duration || 0
+      }, function () {
+        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+      });
     },
     /**
      * Показ поля
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).show(duration);
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
+        opacity: 1,
+        duration: duration || 0
+      }, function () {
+        $(this).css('opacity', '');
+      });
     },
     /**
      * Получение значения из поля
