@@ -367,6 +367,28 @@ let coreuiFormInstance = {
         }
 
 
+        /**
+         * Сборка данных формы для отправки
+         * @param {FormData} formData
+         * @param {object}   data
+         * @param {string}   parentKey
+         */
+        function buildFormData(formData, data, parentKey) {
+
+            if (data &&
+                (Array.isArray(data) || coreuiFormUtils.isObject(data))
+            ) {
+                Object.keys(data).forEach(function (key) {
+                    buildFormData(formData, data[key], parentKey ? parentKey + '[' + key + ']' : key);
+                });
+
+            } else {
+                formData.append(parentKey, data == null ? '' : data);
+            }
+        }
+
+
+
         this.lock();
 
         let that       = this;
@@ -385,19 +407,7 @@ let coreuiFormInstance = {
             contentType = false;
             dataFormat  = new FormData();
 
-            $.each(data, function (name, value) {
-                if (value instanceof File) {
-                    dataFormat.append(name, value, value.name);
-
-                } else if (value instanceof FileList) {
-                    $.each(value, function (key, file) {
-                        dataFormat.append(name, file, file.name);
-                    });
-
-                } else {
-                    dataFormat.append(name, value);
-                }
-            });
+            buildFormData(dataFormat, data);
         }
 
 
