@@ -97,8 +97,7 @@ coreuiForm.fields.passwordRepeat = {
 
         $('#coreui-form-' + this._id).animate({
             opacity: 0,
-            duration: duration || 0,
-        }, function () {
+        }, duration || 200, function () {
             $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
         });
     },
@@ -113,10 +112,10 @@ coreuiForm.fields.passwordRepeat = {
         $('#coreui-form-' + this._id)
             .addClass('d-flex')
             .removeClass('d-none')
+            .css('opacity', 0)
             .animate({
                 opacity: 1,
-                duration: duration || 0,
-            }, function () {
+            }, duration || 200, function () {
                 $(this).css('opacity', '');
             });
     },

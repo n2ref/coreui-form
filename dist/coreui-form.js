@@ -2689,9 +2689,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -2700,10 +2699,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -2972,9 +2970,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -2983,10 +2980,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -3199,9 +3195,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -3210,10 +3205,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -3377,9 +3371,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -3388,10 +3381,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -4014,9 +4006,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -4025,10 +4016,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -4859,9 +4849,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -4870,10 +4859,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -5121,9 +5109,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -5132,10 +5119,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -5434,9 +5420,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -5445,10 +5430,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -5701,9 +5685,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -5712,10 +5695,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -5944,9 +5926,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -5955,10 +5936,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -6163,9 +6143,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -6174,10 +6153,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -6550,9 +6528,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -6561,10 +6538,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -6757,9 +6733,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -6768,10 +6743,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -6968,9 +6942,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -6979,10 +6952,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -7210,9 +7182,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -7221,10 +7192,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -7484,9 +7454,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -7495,10 +7464,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
@@ -9076,9 +9044,8 @@
      */
     hide: function hide(duration) {
       $('#coreui-form-' + this._id).animate({
-        opacity: 0,
-        duration: duration || 0
-      }, function () {
+        opacity: 0
+      }, duration || 200, function () {
         $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
       });
     },
@@ -9087,10 +9054,9 @@
      * @param {int} duration
      */
     show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').animate({
-        opacity: 1,
-        duration: duration || 0
-      }, function () {
+      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+        opacity: 1
+      }, duration || 200, function () {
         $(this).css('opacity', '');
       });
     },
