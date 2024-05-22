@@ -1,5 +1,4 @@
-<div id="coreui-form-<%= id %>" class="coreui-form__field_container d-flex flex-column flex-md-row mb-3"
-     <% if ( ! field.show) { %> style="display:none"<% } %>>
+<div id="coreui-form-<%= id %>" class="coreui-form__field_container d-flex flex-column flex-md-row mb-3<% if ( ! field.show) { %> d-none<% } %>">
     <% if (field.labelWidth !== 0 && field.labelWidth !== '0px') { %>
     <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>>
         <div class="coreui-form__field_label_content col-form-label">
