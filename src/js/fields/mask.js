@@ -4,136 +4,71 @@ import 'jquery-mask-plugin/dist/jquery.mask';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import coreuiForm      from "../coreui.form";
+import FieldInput      from "../fields/input";
 
-coreuiForm.fields.mask = {
 
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-        type: 'mask',
-        name: null,
-        label: null,
-        labelWidth: null,
-        width: null,
-        outContent: null,
-        description: null,
-        errorText: null,
-        attach: null,
-        attr: {
-            class: 'form-control d-inline-block'
-        },
-        required: null,
-        readonly: null,
-        datalist: null,
-        show: true,
-        column: null
-    },
-
+class FieldMask extends FieldInput {
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
-        this._form    = form;
-        this._index   = index;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-        this._hash    = coreuiFormUtils.hashCode();
-        let that      = this;
+        options = $.extend(true, {
+            type: 'mask',
+            name: null,
+            label: null,
+            labelWidth: null,
+            width: null,
+            outContent: null,
+            description: null,
+            errorText: null,
+            fields: null,
+            attr: {
+                class: 'form-control d-inline-block'
+            },
+            required: null,
+            readonly: null,
+            datalist: null,
+            show: true,
+            position: null,
+            noSend: null,
+        }, options);
+
+        super(form, options, index);
+
+        let that = this;
 
         form.on('show', function () {
             if ( ! that._options.readonly) {
                 that._initEvents();
             }
         });
-    },
-
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+    }
 
 
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function (isReadonly) {
+    readonly(isReadonly) {
 
-        this._value            = this.getValue();
-        this._options.readonly = !! isReadonly;
+        super.readonly(isReadonly);
 
-        $('.content-' + this._hash).html(
-            this.renderContent()
-        );
-
-        if ( ! this._options.readonly) {
+        if ( ! isReadonly) {
             this._initEvents();
         }
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
-
-
-    /**
-     * Получение значения в поле
-     * @returns {string}
-     */
-    getValue: function () {
-
-        return this._options.readonly
-            ? this._value
-            : $('.content-' + this._hash + ' input').val();
-    },
+    }
 
 
     /**
      * Установка значения в поле
      * @param {string} value
      */
-    setValue: function (value) {
+    setValue(value) {
 
         if (['string', 'number'].indexOf(typeof value) < 0) {
             return;
@@ -148,107 +83,7 @@ coreuiForm.fields.mask = {
         } else {
             $('.content-' + this._hash + ' input').val(value);
         }
-    },
-
-
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function (isValid, text) {
-
-        if (this._options.readonly) {
-            return;
-        }
-
-        let container = $('.content-' + this._hash);
-        let input     = $('input', container);
-
-        container.find('.valid-feedback').remove();
-        container.find('.invalid-feedback').remove();
-
-        if (isValid === null) {
-            input.removeClass('is-invalid');
-            input.removeClass('is-valid');
-
-        } else if (isValid) {
-            input.removeClass('is-invalid');
-            input.addClass('is-valid');
-
-            if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-                text = this._options.validText;
-            }
-
-            if (typeof text === 'string') {
-                container.append('<div class="valid-feedback">' + text + '</div>');
-            }
-        } else {
-            input.removeClass('is-valid');
-            input.addClass('is-invalid');
-
-            if (typeof text === 'undefined') {
-                if (typeof this._options.invalidText === 'string') {
-                    text = this._options.invalidText;
-
-                } else if ( ! text && this._options.required) {
-                    text = this._form.getLang().required_field;
-                }
-            }
-
-            if (typeof text === 'string') {
-                container.append('<div class="invalid-feedback">' + text + '</div>');
-            }
-        }
-    },
-
-
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function () {
-
-        let input = $('.content-' + this._hash + ' input');
-
-        if (input[0]) {
-            return input.is(':valid');
-        }
-
-        return null;
-    },
-
-
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function() {
-
-        let options      = this.getOptions();
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form:  this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields,
-        });
-    },
-
-
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function () {
-
-        return this._options.readonly
-            ? this._renderContentReadonly()
-            : this._renderContent();
-    },
+    }
 
 
     /**
@@ -256,7 +91,7 @@ coreuiForm.fields.mask = {
      * @return {*}
      * @private
      */
-    _renderContent: function () {
+    _renderContent() {
 
         let attributes = [];
         let datalist   = [];
@@ -321,14 +156,14 @@ coreuiForm.fields.mask = {
                 datalist: datalist
             },
         });
-    },
+    }
 
 
     /**
      *
      * @private
      */
-    _renderContentReadonly: function () {
+    _renderContentReadonly() {
 
         let options = this.getOptions();
 
@@ -336,16 +171,21 @@ coreuiForm.fields.mask = {
             field: options,
             value: this._value !== null ? this._value : ''
         });
-    },
+    }
 
 
     /**
      * Инициализация событий
      * @private
      */
-    _initEvents: function () {
+    _initEvents () {
 
         $('#coreui-form-' + this._id + ' .content-' + this._hash + ' input')
             .mask(this._options.mask, this._options.options)
     }
 }
+
+
+coreuiForm.fields.mask = FieldMask;
+
+export default FieldMask;

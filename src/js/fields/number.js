@@ -3,53 +3,44 @@ import 'ejs/ejs.min';
 import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
+import Field           from "../abstract/Field";
 
 
-coreuiForm.fields.number = {
-
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-        type: 'number',
-        name: null,
-        label: null,
-        labelWidth: null,
-        width: null,
-        outContent: null,
-        description: null,
-        errorText: null,
-        attach: null,
-        attr: {
-            class: 'form-control d-inline-block',
-            step: 'any'
-        },
-        required: null,
-        readonly: null,
-        datalist: null,
-        show: true,
-        column: null,
-        precision: null
-    },
+class FieldNumber extends Field {
 
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
-        this._form    = form;
-        this._index   = index;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils.hashCode();
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        options = $.extend(true, {
+            type: 'number',
+            name: null,
+            label: null,
+            labelWidth: null,
+            width: null,
+            outContent: null,
+            description: null,
+            errorText: null,
+            fields: null,
+            attr: {
+                class: 'form-control d-inline-block',
+                step: 'any'
+            },
+            required: null,
+            readonly: null,
+            datalist: null,
+            show: true,
+            position: null,
+            precision: null,
+            noSend: null,
+        }, options);
 
+        super(form, options, index);
 
         // Установка точности
         if (this._options.precision === null) {
@@ -77,86 +68,40 @@ coreuiForm.fields.number = {
                 that._initEvents();
             }
         });
-    },
-
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+    }
 
 
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function (isReadonly) {
+    readonly(isReadonly) {
 
-        this._value            = this.getValue();
-        this._options.readonly = !! isReadonly;
+        super.readonly(isReadonly);
 
-        $('.content-' + this._hash).html(
-            this.renderContent()
-        );
-
-        if ( ! this._options.readonly) {
+        if ( ! isReadonly) {
             this._initEvents();
         }
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
+    }
 
 
     /**
      * Получение значения в поле
      * @returns {string}
      */
-    getValue: function () {
+    getValue() {
 
         return this._options.readonly
             ? this._value
             : $('.content-' + this._hash + ' input').val();
-    },
+    }
 
 
     /**
      * Установка значения в поле
      * @param {string} value
      */
-    setValue: function (value) {
+    setValue(value) {
 
         if (['string', 'number'].indexOf(typeof value) < 0 ||
             ! value.toString().match(/^\-?\d+\.?\d*$/)
@@ -187,15 +132,15 @@ coreuiForm.fields.number = {
         } else {
             $('.content-' + this._hash + ' input').val(value);
         }
-    },
+    }
 
 
     /**
      * Установка валидности поля
-     * @param {bool|null} isValid
+     * @param {boolean|null} isValid
      * @param {text} text
      */
-    validate: function (isValid, text) {
+    validate(isValid, text) {
 
         if (this._options.readonly) {
             return;
@@ -239,14 +184,14 @@ coreuiForm.fields.number = {
                 container.append('<div class="invalid-feedback">' + text + '</div>');
             }
         }
-    },
+    }
 
 
     /**
      * Проверка валидности поля
      * @return {boolean}
      */
-    isValid: function () {
+    isValid() {
 
         let input = $('.content-' + this._hash + ' input');
 
@@ -255,34 +200,14 @@ coreuiForm.fields.number = {
         }
 
         return null;
-    },
-
-
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function() {
-
-        let options      = $.extend(true, {}, this._options);
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form:  this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields,
-        });
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {*}
      */
-    renderContent: function () {
+    renderContent() {
 
         let attributes = [];
         let datalist   = [];
@@ -349,14 +274,14 @@ coreuiForm.fields.number = {
                 datalist: datalist
             },
         });
-    },
+    }
 
 
     /**
      * Инициализация событий
      * @private
      */
-    _initEvents: function () {
+    _initEvents() {
 
         $('.content-' + this._hash + ' input').keydown(function (e) {
             let k = e.keyCode || e.which;
@@ -399,3 +324,7 @@ coreuiForm.fields.number = {
         });
     }
 }
+
+coreuiForm.fields.number = FieldNumber;
+
+export default FieldNumber;

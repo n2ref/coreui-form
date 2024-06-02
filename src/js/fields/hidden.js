@@ -1,66 +1,48 @@
 
 import 'ejs/ejs.min';
-import coreuiForm      from "../coreui.form";
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import coreuiForm    from "../coreui.form";
+import coreuiFormTpl from "../coreui.form.templates";
+import Field         from "../abstract/Field";
 
 
-coreuiForm.fields.hidden = {
-
-    _id: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-        type: 'hidden',
-        name: null,
-        attr: {},
-        required: null,
-        column: null
-    },
-
+class FieldHidden extends Field {
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
-        this._form    = form;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
+        options = $.extend(true, {
+            type: 'hidden',
+            name: null,
+            attr: {},
+            required: null
+        }, options);
 
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+        super(form, options, index);
+    }
 
 
     /**
      * Получение значения в поле
      * @returns {string}
      */
-    getValue: function () {
+    getValue() {
 
         return this._options.readonly
             ? this._value
             : $('#coreui-form-' + this._id).val();
-    },
+    }
 
 
     /**
      * Установка значения в поле
      * @param {string} value
      */
-    setValue: function (value) {
+    setValue(value) {
 
         if (['string', 'number'].indexOf(typeof value) < 0) {
             return;
@@ -71,26 +53,26 @@ coreuiForm.fields.hidden = {
         if ( ! this._options.readonly) {
             $('#coreui-form-' + this._id).val(value);
         }
-    },
+    }
 
 
     /**
      * Формирование поля
      * @returns {string}
      */
-    render: function() {
+    render() {
 
         return ejs.render(coreuiFormTpl['form-field-content.html'], {
             content: this.renderContent(),
         });
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {*}
      */
-    renderContent: function () {
+    renderContent () {
 
         let attributes = [];
         let options    = this.getOptions();
@@ -127,3 +109,7 @@ coreuiForm.fields.hidden = {
         });
     }
 }
+
+coreuiForm.fields.hidden = FieldHidden;
+
+export default FieldHidden;

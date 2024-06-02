@@ -13,6 +13,122 @@
       return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
     }, _typeof(o);
   }
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+    }
+  }
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
+    return Constructor;
+  }
+  function _defineProperty(obj, key, value) {
+    key = _toPropertyKey(key);
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+    return obj;
+  }
+  function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        writable: true,
+        configurable: true
+      }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
+    });
+    if (superClass) _setPrototypeOf(subClass, superClass);
+  }
+  function _getPrototypeOf(o) {
+    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+  function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+      o.__proto__ = p;
+      return o;
+    };
+    return _setPrototypeOf(o, p);
+  }
+  function _assertThisInitialized(self) {
+    if (self === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+    return self;
+  }
+  function _possibleConstructorReturn(self, call) {
+    if (call && (typeof call === "object" || typeof call === "function")) {
+      return call;
+    } else if (call !== void 0) {
+      throw new TypeError("Derived constructors may only return object or undefined");
+    }
+    return _assertThisInitialized(self);
+  }
+  function _superPropBase(object, property) {
+    while (!Object.prototype.hasOwnProperty.call(object, property)) {
+      object = _getPrototypeOf(object);
+      if (object === null) break;
+    }
+    return object;
+  }
+  function _get() {
+    if (typeof Reflect !== "undefined" && Reflect.get) {
+      _get = Reflect.get.bind();
+    } else {
+      _get = function _get(target, property, receiver) {
+        var base = _superPropBase(target, property);
+        if (!base) return;
+        var desc = Object.getOwnPropertyDescriptor(base, property);
+        if (desc.get) {
+          return desc.get.call(arguments.length < 3 ? target : receiver);
+        }
+        return desc.value;
+      };
+    }
+    return _get.apply(this, arguments);
+  }
+  function _toPrimitive(input, hint) {
+    if (typeof input !== "object" || input === null) return input;
+    var prim = input[Symbol.toPrimitive];
+    if (prim !== undefined) {
+      var res = prim.call(input, hint || "default");
+      if (typeof res !== "object") return res;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return (hint === "string" ? String : Number)(input);
+  }
+  function _toPropertyKey(arg) {
+    var key = _toPrimitive(arg, "string");
+    return typeof key === "symbol" ? key : String(key);
+  }
 
   (function (f) {
     if (typeof exports === "object" && typeof module !== "undefined") {
@@ -1183,20 +1299,7 @@
       if (form._options.readonly) {
         field.readonly = true;
       }
-      var fieldInstance = $.extend(true, {
-        render: function render() {},
-        renderContent: function renderContent() {},
-        init: function init() {},
-        getValue: function getValue() {},
-        setValue: function setValue() {},
-        getOptions: function getOptions() {},
-        show: function show() {},
-        hide: function hide() {},
-        readonly: function readonly() {},
-        validate: function validate() {},
-        isValid: function isValid() {}
-      }, coreuiForm.fields[type]);
-      fieldInstance.init(form, field, form._fieldsIndex++);
+      var fieldInstance = new coreuiForm.fields[type](form, field, form._fieldsIndex++);
       form._fields.push(fieldInstance);
       return fieldInstance;
     },
@@ -1215,14 +1318,7 @@
       if (type !== 'group') {
         return null;
       }
-      var groupInstance = $.extend(true, {
-        render: function render() {},
-        init: function init() {},
-        getOptions: function getOptions() {},
-        expand: function expand() {},
-        collapse: function collapse() {}
-      }, coreuiForm.fields[type]);
-      groupInstance.init(form, group, form._groupsIndex++);
+      var groupInstance = new coreuiForm.fields.group(form, group, form._groupsIndex++);
       form._groups.push(groupInstance);
       return groupInstance;
     },
@@ -1776,6 +1872,14 @@
       }
       var onsubmit = null;
       var data = this.getData();
+      $.each(this._fields, function (key, field) {
+        if (!field.isAlloySend()) {
+          var fieldOptions = field.getOptions();
+          if (fieldOptions.hasOwnProperty('name') && fieldOptions.name && data.hasOwnProperty(fieldOptions.name)) {
+            delete data[fieldOptions.name];
+          }
+        }
+      });
       if (typeof this._options.onSubmit === 'function') {
         onsubmit = this._options.onSubmit;
       } else if (typeof this._options.onSubmit === 'string' && this._options.onSubmit) {
@@ -2188,6 +2292,7 @@
     lang: {},
     fields: {},
     controls: {},
+    "abstract": {},
     _instances: {},
     _settings: {
       labelWidth: 200,
@@ -2632,680 +2737,940 @@
     }
   };
 
-  coreuiForm.fields.checkbox = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: [],
-    _options: {
-      type: 'checkbox',
-      name: null,
-      label: null,
-      labelWidth: null,
-      inline: false,
-      outContent: null,
-      description: null,
-      errorText: null,
-      options: [],
-      fields: null,
-      required: null,
-      readonly: null,
-      show: true,
-      column: null
-    },
+  var Field = /*#__PURE__*/function () {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
+    function Field(form, options, index) {
+      _classCallCheck(this, Field);
+      _defineProperty(this, "_id", null);
+      _defineProperty(this, "_form", null);
+      _defineProperty(this, "_index", 0);
+      _defineProperty(this, "_hash", '');
+      _defineProperty(this, "_value", null);
+      _defineProperty(this, "_options", {
+        type: '',
+        name: null,
+        noSend: null,
+        required: null,
+        show: true,
+        position: null,
+        readonly: null
+      });
       this._form = form;
+      this._index = index;
       this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
       this._hash = coreuiFormUtils.hashCode();
       this._value = coreuiFormUtils.getFieldValue(form, options);
       this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
+    }
+
     /**
      * Получение параметров
      * @returns {object}
      */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
+    return _createClass(Field, [{
+      key: "getOptions",
+      value: function getOptions() {
+        return $.extend(true, {}, this._options);
+      }
+
+      /**
+       * Показ поля
+       * @param {int} duration
+       */
+    }, {
+      key: "show",
+      value: function show(duration) {
+        $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
+          opacity: 1
+        }, duration || 200, function () {
+          $(this).css('opacity', '');
+        });
+      }
+
+      /**
+       * Скрытие поля
+       * @param {int} duration
+       */
+    }, {
+      key: "hide",
+      value: function hide(duration) {
+        $('#coreui-form-' + this._id).animate({
+          opacity: 0
+        }, duration || 200, function () {
+          $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+        });
+      }
+
+      /**
+       * Изменение режима поля только для чтения
+       * @param {boolean} isReadonly
+       */
+    }, {
+      key: "readonly",
+      value: function readonly(isReadonly) {
+        this._value = this.getValue();
+        this._options.readonly = !!isReadonly;
+        $('.content-' + this._hash).html(this.renderContent());
+      }
+
+      /**
+       * Получение значения из поля
+       * @returns {*}
+       */
+    }, {
+      key: "getValue",
+      value: function getValue() {
+        return null;
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {*} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {}
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text}         text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {}
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean|null}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        return null;
+      }
+
+      /**
+       * Проверка на то, что поле можно отправлять
+       * @return {boolean}
+       */
+    }, {
+      key: "isAlloySend",
+      value: function isAlloySend() {
+        return !this._options.noSend;
+      }
+
+      /**
+       * Формирование поля
+       * @returns {string|HTMLElement|jQuery}
+       */
+    }, {
+      key: "render",
+      value: function render() {
+        var options = this.getOptions();
+        var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
+        return ejs.render(tpl$1['form-field-label.html'], {
+          id: this._id,
+          form: this._form,
+          hash: this._hash,
+          field: options,
+          content: this.renderContent(),
+          attachFields: attachFields
+        });
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        return '';
+      }
+    }]);
+  }();
+  coreuiForm["abstract"].field = Field;
+
+  function _callSuper$h(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldCheckbox = /*#__PURE__*/function (_Field) {
     /**
-     * Изменение режима поля только для чтения
-     * @param {boolean} isReadonly
+     * Инициализация
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
+    function FieldCheckbox(form, options, index) {
+      _classCallCheck(this, FieldCheckbox);
+      options = $.extend(true, {
+        type: 'checkbox',
+        name: null,
+        label: null,
+        labelWidth: null,
+        inline: false,
+        outContent: null,
+        description: null,
+        errorText: null,
+        options: [],
+        fields: null,
+        required: null,
+        readonly: null,
+        show: true
+      }, options);
+      return _callSuper$h(this, FieldCheckbox, [form, options, index]);
+    }
+
     /**
      * Получение значения в поле
-     * @returns {object}
+     * @returns {Array}
      */
-    getValue: function getValue() {
-      if (this._options.readonly) {
-        return this._value;
-      } else {
-        var values = [];
-        $('.content-' + this._hash + ' input[type=checkbox]:checked').each(function () {
-          values.push($(this).val());
-        });
-        return values;
+    _inherits(FieldCheckbox, _Field);
+    return _createClass(FieldCheckbox, [{
+      key: "getValue",
+      value: function getValue() {
+        if (this._options.readonly) {
+          return this._value;
+        } else {
+          var values = [];
+          $('.content-' + this._hash + ' input[type=checkbox]:checked').each(function () {
+            values.push($(this).val());
+          });
+          return values;
+        }
       }
-    },
-    /**
-     * Установка значений в поле
-     * @param {object|null|string|number} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number', 'object'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      if (_typeof(value) === 'object') {
-        if (value !== null && !Array.isArray(value)) {
+
+      /**
+       * Установка значений в поле
+       * @param {object|null|string|number} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number', 'object'].indexOf(_typeof(value)) < 0) {
           return;
         }
-      } else {
-        value = [value];
-      }
-      var that = this;
-      this._value = [];
-      if (this._options.readonly) {
-        $('.content-' + that._hash).empty();
-        var fieldOptions = this.getOptions();
-        if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options) && Array.isArray(value)) {
-          var selectedItems = [];
-          $.each(fieldOptions.options, function (key, option) {
-            if (option.hasOwnProperty('value')) {
-              $.each(value, function (key, val) {
-                if (option.value == val) {
-                  if (option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0) {
-                    selectedItems.push(option.text);
+        if (_typeof(value) === 'object') {
+          if (value !== null && !Array.isArray(value)) {
+            return;
+          }
+        } else {
+          value = [value];
+        }
+        var that = this;
+        this._value = [];
+        if (this._options.readonly) {
+          $('.content-' + that._hash).empty();
+          var fieldOptions = this.getOptions();
+          if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options) && Array.isArray(value)) {
+            var selectedItems = [];
+            $.each(fieldOptions.options, function (key, option) {
+              if (option.hasOwnProperty('value')) {
+                $.each(value, function (key, val) {
+                  if (option.value == val) {
+                    if (option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0) {
+                      selectedItems.push(option.text);
+                    }
+                    that._value.push(val);
+                    return false;
                   }
+                });
+              }
+            });
+            $('.content-' + that._hash).text(selectedItems.join(', '));
+          }
+        } else {
+          $('.content-' + this._hash + ' input[type=radio]').prop('checked', false);
+          if (Array.isArray(value)) {
+            $('.content-' + this._hash + ' input[type=radio]').each(function (key, itemValue) {
+              $.each(value, function (key, val) {
+                if (val == $(itemValue).val()) {
+                  $(itemValue).prop('checked', true);
                   that._value.push(val);
                   return false;
                 }
               });
-            }
-          });
-          $('.content-' + that._hash).text(selectedItems.join(', '));
-        }
-      } else {
-        $('.content-' + this._hash + ' input[type=radio]').prop('checked', false);
-        if (Array.isArray(value)) {
-          $('.content-' + this._hash + ' input[type=radio]').each(function (key, itemValue) {
-            $.each(value, function (key, val) {
-              if (val == $(itemValue).val()) {
-                $(itemValue).prop('checked', true);
-                that._value.push(val);
-                return false;
-              }
             });
-          });
-        }
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var lastInput = $('.form-check:last-child', container);
-      var inputs = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        inputs.removeClass('is-invalid');
-        inputs.removeClass('is-valid');
-      } else if (isValid) {
-        inputs.removeClass('is-invalid');
-        inputs.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          lastInput.append('<div class="valid-feedback">' + text + '</div>');
-        }
-      } else {
-        inputs.removeClass('is-valid');
-        inputs.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
           }
         }
-        if (typeof text === 'string') {
-          lastInput.append('<div class="invalid-feedback">' + text + '</div>');
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
         }
-      }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      if (this._options.required && !this._options.readonly) {
-        return this.getValue().length > 0;
-      }
-      return true;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: this._options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var that = this;
-      var checkboxOptions = [];
-      var fieldOptions = this.getOptions();
-      var selectedItems = [];
-      if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options)) {
-        $.each(fieldOptions.options, function (key, option) {
-          var attributes = [];
-          var itemAttr = {
-            type: 'checkbox',
-            "class": 'form-check-input'
-          };
-          var optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
-          if (fieldOptions.name) {
-            itemAttr.name = that._options.name;
+        var container = $('.content-' + this._hash);
+        var lastInput = $('.form-check:last-child', container);
+        var inputs = $('input', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          inputs.removeClass('is-invalid');
+          inputs.removeClass('is-valid');
+        } else if (isValid) {
+          inputs.removeClass('is-invalid');
+          inputs.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
           }
-          if (fieldOptions.required) {
-            itemAttr.required = 'required';
+          if (typeof text === 'string') {
+            lastInput.append('<div class="valid-feedback">' + text + '</div>');
           }
-          $.each(option, function (name, value) {
-            if (name !== 'text') {
-              if (name === 'class') {
-                itemAttr[name] = itemAttr[name] + ' ' + value;
-              } else {
-                itemAttr[name] = value;
-              }
+        } else {
+          inputs.removeClass('is-valid');
+          inputs.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
             }
-          });
-          itemAttr.id = coreuiFormUtils.hashCode();
-          if (_typeof(that._value) === 'object' && Array.isArray(that._value)) {
-            $.each(that._value, function (key, itemValue) {
-              if (itemValue == option.value) {
-                itemAttr.checked = 'checked';
-                if (option.hasOwnProperty('text') && option.text) {
-                  selectedItems.push(option.text);
+          }
+          if (typeof text === 'string') {
+            lastInput.append('<div class="invalid-feedback">' + text + '</div>');
+          }
+        }
+      }
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        if (this._options.required && !this._options.readonly) {
+          return this.getValue().length > 0;
+        }
+        return true;
+      }
+
+      /**
+       * Формирование поля
+       * @returns {string}
+       */
+    }, {
+      key: "render",
+      value: function render() {
+        var options = this.getOptions();
+        var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
+        return ejs.render(tpl$1['form-field-label.html'], {
+          id: this._id,
+          form: this._form,
+          hash: this._hash,
+          field: this._options,
+          content: this.renderContent(),
+          attachFields: attachFields
+        });
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var that = this;
+        var checkboxOptions = [];
+        var fieldOptions = this.getOptions();
+        var selectedItems = [];
+        if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options)) {
+          $.each(fieldOptions.options, function (key, option) {
+            var attributes = [];
+            var itemAttr = {
+              type: 'checkbox',
+              "class": 'form-check-input'
+            };
+            var optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
+            if (fieldOptions.name) {
+              itemAttr.name = that._options.name;
+            }
+            if (fieldOptions.required) {
+              itemAttr.required = 'required';
+            }
+            $.each(option, function (name, value) {
+              if (name !== 'text') {
+                if (name === 'class') {
+                  itemAttr[name] = itemAttr[name] + ' ' + value;
+                } else {
+                  itemAttr[name] = value;
                 }
-                return false;
               }
             });
-          } else if (that._value == option.value) {
-            if (option.hasOwnProperty('text') && option.text) {
-              selectedItems.push(option.text);
+            itemAttr.id = coreuiFormUtils.hashCode();
+            if (_typeof(that._value) === 'object' && Array.isArray(that._value)) {
+              $.each(that._value, function (key, itemValue) {
+                if (itemValue == option.value) {
+                  itemAttr.checked = 'checked';
+                  if (option.hasOwnProperty('text') && option.text) {
+                    selectedItems.push(option.text);
+                  }
+                  return false;
+                }
+              });
+            } else if (that._value == option.value) {
+              if (option.hasOwnProperty('text') && option.text) {
+                selectedItems.push(option.text);
+              }
+              itemAttr.checked = 'checked';
             }
-            itemAttr.checked = 'checked';
+            $.each(itemAttr, function (name, value) {
+              attributes.push(name + '="' + value + '"');
+            });
+            checkboxOptions.push({
+              id: itemAttr.id,
+              text: optionText,
+              attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
+            });
+          });
+        }
+        var value = _typeof(this._value) === 'object' && Array.isArray(this._value) ? this._value.join(', ') : this._value;
+        return ejs.render(tpl$1['fields/checkbox.html'], {
+          field: fieldOptions,
+          value: value,
+          render: {
+            options: checkboxOptions,
+            selectedItems: selectedItems
           }
-          $.each(itemAttr, function (name, value) {
-            attributes.push(name + '="' + value + '"');
-          });
-          checkboxOptions.push({
-            id: itemAttr.id,
-            text: optionText,
-            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
-          });
         });
       }
-      var value = _typeof(this._value) === 'object' && Array.isArray(this._value) ? this._value.join(', ') : this._value;
-      return ejs.render(tpl$1['fields/checkbox.html'], {
-        field: fieldOptions,
-        value: value,
-        render: {
-          options: checkboxOptions,
-          selectedItems: selectedItems
-        }
-      });
-    }
-  };
+    }]);
+  }(Field);
+  coreuiForm.fields.checkbox = FieldCheckbox;
 
-  coreuiForm.fields.color = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'color',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        "class": 'form-control form-control-color d-inline-block'
-      },
-      required: null,
-      readonly: null,
-      datalist: null,
-      show: true,
-      column: null
-    },
+  function _callSuper$g(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldInput = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения в поле
-     * @returns {string}
-     */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' input').val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value);
-      } else {
-        $('.content-' + this._hash + ' input').val(value);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var input = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        input.removeClass('is-invalid');
-        input.removeClass('is-valid');
-      } else if (isValid) {
-        input.removeClass('is-invalid');
-        input.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback">' + text + '</div>');
-        }
-      } else {
-        input.removeClass('is-valid');
-        input.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
-          }
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback">' + text + '</div>');
-        }
-      }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      var input = $('.content-' + this._hash + ' input');
-      if (input[0]) {
-        return input.is(':valid');
-      }
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
-    },
-    /**
-     *
-     * @return {*}
-     * @private
-     */
-    _renderContent: function _renderContent() {
-      var attributes = [];
-      var datalist = [];
-      var options = this.getOptions();
-      var datalistId = coreuiFormUtils.hashCode();
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      options.attr.type = options.type;
-      options.attr.value = this._value;
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
-        options.attr.list = datalistId;
-        $.each(options.datalist, function (key, itemAttributes) {
-          var datalistAttr = [];
-          $.each(itemAttributes, function (name, value) {
-            datalistAttr.push(name + '="' + value + '"');
-          });
-          datalist.push({
-            attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
-          });
-        });
-      }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/color.html'], {
-        field: options,
-        datalistId: datalistId,
-        value: this._value,
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          datalist: datalist
-        }
-      });
-    },
-    /**
-     *
-     * @return {*}
-     * @private
-     */
-    _renderContentReadonly: function _renderContentReadonly() {
-      var options = this.getOptions();
-      return ejs.render(tpl$1['fields/color.html'], {
-        field: options,
-        value: this._value
-      });
+    function FieldInput(form, options, index) {
+      _classCallCheck(this, FieldInput);
+      options = $.extend(true, {
+        type: 'text',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        attr: {
+          "class": 'form-control d-inline-block'
+        },
+        required: null,
+        invalidText: null,
+        validText: null,
+        readonly: null,
+        datalist: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      return _callSuper$g(this, FieldInput, [form, options, index]);
     }
-  };
 
-  coreuiForm.fields.custom = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _value: null,
-    _options: {
-      type: 'custom',
-      label: null,
-      labelWidth: null,
-      width: null,
-      content: '',
-      outContent: null,
-      description: null,
-      required: null,
-      show: true,
-      column: null
-    },
-    /**
-     * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
-     */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-      this._hash = coreuiFormUtils.hashCode();
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {},
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
     /**
      * Получение значения из поля
+     * @returns {string|null}
      */
-    getValue: function getValue() {},
-    /**
-     * Установка значения в поле
-     * @param {object} value
-     */
-    setValue: function setValue(value) {},
-    /**
-     * Формирование поля
-     * @returns {object}
-     */
-    render: function render() {
-      var that = this;
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      var field = $(ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: '',
-        attachFields: attachFields
-      }));
-      $.each(this.renderContent(), function (i, content) {
-        field.find(".content-" + that._hash).append(content);
-      });
-      return field;
-    },
-    /**
-     * Формирование контента поля
-     * @return {Array}
-     */
-    renderContent: function renderContent() {
-      var content = this.getOptions().content;
-      var result = [];
-      if (typeof content === 'string') {
-        result.push(content);
-      } else if (content instanceof Object) {
-        if (!Array.isArray(content)) {
-          content = [content];
+    _inherits(FieldInput, _Field);
+    return _createClass(FieldInput, [{
+      key: "getValue",
+      value: function getValue() {
+        return this._options.readonly ? this._value : $('.content-' + this._hash + ' input').val();
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0) {
+          return;
         }
-        for (var i = 0; i < content.length; i++) {
-          if (typeof content[i] === 'string') {
-            result.push(content[i]);
-          } else if (!Array.isArray(content[i]) && content[i].hasOwnProperty('component') && typeof content[i].component === 'string' && content[i].component.substring(0, 6) === 'coreui') {
-            var name = content[i].component.split('.')[1];
-            if (CoreUI.hasOwnProperty(name) && coreuiFormUtils.isObject(CoreUI[name])) {
-              var instance = CoreUI[name].create(content[i]);
-              result.push(instance.render());
-              this._form.on('show', instance.initEvents, instance, true);
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(value);
+        } else {
+          $('.content-' + this._hash + ' input').val(value);
+        }
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var input = $('input', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          input.removeClass('is-invalid');
+          input.removeClass('is-valid');
+        } else if (isValid) {
+          input.removeClass('is-invalid');
+          input.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="valid-feedback">' + text + '</div>');
+          }
+        } else {
+          input.removeClass('is-valid');
+          input.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
             }
-          } else {
-            result.push(JSON.stringify(content[i]));
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="invalid-feedback">' + text + '</div>');
           }
         }
       }
-      return result;
-    }
-  };
 
-  coreuiForm.fields.dataset = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _value: [],
-    _renderOptions: [],
-    _options: {
-      type: 'dataset',
-      name: null,
-      label: null,
-      labelWidth: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      required: null,
-      readonly: null,
-      show: true,
-      column: null
-    },
+      /**
+       * Проверка валидности поля
+       * @return {boolean|null}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        var input = $('.content-' + this._hash + ' input');
+        if (input[0]) {
+          return input.is(':valid');
+        }
+        return null;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
+      }
+
+      /**
+       *
+       * @private
+       */
+    }, {
+      key: "_renderContent",
+      value: function _renderContent() {
+        var attributes = [];
+        var datalist = [];
+        var options = this.getOptions();
+        var datalistId = coreuiFormUtils.hashCode();
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        options.attr.type = options.type;
+        options.attr.value = this._value !== null ? this._value : '';
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
+          options.attr.list = datalistId;
+          $.each(options.datalist, function (key, itemAttributes) {
+            var datalistAttr = [];
+            $.each(itemAttributes, function (name, value) {
+              datalistAttr.push(name + '="' + value + '"');
+            });
+            datalist.push({
+              attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
+            });
+          });
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/input.html'], {
+          field: options,
+          datalistId: datalistId,
+          value: this._value !== null ? this._value : '',
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            datalist: datalist
+          }
+        });
+      }
+
+      /**
+       *
+       * @private
+       */
+    }, {
+      key: "_renderContentReadonly",
+      value: function _renderContentReadonly() {
+        var options = this.getOptions();
+        var type = 'text';
+        var value = this._value;
+        var lang = this._form.getLang();
+        if (options.hasOwnProperty('type') && typeof options.type === 'string') {
+          type = options.type;
+        }
+        try {
+          switch (type) {
+            case 'date':
+              value = coreuiFormUtils.formatDate(value);
+              break;
+            case 'datetime-local':
+              value = coreuiFormUtils.formatDateTime(value);
+              break;
+            case 'month':
+              value = coreuiFormUtils.formatDateMonth(value, lang);
+              break;
+            case 'week':
+              value = coreuiFormUtils.formatDateWeek(value, lang);
+              break;
+          }
+        } catch (e) {
+          console.error(e);
+          // ignore
+        }
+
+        return ejs.render(tpl$1['fields/input.html'], {
+          field: options,
+          value: value,
+          hash: this._hash
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.input = FieldInput;
+
+  function _callSuper$f(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldColor = /*#__PURE__*/function (_FieldInput) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-      this._hash = coreuiFormUtils.hashCode();
-      var that = this;
+    function FieldColor(form, options, index) {
+      _classCallCheck(this, FieldColor);
+      options = $.extend(true, {
+        type: 'color',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        attr: {
+          "class": 'form-control form-control-color d-inline-block'
+        },
+        required: null,
+        readonly: null,
+        datalist: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      return _callSuper$f(this, FieldColor, [form, options, index]);
+    }
+
+    /**
+     *
+     * @return {*}
+     * @private
+     */
+    _inherits(FieldColor, _FieldInput);
+    return _createClass(FieldColor, [{
+      key: "_renderContent",
+      value: function _renderContent() {
+        var attributes = [];
+        var datalist = [];
+        var options = this.getOptions();
+        var datalistId = coreuiFormUtils.hashCode();
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        options.attr.type = options.type;
+        options.attr.value = this._value;
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
+          options.attr.list = datalistId;
+          $.each(options.datalist, function (key, itemAttributes) {
+            var datalistAttr = [];
+            $.each(itemAttributes, function (name, value) {
+              datalistAttr.push(name + '="' + value + '"');
+            });
+            datalist.push({
+              attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
+            });
+          });
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/color.html'], {
+          field: options,
+          datalistId: datalistId,
+          value: this._value,
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            datalist: datalist
+          }
+        });
+      }
+
+      /**
+       *
+       * @return {*}
+       * @private
+       */
+    }, {
+      key: "_renderContentReadonly",
+      value: function _renderContentReadonly() {
+        var options = this.getOptions();
+        return ejs.render(tpl$1['fields/color.html'], {
+          field: options,
+          value: this._value
+        });
+      }
+    }]);
+  }(FieldInput);
+  coreuiForm.fields.color = FieldColor;
+
+  function _callSuper$e(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldCustom = /*#__PURE__*/function (_Field) {
+    /**
+     * Инициализация
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
+     */
+    function FieldCustom(form, options, index) {
+      _classCallCheck(this, FieldCustom);
+      options = $.extend(true, {
+        type: 'custom',
+        label: null,
+        labelWidth: null,
+        width: null,
+        content: '',
+        outContent: null,
+        description: null,
+        required: null,
+        show: true
+      }, options);
+      return _callSuper$e(this, FieldCustom, [form, options, index]);
+    }
+
+    /**
+     * Изменение режима поля только для чтения
+     * @param {boolean} isReadonly
+     */
+    _inherits(FieldCustom, _Field);
+    return _createClass(FieldCustom, [{
+      key: "readonly",
+      value: function readonly(isReadonly) {}
+
+      /**
+       * Формирование поля
+       * @returns {object}
+       */
+    }, {
+      key: "render",
+      value: function render() {
+        var that = this;
+        var options = this.getOptions();
+        var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
+        var field = $(ejs.render(tpl$1['form-field-label.html'], {
+          id: this._id,
+          form: this._form,
+          hash: this._hash,
+          field: options,
+          content: '',
+          attachFields: attachFields
+        }));
+        $.each(this.renderContent(), function (i, content) {
+          field.find(".content-" + that._hash).append(content);
+        });
+        return field;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {Array}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var content = this.getOptions().content;
+        var result = [];
+        if (typeof content === 'string') {
+          result.push(content);
+        } else if (content instanceof Object) {
+          if (!Array.isArray(content)) {
+            content = [content];
+          }
+          for (var i = 0; i < content.length; i++) {
+            if (typeof content[i] === 'string') {
+              result.push(content[i]);
+            } else if (!Array.isArray(content[i]) && content[i].hasOwnProperty('component') && typeof content[i].component === 'string' && content[i].component.substring(0, 6) === 'coreui') {
+              var name = content[i].component.split('.')[1];
+              if (CoreUI.hasOwnProperty(name) && coreuiFormUtils.isObject(CoreUI[name])) {
+                var instance = CoreUI[name].create(content[i]);
+                result.push(instance.render());
+                this._form.on('show', instance.initEvents, instance, true);
+              }
+            } else {
+              result.push(JSON.stringify(content[i]));
+            }
+          }
+        }
+        return result;
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.custom = FieldCustom;
+
+  function _callSuper$d(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldDataset = /*#__PURE__*/function (_Field) {
+    /**
+     * Инициализация
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
+     */
+    function FieldDataset(form, options, index) {
+      var _this2;
+      _classCallCheck(this, FieldDataset);
+      options = $.extend(true, {
+        type: 'dataset',
+        name: null,
+        label: null,
+        labelWidth: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        required: null,
+        readonly: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      _this2 = _callSuper$d(this, FieldDataset, [form, options, index]);
+      _defineProperty(_this2, "_renderOptions", []);
+      var that = _this2;
       form.on('show', function () {
         if (!that._options.readonly) {
           that._initEvents();
@@ -3345,427 +3710,427 @@
           });
         });
       }
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
+      return _this2;
+    }
+
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-      if (!this._options.readonly) {
-        this._initEvents();
-      }
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения в поле
-     * @returns {array}
-     */
-    getValue: function getValue() {
-      if (this._options.readonly) {
-        return this._value;
-      } else {
-        var container = $('.content-' + this._hash);
-        var data = [];
-        $('.coreui-form__field-dataset-list .coreui-form__field-dataset-item', container).each(function () {
-          var items = {};
-          $.each($(this).find('input, select').serializeArray(), function (key, item) {
-            if (item.name) {
-              items[item.name] = item.value;
-            }
-          });
-          data.push(items);
-        });
-        return data;
-      }
-    },
-    /**
-     * Установка значения в поле
-     * @param {object} value
-     */
-    setValue: function setValue(value) {
-      if (_typeof(value) !== 'object' || Array.isArray(value) || value === null) {
-        return;
-      }
-      this._value.push(value);
-      if (this._options.readonly) {
-        $('.content-' + this._hash + ' .coreui-form__field-dataset-list').append(this._renderRowReadonly(value));
-      } else {
-        this._eventAdd(value);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      container.find('.text-success').remove();
-      container.find('.text-danger').remove();
-      if (isValid === null) {
-        return;
-      }
-      if (isValid) {
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="ps-2 text-success">' + text + '</div>');
-        }
-      } else {
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
-          }
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="ps-2 text-danger">' + text + '</div>');
+    _inherits(FieldDataset, _Field);
+    return _createClass(FieldDataset, [{
+      key: "readonly",
+      value: function readonly(isReadonly) {
+        _get(_getPrototypeOf(FieldDataset.prototype), "readonly", this).call(this, isReadonly);
+        if (!isReadonly) {
+          this._initEvents();
         }
       }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      if (this._options.required && !this._options.readonly) {
-        return this.getValue().length > 0;
-      }
-      return true;
-    },
-    /**
-     * Удаление всех строк
-     */
-    removeItems: function removeItems() {
-      $('#coreui-form-' + this._id + ' .content-' + this._hash + ' .coreui-form__field-dataset-list').empty();
-    },
-    /**
-     * Удаление строки по id
-     * @param {int} itemId
-     */
-    removeItem: function removeItem(itemId) {
-      var element = '#coreui-form-' + this._id + ' .content-' + this._hash;
-      $('#' + itemId).hide('fast', function () {
-        $('#' + itemId).remove();
-        if ($(element + ' .coreui-form__field-dataset-item').length === 0) {
-          $(element + ' .coreui-form__field-dataset-container').hide();
-        }
-      });
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    _renderContent: function _renderContent() {
-      var options = this.getOptions();
-      var rows = [];
-      var headers = [];
-      var that = this;
-      if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && Array.isArray(options.options)) {
-        // Заголовок
-        $.each(options.options, function (key, option) {
-          var title = option.hasOwnProperty('title') && ['string', 'numeric'].indexOf(_typeof(option.title)) >= 0 ? option.title : '';
-          headers.push({
-            title: title
-          });
-        });
 
-        // Строки
-        if (_typeof(this._value) === 'object' && Array.isArray(this._value)) {
-          $.each(this._value, function (key, row) {
-            if (_typeof(row) !== 'object' || Array.isArray(row)) {
-              return;
-            }
-            rows.push(that._renderRow(row));
-          });
-        }
-      }
-      return ejs.render(tpl$1['fields/dataset.html'], {
-        field: options,
-        value: this._value !== null ? this._value : '',
-        lang: this._form.getLang(),
-        render: {
-          headers: headers,
-          rows: rows
-        }
-      });
-    },
-    /**
-     *
-     * @private
-     */
-    _renderContentReadonly: function _renderContentReadonly() {
-      var options = this.getOptions();
-      var rows = [];
-      var headers = [];
-      var that = this;
-      if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && Array.isArray(options.options)) {
-        // Заголовок
-        $.each(options.options, function (key, option) {
-          var title = option.hasOwnProperty('title') && ['string', 'numeric'].indexOf(_typeof(option.title)) >= 0 ? option.title : '';
-          headers.push({
-            title: title
-          });
-        });
-
-        // Строки
-        if (_typeof(this._value) === 'object' && Array.isArray(this._value)) {
-          $.each(this._value, function (key, row) {
-            if (_typeof(row) !== 'object' || Array.isArray(row)) {
-              return;
-            }
-            rows.push(that._renderRowReadonly(row));
-          });
-        }
-      }
-      return ejs.render(tpl$1['fields/dataset.html'], {
-        field: options,
-        value: this._value !== null ? this._value : '',
-        lang: this._form.getLang(),
-        render: {
-          headers: headers,
-          rows: rows
-        }
-      });
-    },
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents: function _initEvents() {
-      var that = this;
-      var element = '#coreui-form-' + this._id + ' .content-' + this._hash;
-
-      // Кнопка удаления
-      $(element + ' .btn-dataset-remove').click(function () {
-        that.removeItem($(this).data('item-id'));
-      });
-
-      // Кнопка добавления
-      $(element + ' .btn-dataset-add').click(function () {
-        that._eventAdd();
-      });
-    },
-    /**
-     * Событие добавления
-     */
-    _eventAdd: function _eventAdd(row) {
-      var that = this;
-      var element = '#coreui-form-' + this._id + ' .content-' + this._hash;
-      row = row || {};
-      if ($(element + ' .coreui-form__field-dataset-item').length === 0) {
-        $(element + ' .coreui-form__field-dataset-container').show();
-      }
-      $(element + ' .coreui-form__field-dataset-list').append(this._renderRow(row));
-      $(element + ' .coreui-form__field-dataset-item:last-child .btn-dataset-remove').click(function () {
-        that.removeItem($(this).data('item-id'));
-      });
-    },
-    /**
-     * Формирование строки
-     * @param {object} row
-     * @private
-     */
-    _renderRow: function _renderRow(row) {
-      var rowOptions = [];
-      var itemOptions = [];
-      $.each(this._renderOptions, function (key, option) {
-        var cellValue = row.hasOwnProperty(option.name) ? row[option.name] : '';
-        if (option.type === 'select') {
-          $.each(option.items, function (key, item) {
-            var text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
-            var itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
-            var itemAttr = {};
-            $.each(item, function (name, value) {
-              if (name !== 'text') {
-                itemAttr[name] = value;
+      /**
+       * Получение значения в поле
+       * @returns {array}
+       */
+    }, {
+      key: "getValue",
+      value: function getValue() {
+        if (this._options.readonly) {
+          return this._value;
+        } else {
+          var container = $('.content-' + this._hash);
+          var data = [];
+          $('.coreui-form__field-dataset-list .coreui-form__field-dataset-item', container).each(function () {
+            var items = {};
+            $.each($(this).find('input, select').serializeArray(), function (key, item) {
+              if (item.name) {
+                items[item.name] = item.value;
               }
             });
-            if (_typeof(cellValue) === 'object' && Array.isArray(cellValue)) {
-              $.each(cellValue, function (key, cellItemValue) {
-                if (cellItemValue == itemValue) {
-                  itemAttr.selected = 'selected';
-                  return false;
-                }
-              });
-            } else if (cellValue == item.value) {
-              itemAttr.selected = 'selected';
-            }
-            var attributes = [];
-            $.each(itemAttr, function (name, value) {
-              attributes.push(name + '="' + value + '"');
-            });
-            itemOptions.push({
-              attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-              text: text
-            });
+            data.push(items);
           });
-        } else if (option.type === 'switch') {
-          if (cellValue == option.valueY) {
-            option.attr.checked = 'checked';
-          }
-        } else {
-          if (['string', 'number'].indexOf(_typeof(cellValue)) >= 0) {
-            option.attr.value = cellValue !== null ? cellValue : '';
-          }
+          return data;
         }
-        var attributes = [];
-        $.each(option.attr, function (name, value) {
-          attributes.push(name + '="' + value + '"');
-        });
-        rowOptions.push({
-          type: option.type,
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          items: itemOptions
-        });
-      });
-      return ejs.render(tpl$1['fields/dataset-row.html'], {
-        hashItem: coreuiFormUtils.hashCode(),
-        options: rowOptions
-      });
-    },
-    /**
-     * Формирование строки
-     * @param {object} row
-     * @private
-     */
-    _renderRowReadonly: function _renderRowReadonly(row) {
-      var rowOptions = [];
-      var lang = this._form.getLang();
-      $.each(this._renderOptions, function (key, option) {
-        var optionValue = '';
-        var cellValue = row.hasOwnProperty(option.name) ? row[option.name] : '';
-        if (option.type === 'select') {
-          var itemOptions = [];
-          $.each(option.items, function (key, item) {
-            var text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
-            var itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
-            if (Array.isArray(cellValue)) {
-              $.each(cellValue, function (key, cellItemValue) {
-                if (cellItemValue == itemValue) {
-                  itemOptions.push(text);
-                  return false;
-                }
-              });
-            } else if (cellValue == itemValue) {
-              itemOptions.push(text);
-            }
-          });
-        } else if (option.type === 'switch') {
-          var valueY = 'Y';
-          if (option.hasOwnProperty('valueY')) {
-            valueY = option.valueY;
-          }
-          optionValue = cellValue == valueY ? lang.switch_yes : lang.switch_no;
-        } else {
-          if (['string', 'number'].indexOf(_typeof(cellValue)) >= 0) {
-            optionValue = cellValue;
-            switch (option.type) {
-              case 'date':
-                optionValue = coreuiFormUtils.formatDate(optionValue);
-                break;
-              case 'datetime-local':
-                optionValue = coreuiFormUtils.formatDateTime(optionValue);
-                break;
-              case 'month':
-                optionValue = coreuiFormUtils.formatDateMonth(optionValue, lang);
-                break;
-              case 'week':
-                optionValue = coreuiFormUtils.formatDateWeek(optionValue, lang);
-                break;
-              default:
-                optionValue = cellValue;
-            }
-          }
-        }
-        rowOptions.push({
-          value: optionValue
-        });
-      });
-      return ejs.render(tpl$1['fields/dataset-row-readonly.html'], {
-        options: rowOptions
-      });
-    }
-  };
+      }
 
-  coreuiForm.fields.group = {
-    _id: '',
-    _form: null,
-    _index: 0,
-    _options: {
-      type: 'group',
-      label: '',
-      show: true,
-      showCollapsible: true,
-      fields: [],
-      column: null
-    },
+      /**
+       * Установка значения в поле
+       * @param {object} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (!coreuiFormUtils.isObject(value)) {
+          return;
+        }
+        this._value.push(value);
+        if (this._options.readonly) {
+          $('.content-' + this._hash + ' .coreui-form__field-dataset-list').append(this._renderRowReadonly(value));
+        } else {
+          this._eventAdd(value);
+        }
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        container.find('.text-success').remove();
+        container.find('.text-danger').remove();
+        if (isValid === null) {
+          return;
+        }
+        if (isValid) {
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="ps-2 text-success">' + text + '</div>');
+          }
+        } else {
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="ps-2 text-danger">' + text + '</div>');
+          }
+        }
+      }
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        if (this._options.required && !this._options.readonly) {
+          return this.getValue().length > 0;
+        }
+        return true;
+      }
+
+      /**
+       * Удаление всех строк
+       */
+    }, {
+      key: "removeItems",
+      value: function removeItems() {
+        $('#coreui-form-' + this._id + ' .content-' + this._hash + ' .coreui-form__field-dataset-list').empty();
+      }
+
+      /**
+       * Удаление строки по id
+       * @param {int} itemId
+       */
+    }, {
+      key: "removeItem",
+      value: function removeItem(itemId) {
+        var element = '#coreui-form-' + this._id + ' .content-' + this._hash;
+        $('#' + itemId).hide('fast', function () {
+          $('#' + itemId).remove();
+          if ($(element + ' .coreui-form__field-dataset-item').length === 0) {
+            $(element + ' .coreui-form__field-dataset-container').hide();
+          }
+        });
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "_renderContent",
+      value: function _renderContent() {
+        var options = this.getOptions();
+        var rows = [];
+        var headers = [];
+        var that = this;
+        if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && Array.isArray(options.options)) {
+          // Заголовок
+          $.each(options.options, function (key, option) {
+            var title = option.hasOwnProperty('title') && ['string', 'numeric'].indexOf(_typeof(option.title)) >= 0 ? option.title : '';
+            headers.push({
+              title: title
+            });
+          });
+
+          // Строки
+          if (_typeof(this._value) === 'object' && Array.isArray(this._value)) {
+            $.each(this._value, function (key, row) {
+              if (_typeof(row) !== 'object' || Array.isArray(row)) {
+                return;
+              }
+              rows.push(that._renderRow(row));
+            });
+          }
+        }
+        return ejs.render(tpl$1['fields/dataset.html'], {
+          field: options,
+          value: this._value !== null ? this._value : '',
+          lang: this._form.getLang(),
+          render: {
+            headers: headers,
+            rows: rows
+          }
+        });
+      }
+
+      /**
+       *
+       * @private
+       */
+    }, {
+      key: "_renderContentReadonly",
+      value: function _renderContentReadonly() {
+        var options = this.getOptions();
+        var rows = [];
+        var headers = [];
+        var that = this;
+        if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && Array.isArray(options.options)) {
+          // Заголовок
+          $.each(options.options, function (key, option) {
+            var title = option.hasOwnProperty('title') && ['string', 'numeric'].indexOf(_typeof(option.title)) >= 0 ? option.title : '';
+            headers.push({
+              title: title
+            });
+          });
+
+          // Строки
+          if (_typeof(this._value) === 'object' && Array.isArray(this._value)) {
+            $.each(this._value, function (key, row) {
+              if (_typeof(row) !== 'object' || Array.isArray(row)) {
+                return;
+              }
+              rows.push(that._renderRowReadonly(row));
+            });
+          }
+        }
+        return ejs.render(tpl$1['fields/dataset.html'], {
+          field: options,
+          value: this._value !== null ? this._value : '',
+          lang: this._form.getLang(),
+          render: {
+            headers: headers,
+            rows: rows
+          }
+        });
+      }
+
+      /**
+       * Инициализация событий
+       * @private
+       */
+    }, {
+      key: "_initEvents",
+      value: function _initEvents() {
+        var that = this;
+        var element = '#coreui-form-' + this._id + ' .content-' + this._hash;
+
+        // Кнопка удаления
+        $(element + ' .btn-dataset-remove').click(function () {
+          that.removeItem($(this).data('item-id'));
+        });
+
+        // Кнопка добавления
+        $(element + ' .btn-dataset-add').click(function () {
+          that._eventAdd();
+        });
+      }
+
+      /**
+       * Событие добавления
+       */
+    }, {
+      key: "_eventAdd",
+      value: function _eventAdd(row) {
+        var that = this;
+        var element = '#coreui-form-' + this._id + ' .content-' + this._hash;
+        row = row || {};
+        if ($(element + ' .coreui-form__field-dataset-item').length === 0) {
+          $(element + ' .coreui-form__field-dataset-container').show();
+        }
+        $(element + ' .coreui-form__field-dataset-list').append(this._renderRow(row));
+        $(element + ' .coreui-form__field-dataset-item:last-child .btn-dataset-remove').click(function () {
+          that.removeItem($(this).data('item-id'));
+        });
+      }
+
+      /**
+       * Формирование строки
+       * @param {object} row
+       * @private
+       */
+    }, {
+      key: "_renderRow",
+      value: function _renderRow(row) {
+        var rowOptions = [];
+        var itemOptions = [];
+        $.each(this._renderOptions, function (key, option) {
+          var cellValue = row.hasOwnProperty(option.name) ? row[option.name] : '';
+          if (option.type === 'select') {
+            $.each(option.items, function (key, item) {
+              var text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
+              var itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
+              var itemAttr = {};
+              $.each(item, function (name, value) {
+                if (name !== 'text') {
+                  itemAttr[name] = value;
+                }
+              });
+              if (_typeof(cellValue) === 'object' && Array.isArray(cellValue)) {
+                $.each(cellValue, function (key, cellItemValue) {
+                  if (cellItemValue == itemValue) {
+                    itemAttr.selected = 'selected';
+                    return false;
+                  }
+                });
+              } else if (cellValue == item.value) {
+                itemAttr.selected = 'selected';
+              }
+              var attributes = [];
+              $.each(itemAttr, function (name, value) {
+                attributes.push(name + '="' + value + '"');
+              });
+              itemOptions.push({
+                attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+                text: text
+              });
+            });
+          } else if (option.type === 'switch') {
+            if (cellValue == option.valueY) {
+              option.attr.checked = 'checked';
+            }
+          } else {
+            if (['string', 'number'].indexOf(_typeof(cellValue)) >= 0) {
+              option.attr.value = cellValue !== null ? cellValue : '';
+            }
+          }
+          var attributes = [];
+          $.each(option.attr, function (name, value) {
+            attributes.push(name + '="' + value + '"');
+          });
+          rowOptions.push({
+            type: option.type,
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            items: itemOptions
+          });
+        });
+        return ejs.render(tpl$1['fields/dataset-row.html'], {
+          hashItem: coreuiFormUtils.hashCode(),
+          options: rowOptions
+        });
+      }
+
+      /**
+       * Формирование строки
+       * @param {object} row
+       * @private
+       */
+    }, {
+      key: "_renderRowReadonly",
+      value: function _renderRowReadonly(row) {
+        var rowOptions = [];
+        var lang = this._form.getLang();
+        $.each(this._renderOptions, function (key, option) {
+          var optionValue = '';
+          var cellValue = row.hasOwnProperty(option.name) ? row[option.name] : '';
+          if (option.type === 'select') {
+            var itemOptions = [];
+            $.each(option.items, function (key, item) {
+              var text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
+              var itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
+              if (Array.isArray(cellValue)) {
+                $.each(cellValue, function (key, cellItemValue) {
+                  if (cellItemValue == itemValue) {
+                    itemOptions.push(text);
+                    return false;
+                  }
+                });
+              } else if (cellValue == itemValue) {
+                itemOptions.push(text);
+              }
+            });
+          } else if (option.type === 'switch') {
+            var valueY = 'Y';
+            if (option.hasOwnProperty('valueY')) {
+              valueY = option.valueY;
+            }
+            optionValue = cellValue == valueY ? lang.switch_yes : lang.switch_no;
+          } else {
+            if (['string', 'number'].indexOf(_typeof(cellValue)) >= 0) {
+              optionValue = cellValue;
+              switch (option.type) {
+                case 'date':
+                  optionValue = coreuiFormUtils.formatDate(optionValue);
+                  break;
+                case 'datetime-local':
+                  optionValue = coreuiFormUtils.formatDateTime(optionValue);
+                  break;
+                case 'month':
+                  optionValue = coreuiFormUtils.formatDateMonth(optionValue, lang);
+                  break;
+                case 'week':
+                  optionValue = coreuiFormUtils.formatDateWeek(optionValue, lang);
+                  break;
+                default:
+                  optionValue = cellValue;
+              }
+            }
+          }
+          rowOptions.push({
+            value: optionValue
+          });
+        });
+        return ejs.render(tpl$1['fields/dataset-row-readonly.html'], {
+          options: rowOptions
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.dataset = FieldDataset;
+
+  var FieldGroup = /*#__PURE__*/function () {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
+    function FieldGroup(form, options, index) {
+      _classCallCheck(this, FieldGroup);
+      _defineProperty(this, "_id", '');
+      _defineProperty(this, "_form", null);
+      _defineProperty(this, "_index", 0);
+      _defineProperty(this, "_options", {
+        type: 'group',
+        label: '',
+        show: true,
+        showCollapsible: true,
+        fields: [],
+        column: null
+      });
       this._form = form;
       this._index = index;
       this._id = form.getId() + "-group-" + index;
@@ -3774,439 +4139,209 @@
       form.on('show', function () {
         that._initEvents();
       });
-    },
+    }
+
     /**
      * Получение параметров
      * @returns {object}
      */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options, options);
-    },
+    return _createClass(FieldGroup, [{
+      key: "getOptions",
+      value: function getOptions() {
+        return $.extend(true, {}, this._options, options);
+      }
+
+      /**
+       * Скрытие группы
+       * @param {int} duration
+       */
+    }, {
+      key: "collapse",
+      value: function collapse(duration) {
+        var container = '#coreui-form-' + this._id;
+        $(container + ' > .coreui-form__group_label .btn-collapsible .bi').removeClass('bi-chevron-down');
+        $(container + ' > .coreui-form__group_label .btn-collapsible .bi').addClass('bi-chevron-right');
+        $(container + ' .coreui-form__group_content').slideUp(duration);
+      }
+
+      /**
+       * Показ группы
+       * @param {int} duration
+       */
+    }, {
+      key: "expand",
+      value: function expand(duration) {
+        var container = '#coreui-form-' + this._id;
+        $(container + ' > .coreui-form__group_label .btn-collapsible .bi').removeClass('bi-chevron-right');
+        $(container + ' > .coreui-form__group_label .btn-collapsible .bi').addClass('bi-chevron-down');
+        $(container + ' .coreui-form__group_content').slideDown(duration);
+      }
+
+      /**
+       * Формирование поля
+       * @returns {string}
+       */
+    }, {
+      key: "render",
+      value: function render() {
+        var container = $(ejs.render(tpl$1['form-field-group.html'], {
+          id: this._id,
+          form: this._form,
+          group: this._options
+        }));
+        var fields = this.renderContent();
+        var groupContent = container.find('.coreui-form__group_content');
+        $.each(fields, function (key, field) {
+          groupContent.append(field);
+        });
+        return container;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {Array}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var fields = [];
+        var that = this;
+        $.each(this._options.fields, function (key, field) {
+          var fieldInstance = coreuiFormPrivate.initField(that._form, field);
+          if (_typeof(fieldInstance) !== 'object') {
+            return;
+          }
+          fields.push(fieldInstance.render());
+        });
+        return fields;
+      }
+
+      /**
+       * Инициализация событий
+       * @private
+       */
+    }, {
+      key: "_initEvents",
+      value: function _initEvents() {
+        if (this._options.showCollapsible) {
+          var that = this;
+          var container = '#coreui-form-' + this._id;
+          $(container + ' > .coreui-form__group_label .btn-collapsible').click(function () {
+            if ($(container + ' > .coreui-form__group_content').is(':visible')) {
+              that.collapse(80);
+            } else {
+              that.expand(80);
+            }
+          });
+        }
+      }
+    }]);
+  }();
+  coreuiForm.fields.group = FieldGroup;
+
+  function _callSuper$c(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldHidden = /*#__PURE__*/function (_Field) {
     /**
-     * Скрытие группы
-     * @param {int} duration
+     * Инициализация
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    collapse: function collapse(duration) {
-      var container = '#coreui-form-' + this._id;
-      $(container + ' > .coreui-form__group_label .btn-collapsible .bi').removeClass('bi-chevron-down');
-      $(container + ' > .coreui-form__group_label .btn-collapsible .bi').addClass('bi-chevron-right');
-      $(container + ' .coreui-form__group_content').slideUp(duration);
-    },
+    function FieldHidden(form, options, index) {
+      _classCallCheck(this, FieldHidden);
+      options = $.extend(true, {
+        type: 'hidden',
+        name: null,
+        attr: {},
+        required: null
+      }, options);
+      return _callSuper$c(this, FieldHidden, [form, options, index]);
+    }
+
     /**
-     * Показ группы
-     * @param {int} duration
-     */
-    expand: function expand(duration) {
-      var container = '#coreui-form-' + this._id;
-      $(container + ' > .coreui-form__group_label .btn-collapsible .bi').removeClass('bi-chevron-right');
-      $(container + ' > .coreui-form__group_label .btn-collapsible .bi').addClass('bi-chevron-down');
-      $(container + ' .coreui-form__group_content').slideDown(duration);
-    },
-    /**
-     * Формирование поля
+     * Получение значения в поле
      * @returns {string}
      */
-    render: function render() {
-      var container = $(ejs.render(tpl$1['form-field-group.html'], {
-        id: this._id,
-        form: this._form,
-        group: this._options
-      }));
-      var fields = this.renderContent();
-      var groupContent = container.find('.coreui-form__group_content');
-      $.each(fields, function (key, field) {
-        groupContent.append(field);
-      });
-      return container;
-    },
-    /**
-     * Формирование контента поля
-     * @return {Array}
-     */
-    renderContent: function renderContent() {
-      var fields = [];
-      var that = this;
-      $.each(this._options.fields, function (key, field) {
-        var fieldInstance = coreuiFormPrivate.initField(that._form, field);
-        if (_typeof(fieldInstance) !== 'object') {
+    _inherits(FieldHidden, _Field);
+    return _createClass(FieldHidden, [{
+      key: "getValue",
+      value: function getValue() {
+        return this._options.readonly ? this._value : $('#coreui-form-' + this._id).val();
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0) {
           return;
         }
-        fields.push(fieldInstance.render());
-      });
-      return fields;
-    },
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents: function _initEvents() {
-      if (this._options.showCollapsible) {
-        var that = this;
-        var container = '#coreui-form-' + this._id;
-        $(container + ' > .coreui-form__group_label .btn-collapsible').click(function () {
-          if ($(container + ' > .coreui-form__group_content').is(':visible')) {
-            that.collapse(80);
-          } else {
-            that.expand(80);
+        this._value = value;
+        if (!this._options.readonly) {
+          $('#coreui-form-' + this._id).val(value);
+        }
+      }
+
+      /**
+       * Формирование поля
+       * @returns {string}
+       */
+    }, {
+      key: "render",
+      value: function render() {
+        return ejs.render(tpl$1['form-field-content.html'], {
+          content: this.renderContent()
+        });
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var attributes = [];
+        var options = this.getOptions();
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        options.attr.id = 'coreui-form-' + this._id;
+        if (options.name) {
+          options.attr.name = options.name;
+        }
+        options.attr.type = 'hidden';
+        options.attr.value = this._value !== null ? this._value : '';
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/hidden.html'], {
+          value: this._value !== null ? this._value : '',
+          field: options,
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
           }
         });
       }
-    }
-  };
-
-  coreuiForm.fields.hidden = {
-    _id: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'hidden',
-      name: null,
-      attr: {},
-      required: null,
-      column: null
-    },
-    /**
-     * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
-     */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Получение значения в поле
-     * @returns {string}
-     */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('#coreui-form-' + this._id).val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      this._value = value;
-      if (!this._options.readonly) {
-        $('#coreui-form-' + this._id).val(value);
-      }
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      return ejs.render(tpl$1['form-field-content.html'], {
-        content: this.renderContent()
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var attributes = [];
-      var options = this.getOptions();
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      options.attr.id = 'coreui-form-' + this._id;
-      if (options.name) {
-        options.attr.name = options.name;
-      }
-      options.attr.type = 'hidden';
-      options.attr.value = this._value !== null ? this._value : '';
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/hidden.html'], {
-        value: this._value !== null ? this._value : '',
-        field: options,
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
-        }
-      });
-    }
-  };
-
-  coreuiForm.fields.input = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'text',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        "class": 'form-control d-inline-block'
-      },
-      required: null,
-      invalidText: null,
-      validText: null,
-      readonly: null,
-      datalist: null,
-      show: true,
-      column: null
-    },
-    /**
-     * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
-     */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения в поле
-     * @returns {string}
-     */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' input').val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value);
-      } else {
-        $('.content-' + this._hash + ' input').val(value);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var input = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        input.removeClass('is-invalid');
-        input.removeClass('is-valid');
-      } else if (isValid) {
-        input.removeClass('is-invalid');
-        input.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback">' + text + '</div>');
-        }
-      } else {
-        input.removeClass('is-valid');
-        input.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
-          }
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback">' + text + '</div>');
-        }
-      }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean|null}
-     */
-    isValid: function isValid() {
-      var input = $('.content-' + this._hash + ' input');
-      if (input[0]) {
-        return input.is(':valid');
-      }
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
-    },
-    /**
-     *
-     * @private
-     */
-    _renderContent: function _renderContent() {
-      var attributes = [];
-      var datalist = [];
-      var options = this.getOptions();
-      var datalistId = coreuiFormUtils.hashCode();
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      options.attr.type = options.type;
-      options.attr.value = this._value !== null ? this._value : '';
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
-        options.attr.list = datalistId;
-        $.each(options.datalist, function (key, itemAttributes) {
-          var datalistAttr = [];
-          $.each(itemAttributes, function (name, value) {
-            datalistAttr.push(name + '="' + value + '"');
-          });
-          datalist.push({
-            attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
-          });
-        });
-      }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/input.html'], {
-        field: options,
-        datalistId: datalistId,
-        value: this._value !== null ? this._value : '',
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          datalist: datalist
-        }
-      });
-    },
-    /**
-     *
-     * @private
-     */
-    _renderContentReadonly: function _renderContentReadonly() {
-      var options = this.getOptions();
-      var type = 'text';
-      var value = this._value;
-      var lang = this._form.getLang();
-      if (options.hasOwnProperty('type') && typeof options.type === 'string') {
-        type = options.type;
-      }
-      try {
-        switch (type) {
-          case 'date':
-            value = coreuiFormUtils.formatDate(value);
-            break;
-          case 'datetime-local':
-            value = coreuiFormUtils.formatDateTime(value);
-            break;
-          case 'month':
-            value = coreuiFormUtils.formatDateMonth(value, lang);
-            break;
-          case 'week':
-            value = coreuiFormUtils.formatDateWeek(value, lang);
-            break;
-        }
-      } catch (e) {
-        console.error(e);
-        // ignore
-      }
-
-      return ejs.render(tpl$1['fields/input.html'], {
-        field: options,
-        value: value,
-        hash: this._hash
-      });
-    }
-  };
+    }]);
+  }(Field);
+  coreuiForm.fields.hidden = FieldHidden;
 
   /**
    * jquery.mask.js
@@ -4779,2878 +4914,2576 @@
     }, globals.watchInterval);
   }, window.jQuery, window.Zepto);
 
-  coreuiForm.fields.mask = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'mask',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        "class": 'form-control d-inline-block'
-      },
-      required: null,
-      readonly: null,
-      datalist: null,
-      show: true,
-      column: null
-    },
+  function _callSuper$b(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldMask = /*#__PURE__*/function (_FieldInput) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-      this._hash = coreuiFormUtils.hashCode();
-      var that = this;
+    function FieldMask(form, options, index) {
+      var _this2;
+      _classCallCheck(this, FieldMask);
+      options = $.extend(true, {
+        type: 'mask',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        attr: {
+          "class": 'form-control d-inline-block'
+        },
+        required: null,
+        readonly: null,
+        datalist: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      _this2 = _callSuper$b(this, FieldMask, [form, options, index]);
+      var that = _this2;
       form.on('show', function () {
         if (!that._options.readonly) {
           that._initEvents();
         }
       });
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
+      return _this2;
+    }
+
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-      if (!this._options.readonly) {
-        this._initEvents();
-      }
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения в поле
-     * @returns {string}
-     */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' input').val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      value = value.replace(/[^\d\w]/g, '');
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value);
-      } else {
-        $('.content-' + this._hash + ' input').val(value);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var input = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        input.removeClass('is-invalid');
-        input.removeClass('is-valid');
-      } else if (isValid) {
-        input.removeClass('is-invalid');
-        input.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
+    _inherits(FieldMask, _FieldInput);
+    return _createClass(FieldMask, [{
+      key: "readonly",
+      value: function readonly(isReadonly) {
+        _get(_getPrototypeOf(FieldMask.prototype), "readonly", this).call(this, isReadonly);
+        if (!isReadonly) {
+          this._initEvents();
         }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback">' + text + '</div>');
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0) {
+          return;
         }
-      } else {
-        input.removeClass('is-valid');
-        input.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
+        value = value.replace(/[^\d\w]/g, '');
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(value);
+        } else {
+          $('.content-' + this._hash + ' input').val(value);
+        }
+      }
+
+      /**
+       *
+       * @return {*}
+       * @private
+       */
+    }, {
+      key: "_renderContent",
+      value: function _renderContent() {
+        var attributes = [];
+        var datalist = [];
+        var options = this.getOptions();
+        var datalistId = coreuiFormUtils.hashCode();
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        options.attr.type = 'text';
+        options.attr.value = this._value !== null ? this._value : '';
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
+          options.attr.list = datalistId;
+          $.each(options.datalist, function (key, itemAttributes) {
+            var datalistAttr = [];
+            $.each(itemAttributes, function (name, value) {
+              datalistAttr.push(name + '="' + value + '"');
+            });
+            datalist.push({
+              attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
+            });
+          });
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/input.html'], {
+          field: options,
+          datalistId: datalistId,
+          value: this._value !== null ? this._value : '',
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            datalist: datalist
           }
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback">' + text + '</div>');
-        }
-      }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      var input = $('.content-' + this._hash + ' input');
-      if (input[0]) {
-        return input.is(':valid');
-      }
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
-    },
-    /**
-     *
-     * @return {*}
-     * @private
-     */
-    _renderContent: function _renderContent() {
-      var attributes = [];
-      var datalist = [];
-      var options = this.getOptions();
-      var datalistId = coreuiFormUtils.hashCode();
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      options.attr.type = 'text';
-      options.attr.value = this._value !== null ? this._value : '';
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
-        options.attr.list = datalistId;
-        $.each(options.datalist, function (key, itemAttributes) {
-          var datalistAttr = [];
-          $.each(itemAttributes, function (name, value) {
-            datalistAttr.push(name + '="' + value + '"');
-          });
-          datalist.push({
-            attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
-          });
         });
       }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/input.html'], {
-        field: options,
-        datalistId: datalistId,
-        value: this._value !== null ? this._value : '',
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          datalist: datalist
-        }
-      });
-    },
-    /**
-     *
-     * @private
-     */
-    _renderContentReadonly: function _renderContentReadonly() {
-      var options = this.getOptions();
-      return ejs.render(tpl$1['fields/input.html'], {
-        field: options,
-        value: this._value !== null ? this._value : ''
-      });
-    },
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents: function _initEvents() {
-      $('#coreui-form-' + this._id + ' .content-' + this._hash + ' input').mask(this._options.mask, this._options.options);
-    }
-  };
 
-  coreuiForm.fields.modal = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _value: '',
-    _text: '',
-    _options: {
-      type: 'modal',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      fields: [],
-      options: {
-        title: '',
-        size: 'lg',
-        url: '',
-        onHidden: null,
-        onClear: null,
-        onChange: null
-      },
-      required: null,
-      readonly: null,
-      show: true,
-      column: null
-    },
+      /**
+       *
+       * @private
+       */
+    }, {
+      key: "_renderContentReadonly",
+      value: function _renderContentReadonly() {
+        var options = this.getOptions();
+        return ejs.render(tpl$1['fields/input.html'], {
+          field: options,
+          value: this._value !== null ? this._value : ''
+        });
+      }
+
+      /**
+       * Инициализация событий
+       * @private
+       */
+    }, {
+      key: "_initEvents",
+      value: function _initEvents() {
+        $('#coreui-form-' + this._id + ' .content-' + this._hash + ' input').mask(this._options.mask, this._options.options);
+      }
+    }]);
+  }(FieldInput);
+  coreuiForm.fields.mask = FieldMask;
+
+  function _callSuper$a(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldModal = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
+    function FieldModal(form, options, index) {
+      var _this2;
+      _classCallCheck(this, FieldModal);
+      options = $.extend(true, {
+        type: 'modal',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: [],
+        options: {
+          title: '',
+          size: 'lg',
+          url: '',
+          onHidden: null,
+          onClear: null,
+          onChange: null
+        },
+        required: null,
+        readonly: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      _this2 = _callSuper$a(this, FieldModal, [form, options, index]);
+      _defineProperty(_this2, "_text", '');
       var formRecord = form.getRecord();
-      this._form = form;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-      this._hash = coreuiFormUtils.hashCode();
       if (typeof options.name === 'string' && formRecord.hasOwnProperty(options.name) && ['object'].indexOf(_typeof(formRecord[options.name])) >= 0) {
         var record = formRecord[options.name];
-        this._value = record.hasOwnProperty('value') && ['number', 'string'].indexOf(_typeof(record.value)) >= 0 ? record.value : '';
-        this._text = record.hasOwnProperty('text') && ['number', 'string'].indexOf(_typeof(record.text)) >= 0 ? record.text : '';
+        _this2._value = record.hasOwnProperty('value') && ['number', 'string'].indexOf(_typeof(record.value)) >= 0 ? record.value : '';
+        _this2._text = record.hasOwnProperty('text') && ['number', 'string'].indexOf(_typeof(record.text)) >= 0 ? record.text : '';
       }
-      var that = this;
+      var that = _this2;
       form.on('show', function () {
         that._initEvents();
       });
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
+      return _this2;
+    }
+
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-      if (!this._options.readonly) {
-        this._initEvents();
-      }
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения в поле
-     * @returns {string}
-     */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' input.coreui-form-modal-value').val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     * @param {string} text
-     */
-    setValue: function setValue(value, text) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(text);
-      } else {
-        var elementValue = $('.content-' + this._hash + ' .coreui-form-modal-value');
-        var elementText = $('.content-' + this._hash + ' .coreui-form-modal-text');
-        var oldValue = elementValue.val();
-        elementValue.val(value);
-        elementText.val(text);
-        if (oldValue != value) {
-          var modal = this._options.hasOwnProperty('options') && _typeof(this._options.options) === 'object' ? this._options.options : {};
-          if (modal.hasOwnProperty('onChange')) {
-            if (typeof modal.onChange === 'function') {
-              modal.onChange(this);
-            } else if (typeof modal.onChange === 'string') {
-              new Function('modal', modal.onChange)(this);
-            }
-          }
-          coreuiFormPrivate.trigger(this._form, 'change-modal.coreui.form', [this], this);
+    _inherits(FieldModal, _Field);
+    return _createClass(FieldModal, [{
+      key: "readonly",
+      value: function readonly(isReadonly) {
+        _get(_getPrototypeOf(FieldModal.prototype), "readonly", this).call(this, isReadonly);
+        if (!isReadonly) {
+          this._initEvents();
         }
       }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      container.find('.text-success').remove();
-      container.find('.text-danger').remove();
-      if (isValid === null) {
-        return;
-      }
-      if (isValid) {
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="ps-2 text-success">' + text + '</div>');
-        }
-      } else {
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
-          }
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="ps-2 text-danger">' + text + '</div>');
-        }
-      }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      if (this._options.required && !this._options.readonly) {
-        return !!this.getValue();
-      }
-      return true;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var fieldOptions = this.getOptions();
-      var attributes = [];
-      var textAttr = {
-        type: 'text',
-        readonly: 'readonly',
-        "class": 'form-control coreui-form-modal-text',
-        value: this._text !== null ? this._text : ''
-      };
-      if (fieldOptions.required) {
-        textAttr.required = 'required';
-      }
-      if (fieldOptions.hasOwnProperty('attr') && _typeof(fieldOptions.attr) === 'object' && Array.isArray(fieldOptions.attr)) {
-        textAttr = coreuiFormUtils.mergeAttr(textAttr, fieldOptions.attr);
-      }
-      $.each(textAttr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/modal.html'], {
-        field: fieldOptions,
-        value: this._value !== null ? this._value : '',
-        text: this._text !== null ? this._text : '',
-        lang: this._form.getLang(),
-        render: {
-          width: this._options.width,
-          attr: attributes.length > 0 ? attributes.join(' ') : ''
-        }
-      });
-    },
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents: function _initEvents() {
-      var that = this;
-      var modal = this._options.hasOwnProperty('options') && _typeof(this._options.options) === 'object' ? this._options.options : {};
 
-      // Очистка
-      $('.content-' + this._hash + ' .btn-modal-clear').click(function (e) {
-        if (modal.hasOwnProperty('onClear')) {
-          if (typeof modal.onClear === 'function') {
-            modal.onClear(that);
-          } else if (typeof modal.onClear === 'string') {
-            new Function('field', modal.onClear)(that);
-          }
-        }
-        coreuiFormPrivate.trigger(that._form, 'modal_clear', [that, e], that);
-        that.setValue('', '');
-      });
+      /**
+       * Получение значения в поле
+       * @returns {string}
+       */
+    }, {
+      key: "getValue",
+      value: function getValue() {
+        return this._options.readonly ? this._value : $('.content-' + this._hash + ' input.coreui-form-modal-value').val();
+      }
 
-      // Выбор
-      $('.content-' + this._hash + ' .btn-modal-select').click(function (e) {
-        var title = modal.hasOwnProperty('title') && typeof modal.title === 'string' ? modal.title : '';
-        var size = modal.hasOwnProperty('size') && typeof modal.size === 'string' ? modal.size : 'lg';
-        var url = modal.hasOwnProperty('url') && typeof modal.url === 'string' ? modal.url : '';
-        if (!url) {
+      /**
+       * Установка значения в поле
+       * @param {object} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (!coreuiFormUtils.isObject(value)) {
           return;
         }
-        var modalId = coreuiFormUtils.hashCode();
-        var modalLoading = ejs.render(tpl$1['fields/modal-loading.html'], {
-          lang: that._form.getLang()
-        });
-        if (CoreUI.hasOwnProperty('modal')) {
-          var onShow = null;
-          var onHidden = null;
-          if (modal.hasOwnProperty('onHidden')) {
-            if (typeof modal.onHidden === 'function') {
-              onHidden = modal.onHidden;
-            } else if (typeof modal.onHidden === 'string') {
-              onHidden = new Function(modal.onHidden);
+        var text = value.hasOwnProperty('text') && typeof value.text === 'string' ? value.text : '';
+        value = value.hasOwnProperty('value') && typeof value.value === 'string' ? value.value : '';
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(text);
+        } else {
+          var elementValue = $('.content-' + this._hash + ' .coreui-form-modal-value');
+          var elementText = $('.content-' + this._hash + ' .coreui-form-modal-text');
+          var oldValue = elementValue.val();
+          elementValue.val(value);
+          elementText.val(text);
+          if (oldValue != value) {
+            var modal = this._options.hasOwnProperty('options') && _typeof(this._options.options) === 'object' ? this._options.options : {};
+            if (modal.hasOwnProperty('onChange')) {
+              if (typeof modal.onChange === 'function') {
+                modal.onChange(this);
+              } else if (typeof modal.onChange === 'string') {
+                new Function('modal', modal.onChange)(this);
+              }
             }
+            coreuiFormPrivate.trigger(this._form, 'change-modal.coreui.form', [this], this);
           }
-          if (modal.hasOwnProperty('onShow')) {
-            if (typeof modal.onShow === 'function') {
-              onShow = modal.onShow;
-            } else if (typeof modal.onShow === 'string') {
-              onShow = new Function(modal.onShow);
-            }
-          }
-          CoreUI.modal.show(title, modalLoading, {
-            id: modalId,
-            size: size,
-            onShow: onShow,
-            onHidden: onHidden
-          });
         }
-        $.ajax({
-          url: url,
-          method: 'GET',
-          beforeSend: function beforeSend(xhr) {
-            coreuiFormPrivate.trigger(that._form, 'modal_load_before', [that, xhr], that);
-          },
-          success: function success(result) {
-            $('#modal-' + modalId + ' .modal-body').html(result);
-            coreuiFormPrivate.trigger(that._form, 'modal_load_success', [that, result], that);
-          },
-          error: function error(xhr, textStatus, errorThrown) {
-            coreuiFormPrivate.trigger(that._form, 'modal_load_error', [that, xhr, textStatus, errorThrown], that);
-          },
-          complete: function complete(xhr, textStatus) {
-            coreuiFormPrivate.trigger(that._form, 'modal_load_complete', [that, xhr, textStatus], that);
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        container.find('.text-success').remove();
+        container.find('.text-danger').remove();
+        if (isValid === null) {
+          return;
+        }
+        if (isValid) {
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="ps-2 text-success">' + text + '</div>');
+          }
+        } else {
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="ps-2 text-danger">' + text + '</div>');
+          }
+        }
+      }
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        if (this._options.required && !this._options.readonly) {
+          return !!this.getValue();
+        }
+        return true;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var fieldOptions = this.getOptions();
+        var attributes = [];
+        var textAttr = {
+          type: 'text',
+          readonly: 'readonly',
+          "class": 'form-control coreui-form-modal-text',
+          value: this._text !== null ? this._text : ''
+        };
+        if (fieldOptions.required) {
+          textAttr.required = 'required';
+        }
+        if (fieldOptions.hasOwnProperty('attr') && _typeof(fieldOptions.attr) === 'object' && Array.isArray(fieldOptions.attr)) {
+          textAttr = coreuiFormUtils.mergeAttr(textAttr, fieldOptions.attr);
+        }
+        $.each(textAttr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/modal.html'], {
+          field: fieldOptions,
+          value: this._value !== null ? this._value : '',
+          text: this._text !== null ? this._text : '',
+          lang: this._form.getLang(),
+          render: {
+            width: this._options.width,
+            attr: attributes.length > 0 ? attributes.join(' ') : ''
           }
         });
-        coreuiFormPrivate.trigger(that._form, 'modal_select', [that, e], that);
-      });
-    }
-  };
+      }
 
-  coreuiForm.fields.number = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'number',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        "class": 'form-control d-inline-block',
-        step: 'any'
-      },
-      required: null,
-      readonly: null,
-      datalist: null,
-      show: true,
-      column: null,
-      precision: null
-    },
+      /**
+       * Инициализация событий
+       * @private
+       */
+    }, {
+      key: "_initEvents",
+      value: function _initEvents() {
+        var that = this;
+        var modal = this._options.hasOwnProperty('options') && _typeof(this._options.options) === 'object' ? this._options.options : {};
+
+        // Очистка
+        $('.content-' + this._hash + ' .btn-modal-clear').click(function (e) {
+          if (modal.hasOwnProperty('onClear')) {
+            if (typeof modal.onClear === 'function') {
+              modal.onClear(that);
+            } else if (typeof modal.onClear === 'string') {
+              new Function('field', modal.onClear)(that);
+            }
+          }
+          coreuiFormPrivate.trigger(that._form, 'modal_clear', [that, e], that);
+          that.setValue({
+            value: '',
+            text: ''
+          });
+        });
+
+        // Выбор
+        $('.content-' + this._hash + ' .btn-modal-select').click(function (e) {
+          var title = modal.hasOwnProperty('title') && typeof modal.title === 'string' ? modal.title : '';
+          var size = modal.hasOwnProperty('size') && typeof modal.size === 'string' ? modal.size : 'lg';
+          var url = modal.hasOwnProperty('url') && typeof modal.url === 'string' ? modal.url : '';
+          if (!url) {
+            return;
+          }
+          var modalId = coreuiFormUtils.hashCode();
+          var modalLoading = ejs.render(tpl$1['fields/modal-loading.html'], {
+            lang: that._form.getLang()
+          });
+          if (CoreUI.hasOwnProperty('modal')) {
+            var onShow = null;
+            var onHidden = null;
+            if (modal.hasOwnProperty('onHidden')) {
+              if (typeof modal.onHidden === 'function') {
+                onHidden = modal.onHidden;
+              } else if (typeof modal.onHidden === 'string') {
+                onHidden = new Function(modal.onHidden);
+              }
+            }
+            if (modal.hasOwnProperty('onShow')) {
+              if (typeof modal.onShow === 'function') {
+                onShow = modal.onShow;
+              } else if (typeof modal.onShow === 'string') {
+                onShow = new Function(modal.onShow);
+              }
+            }
+            CoreUI.modal.show(title, modalLoading, {
+              id: modalId,
+              size: size,
+              onShow: onShow,
+              onHidden: onHidden
+            });
+          }
+          $.ajax({
+            url: url,
+            method: 'GET',
+            beforeSend: function beforeSend(xhr) {
+              coreuiFormPrivate.trigger(that._form, 'modal_load_before', [that, xhr], that);
+            },
+            success: function success(result) {
+              $('#modal-' + modalId + ' .modal-body').html(result);
+              coreuiFormPrivate.trigger(that._form, 'modal_load_success', [that, result], that);
+            },
+            error: function error(xhr, textStatus, errorThrown) {
+              coreuiFormPrivate.trigger(that._form, 'modal_load_error', [that, xhr, textStatus, errorThrown], that);
+            },
+            complete: function complete(xhr, textStatus) {
+              coreuiFormPrivate.trigger(that._form, 'modal_load_complete', [that, xhr, textStatus], that);
+            }
+          });
+          coreuiFormPrivate.trigger(that._form, 'modal_select', [that, e], that);
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.modal = FieldModal;
+
+  function _callSuper$9(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldNumber = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+    function FieldNumber(form, options, index) {
+      var _this2;
+      _classCallCheck(this, FieldNumber);
+      options = $.extend(true, {
+        type: 'number',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        attr: {
+          "class": 'form-control d-inline-block',
+          step: 'any'
+        },
+        required: null,
+        readonly: null,
+        datalist: null,
+        show: true,
+        position: null,
+        precision: null,
+        noSend: null
+      }, options);
+      _this2 = _callSuper$9(this, FieldNumber, [form, options, index]);
 
       // Установка точности
-      if (this._options.precision === null) {
+      if (_this2._options.precision === null) {
         var precision = 0;
-        if (this._options.attr.hasOwnProperty('step') && this._options.attr.step !== 'any' && ['string', 'number'].indexOf(_typeof(this._options.attr.step)) >= 0) {
-          var match = $.trim(this._options.attr.step.toString()).match(/\.(\d+)$/);
+        if (_this2._options.attr.hasOwnProperty('step') && _this2._options.attr.step !== 'any' && ['string', 'number'].indexOf(_typeof(_this2._options.attr.step)) >= 0) {
+          var match = $.trim(_this2._options.attr.step.toString()).match(/\.(\d+)$/);
           if (match && match.hasOwnProperty(1)) {
             precision = match ? match[1].length : precision;
           }
         }
-        this._options.precision = precision;
+        _this2._options.precision = precision;
       }
-      var that = this;
+      var that = _this2;
       form.on('show', function () {
         if (!that._options.readonly) {
           that._initEvents();
         }
       });
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
+      return _this2;
+    }
+
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-      if (!this._options.readonly) {
-        this._initEvents();
-      }
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения в поле
-     * @returns {string}
-     */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' input').val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0 || !value.toString().match(/^\-?\d+\.?\d*$/)) {
-        return;
-      }
-      if (this._options.precision >= 0) {
-        value = coreuiFormUtils.round(value, this._options.precision);
-      }
-      if (this._options.attr.hasOwnProperty('min')) {
-        value = value < Number(this._options.attr.min) ? Number(this._options.attr.min) : value;
-      }
-      if (this._options.attr.hasOwnProperty('max')) {
-        value = value > Number(this._options.attr.max) ? Number(this._options.attr.max) : value;
-      }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value);
-      } else {
-        $('.content-' + this._hash + ' input').val(value);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var input = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        input.removeClass('is-invalid');
-        input.removeClass('is-valid');
-      } else if (isValid) {
-        input.removeClass('is-invalid');
-        input.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
+    _inherits(FieldNumber, _Field);
+    return _createClass(FieldNumber, [{
+      key: "readonly",
+      value: function readonly(isReadonly) {
+        _get(_getPrototypeOf(FieldNumber.prototype), "readonly", this).call(this, isReadonly);
+        if (!isReadonly) {
+          this._initEvents();
         }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback">' + text + '</div>');
+      }
+
+      /**
+       * Получение значения в поле
+       * @returns {string}
+       */
+    }, {
+      key: "getValue",
+      value: function getValue() {
+        return this._options.readonly ? this._value : $('.content-' + this._hash + ' input').val();
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0 || !value.toString().match(/^\-?\d+\.?\d*$/)) {
+          return;
         }
-      } else {
-        input.removeClass('is-valid');
-        input.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
+        if (this._options.precision >= 0) {
+          value = coreuiFormUtils.round(value, this._options.precision);
+        }
+        if (this._options.attr.hasOwnProperty('min')) {
+          value = value < Number(this._options.attr.min) ? Number(this._options.attr.min) : value;
+        }
+        if (this._options.attr.hasOwnProperty('max')) {
+          value = value > Number(this._options.attr.max) ? Number(this._options.attr.max) : value;
+        }
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(value);
+        } else {
+          $('.content-' + this._hash + ' input').val(value);
+        }
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var input = $('input', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          input.removeClass('is-invalid');
+          input.removeClass('is-valid');
+        } else if (isValid) {
+          input.removeClass('is-invalid');
+          input.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="valid-feedback">' + text + '</div>');
+          }
+        } else {
+          input.removeClass('is-valid');
+          input.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="invalid-feedback">' + text + '</div>');
           }
         }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback">' + text + '</div>');
+      }
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        var input = $('.content-' + this._hash + ' input');
+        if (input[0]) {
+          return input.is(':valid');
         }
+        return null;
       }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      var input = $('.content-' + this._hash + ' input');
-      if (input[0]) {
-        return input.is(':valid');
-      }
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = $.extend(true, {}, this._options);
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var attributes = [];
-      var datalist = [];
-      var options = this.getOptions();
-      var datalistId = coreuiFormUtils.hashCode();
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      options.attr.type = 'number';
-      options.attr.value = this._value !== null ? this._value : '';
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
-        options.attr.list = datalistId;
-        $.each(options.datalist, function (key, itemAttributes) {
-          var datalistAttr = [];
-          $.each(itemAttributes, function (name, value) {
-            datalistAttr.push(name + '="' + value + '"');
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var attributes = [];
+        var datalist = [];
+        var options = this.getOptions();
+        var datalistId = coreuiFormUtils.hashCode();
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        options.attr.type = 'number';
+        options.attr.value = this._value !== null ? this._value : '';
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
+          options.attr.list = datalistId;
+          $.each(options.datalist, function (key, itemAttributes) {
+            var datalistAttr = [];
+            $.each(itemAttributes, function (name, value) {
+              datalistAttr.push(name + '="' + value + '"');
+            });
+            datalist.push({
+              attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
+            });
           });
-          datalist.push({
-            attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
-          });
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/input.html'], {
+          field: options,
+          datalistId: datalistId,
+          value: this._value !== null ? this._value : '',
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            datalist: datalist
+          }
         });
       }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/input.html'], {
-        field: options,
-        datalistId: datalistId,
-        value: this._value !== null ? this._value : '',
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          datalist: datalist
-        }
-      });
-    },
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents: function _initEvents() {
-      $('.content-' + this._hash + ' input').keydown(function (e) {
-        var k = e.keyCode || e.which;
-        var ok = k >= 35 && k <= 40 ||
-        // arrows
-        k >= 96 && k <= 105 ||
-        // 0-9 numpad
-        k === 189 || k === 109 ||
-        // minus
-        k === 110 || k === 190 ||
-        // dot
-        k === 9 ||
-        //tab
-        k === 46 ||
-        //del
-        k === 8 ||
-        // backspaces
-        !e.shiftKey && k >= 48 && k <= 57; // only 0-9 (ignore SHIFT options)
 
-        if (!ok || e.ctrlKey && e.altKey) {
-          e.preventDefault();
-        }
-      });
-      var that = this;
-      $('.content-' + this._hash + ' input').blur(function (e) {
-        var value = $(this).val();
-        if (that._options.precision >= 0) {
-          value = coreuiFormUtils.round(value, that._options.precision);
-        }
-        if (that._options.attr.hasOwnProperty('min')) {
-          value = value < Number(that._options.attr.min) ? Number(that._options.attr.min) : value;
-        }
-        if (that._options.attr.hasOwnProperty('max')) {
-          value = value > Number(that._options.attr.max) ? Number(that._options.attr.max) : value;
-        }
-        $(this).val(value);
-      });
+      /**
+       * Инициализация событий
+       * @private
+       */
+    }, {
+      key: "_initEvents",
+      value: function _initEvents() {
+        $('.content-' + this._hash + ' input').keydown(function (e) {
+          var k = e.keyCode || e.which;
+          var ok = k >= 35 && k <= 40 ||
+          // arrows
+          k >= 96 && k <= 105 ||
+          // 0-9 numpad
+          k === 189 || k === 109 ||
+          // minus
+          k === 110 || k === 190 ||
+          // dot
+          k === 9 ||
+          //tab
+          k === 46 ||
+          //del
+          k === 8 ||
+          // backspaces
+          !e.shiftKey && k >= 48 && k <= 57; // only 0-9 (ignore SHIFT options)
+
+          if (!ok || e.ctrlKey && e.altKey) {
+            e.preventDefault();
+          }
+        });
+        var that = this;
+        $('.content-' + this._hash + ' input').blur(function (e) {
+          var value = $(this).val();
+          if (that._options.precision >= 0) {
+            value = coreuiFormUtils.round(value, that._options.precision);
+          }
+          if (that._options.attr.hasOwnProperty('min')) {
+            value = value < Number(that._options.attr.min) ? Number(that._options.attr.min) : value;
+          }
+          if (that._options.attr.hasOwnProperty('max')) {
+            value = value > Number(that._options.attr.max) ? Number(that._options.attr.max) : value;
+          }
+          $(this).val(value);
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.number = FieldNumber;
+
+  function _callSuper$8(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
     }
-  };
-
-  coreuiForm.fields.radio = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'radio',
-      name: null,
-      label: null,
-      labelWidth: null,
-      inline: false,
-      outContent: null,
-      description: null,
-      errorText: null,
-      options: [],
-      fields: [],
-      required: null,
-      readonly: null,
-      show: true,
-      column: null
-    },
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldRadio = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
+    function FieldRadio(form, options, index) {
+      _classCallCheck(this, FieldRadio);
+      options = $.extend(true, {
+        type: 'radio',
+        name: null,
+        label: null,
+        labelWidth: null,
+        inline: false,
+        outContent: null,
+        description: null,
+        errorText: null,
+        options: [],
+        fields: [],
+        required: null,
+        readonly: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      return _callSuper$8(this, FieldRadio, [form, options, index]);
+    }
+
     /**
      * Получение значения в поле
      * @returns {string}
      */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' input[type=radio]:checked').val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
+    _inherits(FieldRadio, _Field);
+    return _createClass(FieldRadio, [{
+      key: "getValue",
+      value: function getValue() {
+        return this._options.readonly ? this._value : $('.content-' + this._hash + ' input[type=radio]:checked').val();
       }
-      if (this._options.readonly) {
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0) {
+          return;
+        }
+        if (this._options.readonly) {
+          var that = this;
+          var fieldOptions = this.getOptions();
+          if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options)) {
+            $.each(fieldOptions.options, function (key, option) {
+              if (option.hasOwnProperty('value') && option.value == value) {
+                var text = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
+                $('.content-' + that._hash).text(text);
+                that._value = value;
+                return false;
+              }
+            });
+          }
+        } else {
+          var input = $('.content-' + this._hash + ' input[type=radio][value="' + value + '"]');
+          if (input[0]) {
+            input.prop('checked', true);
+            this._value = value;
+          }
+        }
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var lastInput = $('.form-check:last-child', container);
+        var inputs = $('input', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          inputs.removeClass('is-invalid');
+          inputs.removeClass('is-valid');
+        } else if (isValid) {
+          inputs.removeClass('is-invalid');
+          inputs.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            lastInput.append('<div class="valid-feedback">' + text + '</div>');
+          }
+        } else {
+          inputs.removeClass('is-valid');
+          inputs.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            lastInput.append('<div class="invalid-feedback">' + text + '</div>');
+          }
+        }
+      }
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        if (this._options.required && !this._options.readonly) {
+          var value = this.getValue();
+          return typeof value === 'string' && value !== '';
+        }
+        return true;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
         var that = this;
+        var radioOptions = [];
         var fieldOptions = this.getOptions();
+        var selectedItem = [];
         if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options)) {
           $.each(fieldOptions.options, function (key, option) {
-            if (option.hasOwnProperty('value') && option.value == value) {
-              var text = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
-              $('.content-' + that._hash).text(text);
-              that._value = value;
-              return false;
+            var attributes = [];
+            var itemAttr = {
+              type: 'radio',
+              "class": 'form-check-input'
+            };
+            var optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
+            if (fieldOptions.name) {
+              itemAttr.name = that._options.name;
             }
-          });
-        }
-      } else {
-        var input = $('.content-' + this._hash + ' input[type=radio][value="' + value + '"]');
-        if (input[0]) {
-          input.prop('checked', true);
-          this._value = value;
-        }
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var lastInput = $('.form-check:last-child', container);
-      var inputs = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        inputs.removeClass('is-invalid');
-        inputs.removeClass('is-valid');
-      } else if (isValid) {
-        inputs.removeClass('is-invalid');
-        inputs.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          lastInput.append('<div class="valid-feedback">' + text + '</div>');
-        }
-      } else {
-        inputs.removeClass('is-valid');
-        inputs.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
-          }
-        }
-        if (typeof text === 'string') {
-          lastInput.append('<div class="invalid-feedback">' + text + '</div>');
-        }
-      }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      if (this._options.required && !this._options.readonly) {
-        var value = this.getValue();
-        return typeof value === 'string' && value !== '';
-      }
-      return true;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: this._options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var that = this;
-      var radioOptions = [];
-      var fieldOptions = this.getOptions();
-      var selectedItem = [];
-      if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options)) {
-        $.each(fieldOptions.options, function (key, option) {
-          var attributes = [];
-          var itemAttr = {
-            type: 'radio',
-            "class": 'form-check-input'
-          };
-          var optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
-          if (fieldOptions.name) {
-            itemAttr.name = that._options.name;
-          }
-          if (fieldOptions.required) {
-            itemAttr.required = 'required';
-          }
-          $.each(option, function (name, value) {
-            if (name !== 'text') {
-              if (name === 'class') {
-                itemAttr[name] = itemAttr[name] + ' ' + value;
-              } else {
-                itemAttr[name] = value;
+            if (fieldOptions.required) {
+              itemAttr.required = 'required';
+            }
+            $.each(option, function (name, value) {
+              if (name !== 'text') {
+                if (name === 'class') {
+                  itemAttr[name] = itemAttr[name] + ' ' + value;
+                } else {
+                  itemAttr[name] = value;
+                }
               }
+            });
+            itemAttr.id = coreuiFormUtils.hashCode();
+            if (that._value == option.value) {
+              if (option.hasOwnProperty('text') && option.text) {
+                selectedItem.push(option.text);
+              }
+              itemAttr.checked = 'checked';
             }
+            $.each(itemAttr, function (name, value) {
+              attributes.push(name + '="' + value + '"');
+            });
+            radioOptions.push({
+              id: itemAttr.id,
+              text: optionText,
+              attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
+            });
           });
-          itemAttr.id = coreuiFormUtils.hashCode();
-          if (that._value == option.value) {
-            if (option.hasOwnProperty('text') && option.text) {
-              selectedItem.push(option.text);
-            }
-            itemAttr.checked = 'checked';
+        }
+        return ejs.render(tpl$1['fields/radio.html'], {
+          field: fieldOptions,
+          value: this._value,
+          render: {
+            options: radioOptions,
+            selectedItem: selectedItem
           }
-          $.each(itemAttr, function (name, value) {
-            attributes.push(name + '="' + value + '"');
-          });
-          radioOptions.push({
-            id: itemAttr.id,
-            text: optionText,
-            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
-          });
         });
       }
-      return ejs.render(tpl$1['fields/radio.html'], {
-        field: fieldOptions,
-        value: this._value,
-        render: {
-          options: radioOptions,
-          selectedItem: selectedItem
-        }
-      });
-    }
-  };
+    }]);
+  }(Field);
+  coreuiForm.fields.radio = FieldRadio;
 
-  coreuiForm.fields.range = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'range',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        "class": 'form-range d-inline-block pt-1'
-      },
-      required: null,
-      readonly: null,
-      datalist: null,
-      show: true,
-      column: null
-    },
+  function _callSuper$7(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldRange = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
+    function FieldRange(form, options, index) {
+      _classCallCheck(this, FieldRange);
+      options = $.extend(true, {
+        type: 'range',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        attr: {
+          "class": 'form-range d-inline-block pt-1'
+        },
+        required: null,
+        readonly: null,
+        datalist: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      return _callSuper$7(this, FieldRange, [form, options, index]);
+    }
+
     /**
      * Получение значения в поле
      * @returns {string}
      */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' input').val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
+    _inherits(FieldRange, _Field);
+    return _createClass(FieldRange, [{
+      key: "getValue",
+      value: function getValue() {
+        return this._options.readonly ? this._value : $('.content-' + this._hash + ' input').val();
       }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value);
-      } else {
-        $('.content-' + this._hash + ' input').val(value);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var input = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        input.removeClass('is-invalid');
-        input.removeClass('is-valid');
-      } else if (isValid) {
-        input.removeClass('is-invalid');
-        input.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0) {
+          return;
         }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback">' + text + '</div>');
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(value);
+        } else {
+          $('.content-' + this._hash + ' input').val(value);
         }
-      } else {
-        input.removeClass('is-valid');
-        input.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var input = $('input', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          input.removeClass('is-invalid');
+          input.removeClass('is-valid');
+        } else if (isValid) {
+          input.removeClass('is-invalid');
+          input.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="valid-feedback">' + text + '</div>');
+          }
+        } else {
+          input.removeClass('is-valid');
+          input.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="invalid-feedback">' + text + '</div>');
           }
         }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback">' + text + '</div>');
+      }
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        var input = $('.content-' + this._hash + ' input');
+        if (input[0]) {
+          return input.is(':valid');
         }
+        return null;
       }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      var input = $('.content-' + this._hash + ' input');
-      if (input[0]) {
-        return input.is(':valid');
-      }
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var attributes = [];
-      var datalist = [];
-      var options = this.getOptions();
-      var datalistId = coreuiFormUtils.hashCode();
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      options.attr.type = 'range';
-      options.attr.value = this._value;
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
-        options.attr.list = datalistId;
-        $.each(options.datalist, function (key, itemAttributes) {
-          var datalistAttr = [];
-          $.each(itemAttributes, function (name, value) {
-            datalistAttr.push(name + '="' + value + '"');
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var attributes = [];
+        var datalist = [];
+        var options = this.getOptions();
+        var datalistId = coreuiFormUtils.hashCode();
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        options.attr.type = 'range';
+        options.attr.value = this._value;
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        if (options.hasOwnProperty('datalist') && _typeof(options.datalist) === 'object' && Array.isArray(options.datalist)) {
+          options.attr.list = datalistId;
+          $.each(options.datalist, function (key, itemAttributes) {
+            var datalistAttr = [];
+            $.each(itemAttributes, function (name, value) {
+              datalistAttr.push(name + '="' + value + '"');
+            });
+            datalist.push({
+              attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
+            });
           });
-          datalist.push({
-            attr: datalistAttr.length > 0 ? ' ' + datalistAttr.join(' ') : ''
-          });
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/input.html'], {
+          field: options,
+          datalistId: datalistId,
+          value: this._value,
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            datalist: datalist
+          }
         });
       }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/input.html'], {
-        field: options,
-        datalistId: datalistId,
-        value: this._value,
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          datalist: datalist
-        }
-      });
-    }
-  };
+    }]);
+  }(Field);
+  coreuiForm.fields.range = FieldRange;
 
-  coreuiForm.fields.select = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: [],
-    _options: {
-      type: 'select',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        "class": 'form-select d-inline-block'
-      },
-      required: null,
-      readonly: null,
-      show: true,
-      column: null
-    },
+  function _callSuper$6(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldSelect = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
+    function FieldSelect(form, options, index) {
+      _classCallCheck(this, FieldSelect);
+      options = $.extend(true, {
+        type: 'select',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        attr: {
+          "class": 'form-select d-inline-block'
+        },
+        required: null,
+        readonly: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      return _callSuper$6(this, FieldSelect, [form, options, index]);
+    }
+
     /**
      * Получение значения из поля
      * @returns {array|string}
      */
-    getValue: function getValue() {
-      if (this._options.readonly) {
-        return this._value;
-      } else {
-        if (this._options.hasOwnProperty('attr') && _typeof(this._options.attr) === 'object' && this._options.attr !== null && !Array.isArray(this._options.attr) && this._options.attr.hasOwnProperty('multiple')) {
-          var values = [];
-          $('.content-' + this._hash + ' select option:selected').each(function () {
-            values.push($(this).val());
-          });
-          return values;
+    _inherits(FieldSelect, _Field);
+    return _createClass(FieldSelect, [{
+      key: "getValue",
+      value: function getValue() {
+        if (this._options.readonly) {
+          return this._value;
         } else {
-          return $('.content-' + this._hash + ' select option:selected').val();
+          if (this._options.hasOwnProperty('attr') && _typeof(this._options.attr) === 'object' && this._options.attr !== null && !Array.isArray(this._options.attr) && this._options.attr.hasOwnProperty('multiple')) {
+            var values = [];
+            $('.content-' + this._hash + ' select option:selected').each(function () {
+              values.push($(this).val());
+            });
+            return values;
+          } else {
+            return $('.content-' + this._hash + ' select option:selected').val();
+          }
         }
       }
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number', 'object'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      if (_typeof(value) === 'object') {
-        if (value !== null && !Array.isArray(value)) {
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number', 'object'].indexOf(_typeof(value)) < 0) {
           return;
         }
-      } else {
-        value = [value];
-      }
-      var that = this;
-      this._value = [];
-      if (this._options.readonly) {
-        $('.content-' + that._hash).empty();
-        var fieldOptions = this.getOptions();
-        if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options) && Array.isArray(value)) {
-          var selectedItems = [];
-          $.each(fieldOptions.options, function (key, option) {
-            if (option.hasOwnProperty('value')) {
-              $.each(value, function (key, val) {
-                if (option.value == val) {
-                  if (option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0) {
-                    selectedItems.push(option.text);
+        if (_typeof(value) === 'object') {
+          if (value !== null && !Array.isArray(value)) {
+            return;
+          }
+        } else {
+          value = [value];
+        }
+        var that = this;
+        this._value = [];
+        if (this._options.readonly) {
+          $('.content-' + that._hash).empty();
+          var fieldOptions = this.getOptions();
+          if (fieldOptions.hasOwnProperty('options') && _typeof(fieldOptions.options) === 'object' && Array.isArray(fieldOptions.options) && Array.isArray(value)) {
+            var selectedItems = [];
+            $.each(fieldOptions.options, function (key, option) {
+              if (option.hasOwnProperty('value')) {
+                $.each(value, function (key, val) {
+                  if (option.value == val) {
+                    if (option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0) {
+                      selectedItems.push(option.text);
+                    }
+                    that._value.push(val);
+                    return false;
                   }
+                });
+              }
+            });
+            $('.content-' + that._hash).text(selectedItems.join(', '));
+          }
+        } else {
+          $('.content-' + this._hash + ' select > option').prop('selected', false);
+          if (Array.isArray(value)) {
+            $('.content-' + this._hash + ' select > option').each(function (key, itemValue) {
+              $.each(value, function (key, val) {
+                if (val == $(itemValue).val()) {
+                  $(itemValue).prop('selected', true);
                   that._value.push(val);
                   return false;
                 }
               });
-            }
-          });
-          $('.content-' + that._hash).text(selectedItems.join(', '));
-        }
-      } else {
-        $('.content-' + this._hash + ' select > option').prop('selected', false);
-        if (Array.isArray(value)) {
-          $('.content-' + this._hash + ' select > option').each(function (key, itemValue) {
-            $.each(value, function (key, val) {
-              if (val == $(itemValue).val()) {
-                $(itemValue).prop('selected', true);
-                that._value.push(val);
-                return false;
-              }
             });
-          });
-        }
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var select = $('select', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        select.removeClass('is-invalid');
-        select.removeClass('is-valid');
-      } else if (isValid) {
-        select.removeClass('is-invalid');
-        select.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback">' + text + '</div>');
-        }
-      } else {
-        select.removeClass('is-valid');
-        select.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
           }
         }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback">' + text + '</div>');
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var select = $('select', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          select.removeClass('is-invalid');
+          select.removeClass('is-valid');
+        } else if (isValid) {
+          select.removeClass('is-invalid');
+          select.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="valid-feedback">' + text + '</div>');
+          }
+        } else {
+          select.removeClass('is-valid');
+          select.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="invalid-feedback">' + text + '</div>');
+          }
         }
       }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean|null}
-     */
-    isValid: function isValid() {
-      var select = $('.content-' + this._hash + ' select');
-      if (this._options.required && select.val() === '') {
-        return false;
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean|null}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        var select = $('.content-' + this._hash + ' select');
+        if (this._options.required && select.val() === '') {
+          return false;
+        }
+        if (select[0]) {
+          return select.is(':valid');
+        }
+        return null;
       }
-      if (select[0]) {
-        return select.is(':valid');
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
       }
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
-    },
-    /**
-     * Формирование контента
-     * @return {*}
-     * @private
-     */
-    _renderContent: function _renderContent() {
-      var that = this;
-      var options = this.getOptions();
-      var attributes = [];
-      var selectOptions = [];
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
+
+      /**
+       * Формирование контента
+       * @return {*}
+       * @private
+       */
+    }, {
+      key: "_renderContent",
+      value: function _renderContent() {
+        var that = this;
+        var options = this.getOptions();
+        var attributes = [];
+        var selectOptions = [];
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && options.options !== null) {
+          $.each(options.options, function (key, option) {
+            if (typeof option === 'string' || typeof option === 'number') {
+              selectOptions.push(that._renderOption({
+                type: 'option',
+                value: key,
+                text: option
+              }));
+            } else if (_typeof(option) === 'object') {
+              var type = option.hasOwnProperty('type') && typeof option.type === 'string' ? option.type : 'option';
+              if (type === 'group') {
+                var renderAttr = [];
+                var groupAttr = {};
+                var groupOptions = [];
+                if (option.hasOwnProperty('attr') && _typeof(option.attr) === 'object' && option.attr !== null && !Array.isArray(option.attr)) {
+                  groupAttr = option.attr;
+                }
+                if (option.hasOwnProperty('label') && ['string', 'number'].indexOf(_typeof(option.label)) >= 0) {
+                  groupAttr.label = option.label;
+                }
+                $.each(groupAttr, function (name, value) {
+                  renderAttr.push(name + '="' + value + '"');
+                });
+                if (Array.isArray(option.options)) {
+                  $.each(option.options, function (key, groupOption) {
+                    groupOptions.push(that._renderOption(groupOption));
+                  });
+                }
+                selectOptions.push({
+                  type: 'group',
+                  attr: renderAttr.length > 0 ? ' ' + renderAttr.join(' ') : '',
+                  options: groupOptions
+                });
+              } else {
+                selectOptions.push(that._renderOption(option));
+              }
+            }
+          });
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/select.html'], {
+          field: options,
+          value: this._value,
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            options: selectOptions
+          }
+        });
       }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && options.options !== null) {
-        $.each(options.options, function (key, option) {
-          if (typeof option === 'string' || typeof option === 'number') {
-            selectOptions.push(that._renderOption({
-              type: 'option',
-              value: key,
-              text: option
-            }));
-          } else if (_typeof(option) === 'object') {
+
+      /**
+       *
+       * @return {string}
+       * @private
+       */
+    }, {
+      key: "_renderContentReadonly",
+      value: function _renderContentReadonly() {
+        var that = this;
+        var options = this.getOptions();
+        var selectedOptions = [];
+        if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && Array.isArray(options.options)) {
+          $.each(options.options, function (key, option) {
             var type = option.hasOwnProperty('type') && typeof option.type === 'string' ? option.type : 'option';
             if (type === 'group') {
-              var renderAttr = [];
-              var groupAttr = {};
-              var groupOptions = [];
-              if (option.hasOwnProperty('attr') && _typeof(option.attr) === 'object' && option.attr !== null && !Array.isArray(option.attr)) {
-                groupAttr = option.attr;
-              }
-              if (option.hasOwnProperty('label') && ['string', 'number'].indexOf(_typeof(option.label)) >= 0) {
-                groupAttr.label = option.label;
-              }
-              $.each(groupAttr, function (name, value) {
-                renderAttr.push(name + '="' + value + '"');
-              });
               if (Array.isArray(option.options)) {
                 $.each(option.options, function (key, groupOption) {
-                  groupOptions.push(that._renderOption(groupOption));
+                  var optionText = groupOption.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(groupOption.text)) >= 0 ? groupOption.text : '';
+                  if (!optionText || optionText === '') {
+                    return;
+                  }
+                  if (Array.isArray(that._value)) {
+                    $.each(that._value, function (key, itemValue) {
+                      if (itemValue == groupOption.value) {
+                        selectedOptions.push(optionText);
+                        return false;
+                      }
+                    });
+                  } else if (that._value == groupOption.value) {
+                    selectedOptions.push(optionText);
+                  }
                 });
               }
-              selectOptions.push({
-                type: 'group',
-                attr: renderAttr.length > 0 ? ' ' + renderAttr.join(' ') : '',
-                options: groupOptions
-              });
             } else {
-              selectOptions.push(that._renderOption(option));
+              var optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
+              if (!optionText || optionText === '') {
+                return;
+              }
+              if (Array.isArray(that._value)) {
+                $.each(that._value, function (key, itemValue) {
+                  if (itemValue == option.value) {
+                    selectedOptions.push(optionText);
+                    return false;
+                  }
+                });
+              } else if (that._value == option.value) {
+                selectedOptions.push(optionText);
+              }
             }
+          });
+        }
+        return ejs.render(tpl$1['fields/select.html'], {
+          field: options,
+          render: {
+            selectedOptions: selectedOptions
           }
         });
       }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/select.html'], {
-        field: options,
-        value: this._value,
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          options: selectOptions
-        }
-      });
-    },
-    /**
-     *
-     * @return {string}
-     * @private
-     */
-    _renderContentReadonly: function _renderContentReadonly() {
-      var that = this;
-      var options = this.getOptions();
-      var selectedOptions = [];
-      if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && Array.isArray(options.options)) {
-        $.each(options.options, function (key, option) {
-          var type = option.hasOwnProperty('type') && typeof option.type === 'string' ? option.type : 'option';
-          if (type === 'group') {
-            if (Array.isArray(option.options)) {
-              $.each(option.options, function (key, groupOption) {
-                var optionText = groupOption.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(groupOption.text)) >= 0 ? groupOption.text : '';
-                if (!optionText || optionText === '') {
-                  return;
-                }
-                if (Array.isArray(that._value)) {
-                  $.each(that._value, function (key, itemValue) {
-                    if (itemValue == groupOption.value) {
-                      selectedOptions.push(optionText);
-                      return false;
-                    }
-                  });
-                } else if (that._value == groupOption.value) {
-                  selectedOptions.push(optionText);
-                }
-              });
-            }
-          } else {
-            var optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
-            if (!optionText || optionText === '') {
-              return;
-            }
-            if (Array.isArray(that._value)) {
-              $.each(that._value, function (key, itemValue) {
-                if (itemValue == option.value) {
-                  selectedOptions.push(optionText);
-                  return false;
-                }
-              });
-            } else if (that._value == option.value) {
-              selectedOptions.push(optionText);
-            }
-          }
-        });
-      }
-      return ejs.render(tpl$1['fields/select.html'], {
-        field: options,
-        render: {
-          selectedOptions: selectedOptions
-        }
-      });
-    },
-    /**
-     * Сборка опции
-     * @param option
-     * @return {object}
-     * @private
-     */
-    _renderOption: function _renderOption(option) {
-      var optionAttr = [];
-      var optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
-      $.each(option, function (name, value) {
-        if (name !== 'text') {
-          optionAttr.push(name + '="' + value + '"');
-        }
-      });
-      if (Array.isArray(this._value)) {
-        $.each(this._value, function (key, itemValue) {
-          if (itemValue == option.value) {
-            optionAttr.push('selected="selected"');
-            return false;
-          }
-        });
-      } else if (this._value == option.value) {
-        optionAttr.push('selected="selected"');
-      }
-      return {
-        type: 'option',
-        text: optionText,
-        attr: optionAttr.length > 0 ? ' ' + optionAttr.join(' ') : ''
-      };
-    }
-  };
 
-  coreuiForm.fields["switch"] = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'switch',
-      name: null,
-      label: null,
-      labelWidth: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      valueY: 'Y',
-      valueN: 'N',
-      fields: [],
-      required: null,
-      readonly: null,
-      show: true,
-      column: null
-    },
+      /**
+       * Сборка опции
+       * @param option
+       * @return {object}
+       * @private
+       */
+    }, {
+      key: "_renderOption",
+      value: function _renderOption(option) {
+        var optionAttr = [];
+        var optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(option.text)) >= 0 ? option.text : '';
+        $.each(option, function (name, value) {
+          if (name !== 'text') {
+            optionAttr.push(name + '="' + value + '"');
+          }
+        });
+        if (Array.isArray(this._value)) {
+          $.each(this._value, function (key, itemValue) {
+            if (itemValue == option.value) {
+              optionAttr.push('selected="selected"');
+              return false;
+            }
+          });
+        } else if (this._value == option.value) {
+          optionAttr.push('selected="selected"');
+        }
+        return {
+          type: 'option',
+          text: optionText,
+          attr: optionAttr.length > 0 ? ' ' + optionAttr.join(' ') : ''
+        };
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.select = FieldSelect;
+
+  function _callSuper$5(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldSwitch = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
+    function FieldSwitch(form, options, index) {
+      _classCallCheck(this, FieldSwitch);
+      options = $.extend(true, {
+        type: 'switch',
+        name: null,
+        label: null,
+        labelWidth: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        valueY: 'Y',
+        valueN: 'N',
+        fields: [],
+        required: null,
+        readonly: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      return _callSuper$5(this, FieldSwitch, [form, options, index]);
+    }
+
     /**
      * Получение значения в поле
      * @returns {string}
      */
-    getValue: function getValue() {
-      var result;
-      if (this._options.readonly) {
-        result = this._value;
-      } else {
-        result = $('.content-' + this._hash + ' input').prop('checked') ? this._options.valueY : this._options.valueN;
-      }
-      return result;
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value);
-      } else {
-        $('.content-' + this._hash + ' input[type=checkbox]').prop('checked', value === this._options.valueY);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var switchContainer = $('.form-switch', container);
-      var inputs = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        inputs.removeClass('is-invalid');
-        inputs.removeClass('is-valid');
-      } else if (isValid) {
-        inputs.removeClass('is-invalid');
-        inputs.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
+    _inherits(FieldSwitch, _Field);
+    return _createClass(FieldSwitch, [{
+      key: "getValue",
+      value: function getValue() {
+        var result;
+        if (this._options.readonly) {
+          result = this._value;
+        } else {
+          result = $('.content-' + this._hash + ' input').prop('checked') ? this._options.valueY : this._options.valueN;
         }
-        if (typeof text === 'string') {
-          switchContainer.append('<div class="valid-feedback">' + text + '</div>');
+        return result;
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0) {
+          return;
         }
-      } else {
-        inputs.removeClass('is-valid');
-        inputs.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text) {
-            text = this._form.getLang().required_field;
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(value);
+        } else {
+          $('.content-' + this._hash + ' input[type=checkbox]').prop('checked', value === this._options.valueY);
+        }
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var switchContainer = $('.form-switch', container);
+        var inputs = $('input', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          inputs.removeClass('is-invalid');
+          inputs.removeClass('is-valid');
+        } else if (isValid) {
+          inputs.removeClass('is-invalid');
+          inputs.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            switchContainer.append('<div class="valid-feedback">' + text + '</div>');
+          }
+        } else {
+          inputs.removeClass('is-valid');
+          inputs.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            switchContainer.append('<div class="invalid-feedback">' + text + '</div>');
           }
         }
-        if (typeof text === 'string') {
-          switchContainer.append('<div class="invalid-feedback">' + text + '</div>');
-        }
       }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var attributes = [];
-      var options = this.getOptions();
-      var itemAttr = {
-        type: 'checkbox',
-        "class": 'form-check-input',
-        value: options.valueY
-      };
-      if (options.name) {
-        itemAttr.name = this._options.name;
-      }
-      if (options.required) {
-        itemAttr.required = 'required';
-      }
-      if (options.hasOwnProperty('attr') && _typeof(options.attr) === 'object' && Array.isArray(options.attr)) {
-        itemAttr = coreuiFormUtils.mergeAttr(itemAttr, options.attr);
-      }
-      if (this._value === options.valueY) {
-        itemAttr.checked = 'checked';
-      }
-      $.each(itemAttr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/switch.html'], {
-        field: options,
-        value: this._value,
-        lang: this._form.getLang(),
-        render: {
-          attr: attributes.length > 0 ? attributes.join(' ') : ''
-        }
-      });
-    }
-  };
 
-  coreuiForm.fields.textarea = {
-    _id: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'textarea',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        "class": 'form-control d-inline-block'
-      },
-      required: null,
-      readonly: null,
-      show: true,
-      column: null
-    },
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var attributes = [];
+        var options = this.getOptions();
+        var itemAttr = {
+          type: 'checkbox',
+          "class": 'form-check-input',
+          value: options.valueY
+        };
+        if (options.name) {
+          itemAttr.name = this._options.name;
+        }
+        if (options.required) {
+          itemAttr.required = 'required';
+        }
+        if (options.hasOwnProperty('attr') && _typeof(options.attr) === 'object' && Array.isArray(options.attr)) {
+          itemAttr = coreuiFormUtils.mergeAttr(itemAttr, options.attr);
+        }
+        if (this._value === options.valueY) {
+          itemAttr.checked = 'checked';
+        }
+        $.each(itemAttr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/switch.html'], {
+          field: options,
+          value: this._value,
+          lang: this._form.getLang(),
+          render: {
+            attr: attributes.length > 0 ? attributes.join(' ') : ''
+          }
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields["switch"] = FieldSwitch;
+
+  function _callSuper$4(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldTextarea = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
+    function FieldTextarea(form, options, index) {
+      _classCallCheck(this, FieldTextarea);
+      options = $.extend(true, {
+        type: 'textarea',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        attr: {
+          "class": 'form-control d-inline-block'
+        },
+        required: null,
+        readonly: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      return _callSuper$4(this, FieldTextarea, [form, options, index]);
+    }
+
     /**
      * Получение значения в поле
      * @returns {string}
      */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' textarea').val();
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
+    _inherits(FieldTextarea, _Field);
+    return _createClass(FieldTextarea, [{
+      key: "getValue",
+      value: function getValue() {
+        return this._options.readonly ? this._value : $('.content-' + this._hash + ' textarea').val();
       }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value);
-      } else {
-        $('.content-' + this._hash + ' textarea').val(value);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var textarea = $('textarea', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        textarea.removeClass('is-invalid');
-        textarea.removeClass('is-valid');
-      } else if (isValid) {
-        textarea.removeClass('is-invalid');
-        textarea.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0) {
+          return;
         }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback">' + text + '</div>');
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(value);
+        } else {
+          $('.content-' + this._hash + ' textarea').val(value);
         }
-      } else {
-        textarea.removeClass('is-valid');
-        textarea.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var textarea = $('textarea', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          textarea.removeClass('is-invalid');
+          textarea.removeClass('is-valid');
+        } else if (isValid) {
+          textarea.removeClass('is-invalid');
+          textarea.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="valid-feedback">' + text + '</div>');
+          }
+        } else {
+          textarea.removeClass('is-valid');
+          textarea.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="invalid-feedback">' + text + '</div>');
           }
         }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback">' + text + '</div>');
-        }
       }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      var input = $('.content-' + this._hash + ' textarea');
-      if (input[0]) {
-        return input.is(':valid');
-      }
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var attributes = [];
-      var options = this.getOptions();
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/textarea.html'], {
-        field: options,
-        value: this._value !== null ? this._value : '',
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
-        }
-      });
-    }
-  };
 
-  coreuiForm.fields.wysiwyg = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _value: null,
-    _editor: null,
-    _editorHash: null,
-    _options: {
-      type: 'wysiwyg',
-      label: null,
-      labelWidth: null,
-      width: null,
-      minWidth: null,
-      maxWidth: null,
-      height: null,
-      minHeight: null,
-      maxHeight: null,
-      options: {},
-      outContent: null,
-      description: null,
-      required: null,
-      readonly: false,
-      show: true,
-      column: null
-    },
+      /**
+       * Проверка валидности поля
+       * @return {boolean}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        var input = $('.content-' + this._hash + ' textarea');
+        if (input[0]) {
+          return input.is(':valid');
+        }
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var attributes = [];
+        var options = this.getOptions();
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/textarea.html'], {
+          field: options,
+          value: this._value !== null ? this._value : '',
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : ''
+          }
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.textarea = FieldTextarea;
+
+  function _callSuper$3(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldWysiwyg = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._editorHash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-      var that = this;
+    function FieldWysiwyg(form, options, index) {
+      var _this2;
+      _classCallCheck(this, FieldWysiwyg);
+      options = $.extend(true, {
+        type: 'wysiwyg',
+        label: null,
+        labelWidth: null,
+        width: null,
+        minWidth: null,
+        maxWidth: null,
+        height: null,
+        minHeight: null,
+        maxHeight: null,
+        options: {},
+        outContent: null,
+        description: null,
+        required: null,
+        readonly: false,
+        show: true,
+        positions: null,
+        noSend: null
+      }, options);
+      _this2 = _callSuper$3(this, FieldWysiwyg, [form, options, index]);
+      _defineProperty(_this2, "_editor", null);
+      _defineProperty(_this2, "_editorHash", null);
+      _this2._editorHash = coreuiFormUtils.hashCode();
+      var that = _this2;
       form.on('show', function () {
         if (!that._options.readonly) {
           that._initEvents();
         }
       });
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
+      return _this2;
+    }
+
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-      if (!this._options.readonly) {
-        this._initEvents();
-      }
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения из поля
-     * @return {string|null}
-     */
-    getValue: function getValue() {
-      if (this._options.readonly) {
-        return this._value;
-      } else {
-        return this._editor ? this._editor.getContent() : this._value;
-      }
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value);
-      } else {
-        if (this._editor) {
-          this._editor.setContent(value);
+    _inherits(FieldWysiwyg, _Field);
+    return _createClass(FieldWysiwyg, [{
+      key: "readonly",
+      value: function readonly(isReadonly) {
+        _get(_getPrototypeOf(FieldWysiwyg.prototype), "readonly", this).call(this, isReadonly);
+        if (!isReadonly) {
+          this._initEvents();
         }
       }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      container.find('.text-success').remove();
-      container.find('.text-danger').remove();
-      if (isValid === null) {
-        return;
-      }
-      if (isValid) {
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
+
+      /**
+       * Получение значения из поля
+       * @return {string|null}
+       */
+    }, {
+      key: "getValue",
+      value: function getValue() {
+        if (this._options.readonly) {
+          return this._value;
+        } else {
+          return this._editor ? this._editor.getContent() : this._value;
         }
-        if (typeof text === 'string') {
-          container.append('<div class="ps-2 text-success">' + text + '</div>');
-        }
-      } else {
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(value);
+        } else {
+          if (this._editor) {
+            this._editor.setContent(value);
           }
         }
-        if (typeof text === 'string') {
-          container.append('<div class="ps-2 text-danger">' + text + '</div>');
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        container.find('.text-success').remove();
+        container.find('.text-danger').remove();
+        if (isValid === null) {
+          return;
+        }
+        if (isValid) {
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="ps-2 text-success">' + text + '</div>');
+          }
+        } else {
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="ps-2 text-danger">' + text + '</div>');
+          }
         }
       }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean}
-     */
-    isValid: function isValid() {
-      if (this._options.required && !this._options.readonly) {
-        return !!this.getValue();
-      }
-      return true;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      var options = this.getOptions();
-      return ejs.render(tpl$1['fields/wysiwyg.html'], {
-        field: options,
-        value: this._value !== null ? this._value : '',
-        editorHash: this._editorHash
-      });
-    },
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents: function _initEvents() {
-      if (this._options.readonly) {
-        return;
-      }
-      var tinyMceOptions = {};
-      var than = this;
-      var textareaId = 'editor-' + this._editorHash;
-      if (_typeof(this._options.options) === 'object' && !Array.isArray(this._options.options) && Object.keys(this._options.options).length > 0) {
-        tinyMceOptions = this._options.options;
-      } else if (this._options.options === 'simple') {
-        tinyMceOptions = {
-          plugins: 'image lists anchor charmap',
-          toolbar: 'blocks | bold italic underline | alignleft aligncenter ' + 'alignright alignjustify | bullist numlist outdent indent | ' + 'forecolor backcolor removeformat',
-          menubar: false,
-          branding: false
-        };
-      } else {
-        tinyMceOptions = {
-          promotion: false,
-          branding: false,
-          plugins: 'preview importcss searchreplace autolink autosave save directionality code ' + 'visualblocks visualchars fullscreen image link media template codesample table ' + 'charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
-          menubar: 'file edit view insert format tools table help',
-          toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | ' + 'alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | ' + 'forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen ' + 'preview save print | insertfile image media template link anchor codesample | ltr rtl'
-        };
-      }
-      tinyMceOptions.selector = '#editor-' + this._editorHash;
-      if (['string', 'number'].indexOf(_typeof(this._options.width)) >= 0) {
-        tinyMceOptions.width = this._options.width;
-      }
-      if (['string', 'number'].indexOf(_typeof(this._options.minWidth)) >= 0) {
-        tinyMceOptions.min_width = this._options.minWidth;
-      }
-      if (['string', 'number'].indexOf(_typeof(this._options.maxWidth)) >= 0) {
-        tinyMceOptions.max_width = this._options.maxWidth;
-      }
-      if (['string', 'number'].indexOf(_typeof(this._options.height)) >= 0) {
-        tinyMceOptions.height = this._options.height;
-      }
-      if (['string', 'number'].indexOf(_typeof(this._options.minHeight)) >= 0) {
-        tinyMceOptions.min_height = this._options.minHeight;
-      }
-      if (['string', 'number'].indexOf(_typeof(this._options.maxHeight)) >= 0) {
-        tinyMceOptions.max_height = this._options.maxHeight;
-      }
-      tinymce.init(tinyMceOptions).then(function () {
-        than._editor = tinymce.get(textareaId);
-      });
-    }
-  };
 
-  coreuiForm.fields.passwordRepeat = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _isChangeState: true,
-    _value: '',
-    _options: {
-      type: 'password_repeat',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        type: 'password',
-        "class": 'form-control d-inline-block flex-shrink-0'
-      },
-      required: null,
-      invalidText: null,
-      validText: null,
-      readonly: null,
-      show: true,
-      showBtn: true,
-      column: null
-    },
+      /**
+       * Проверка валидности поля
+       * @return {boolean}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        if (this._options.required && !this._options.readonly) {
+          return !!this.getValue();
+        }
+        return true;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        var options = this.getOptions();
+        return ejs.render(tpl$1['fields/wysiwyg.html'], {
+          field: options,
+          value: this._value !== null ? this._value : '',
+          editorHash: this._editorHash
+        });
+      }
+
+      /**
+       * Инициализация событий
+       * @private
+       */
+    }, {
+      key: "_initEvents",
+      value: function _initEvents() {
+        if (this._options.readonly) {
+          return;
+        }
+        var tinyMceOptions = {};
+        var that = this;
+        var textareaId = 'editor-' + this._editorHash;
+        if (_typeof(this._options.options) === 'object' && !Array.isArray(this._options.options) && Object.keys(this._options.options).length > 0) {
+          tinyMceOptions = this._options.options;
+        } else if (this._options.options === 'simple') {
+          tinyMceOptions = {
+            plugins: 'image lists anchor charmap',
+            toolbar: 'blocks | bold italic underline | alignleft aligncenter ' + 'alignright alignjustify | bullist numlist outdent indent | ' + 'forecolor backcolor removeformat',
+            menubar: false,
+            branding: false
+          };
+        } else {
+          tinyMceOptions = {
+            promotion: false,
+            branding: false,
+            plugins: 'preview importcss searchreplace autolink autosave save directionality code ' + 'visualblocks visualchars fullscreen image link media template codesample table ' + 'charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+            menubar: 'file edit view insert format tools table help',
+            toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | ' + 'alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | ' + 'forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen ' + 'preview save print | insertfile image media template link anchor codesample | ltr rtl'
+          };
+        }
+        tinyMceOptions.selector = '#editor-' + this._editorHash;
+        if (['string', 'number'].indexOf(_typeof(this._options.width)) >= 0) {
+          tinyMceOptions.width = this._options.width;
+        }
+        if (['string', 'number'].indexOf(_typeof(this._options.minWidth)) >= 0) {
+          tinyMceOptions.min_width = this._options.minWidth;
+        }
+        if (['string', 'number'].indexOf(_typeof(this._options.maxWidth)) >= 0) {
+          tinyMceOptions.max_width = this._options.maxWidth;
+        }
+        if (['string', 'number'].indexOf(_typeof(this._options.height)) >= 0) {
+          tinyMceOptions.height = this._options.height;
+        }
+        if (['string', 'number'].indexOf(_typeof(this._options.minHeight)) >= 0) {
+          tinyMceOptions.min_height = this._options.minHeight;
+        }
+        if (['string', 'number'].indexOf(_typeof(this._options.maxHeight)) >= 0) {
+          tinyMceOptions.max_height = this._options.maxHeight;
+        }
+        tinymce.init(tinyMceOptions).then(function () {
+          that._editor = tinymce.get(textareaId);
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.wysiwyg = FieldWysiwyg;
+
+  function _callSuper$2(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
+      }
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldPasswordRepeat = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-      var that = this;
+    function FieldPasswordRepeat(form, options, index) {
+      var _this2;
+      _classCallCheck(this, FieldPasswordRepeat);
+      options = $.extend(true, {
+        type: 'password_repeat',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        attr: {
+          type: 'password',
+          "class": 'form-control d-inline-block flex-shrink-0'
+        },
+        required: null,
+        invalidText: null,
+        validText: null,
+        readonly: null,
+        show: true,
+        showBtn: true,
+        position: null,
+        noSend: null
+      }, options);
+      _this2 = _callSuper$2(this, FieldPasswordRepeat, [form, options, index]);
+      _defineProperty(_this2, "_isChangeState", true);
+      var that = _this2;
       form.on('show', function () {
         that._initEvents();
       });
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
+      return _this2;
+    }
+
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-      if (!this._options.readonly) {
-        this._initEvents();
+    _inherits(FieldPasswordRepeat, _Field);
+    return _createClass(FieldPasswordRepeat, [{
+      key: "readonly",
+      value: function readonly(isReadonly) {
+        _get(_getPrototypeOf(FieldPasswordRepeat.prototype), "readonly", this).call(this, isReadonly);
+        if (!isReadonly) {
+          this._initEvents();
+        }
       }
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения в поле
-     * @returns {string}
-     */
-    getValue: function getValue() {
-      var result;
-      if (this._options.readonly) {
-        result = this._value;
-      } else {
-        var pass = $('.content-' + this._hash + ' input[type="password"]').eq(0);
-        if (typeof pass.attr('disabled') !== 'undefined' && pass.attr('disabled') !== false) {
-          result = null;
+
+      /**
+       * Получение значения в поле
+       * @returns {string}
+       */
+    }, {
+      key: "getValue",
+      value: function getValue() {
+        var result;
+        if (this._options.readonly) {
+          result = this._value;
         } else {
-          result = pass.val();
-        }
-      }
-      return result;
-    },
-    /**
-     * Установка значения в поле
-     * @param {string} value
-     */
-    setValue: function setValue(value) {
-      if (['string', 'number'].indexOf(_typeof(value)) < 0) {
-        return;
-      }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text(value ? '******' : '');
-      } else {
-        $('.content-' + this._hash + ' input[type="password"]').val(value);
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var input = $('input[type="password"]', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        input.removeClass('is-invalid');
-        input.removeClass('is-valid');
-      } else if (isValid) {
-        input.removeClass('is-invalid');
-        input.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback d-block">' + text + '</div>');
-        }
-      } else {
-        input.removeClass('is-valid');
-        input.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
+          var pass = $('.content-' + this._hash + ' input[type="password"]').eq(0);
+          if (typeof pass.attr('disabled') !== 'undefined' && pass.attr('disabled') !== false) {
+            result = null;
+          } else {
+            result = pass.val();
           }
         }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback d-block">' + text + '</div>');
+        return result;
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {string} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (['string', 'number'].indexOf(_typeof(value)) < 0) {
+          return;
+        }
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text(value ? '******' : '');
+        } else {
+          $('.content-' + this._hash + ' input[type="password"]').val(value);
         }
       }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean|null}
-     */
-    isValid: function isValid() {
-      if (!this._isChangeState || this._options.readonly) {
-        return true;
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var input = $('input[type="password"]', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          input.removeClass('is-invalid');
+          input.removeClass('is-valid');
+        } else if (isValid) {
+          input.removeClass('is-invalid');
+          input.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="valid-feedback d-block">' + text + '</div>');
+          }
+        } else {
+          input.removeClass('is-valid');
+          input.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="invalid-feedback d-block">' + text + '</div>');
+          }
+        }
       }
-      var input = $('.content-' + this._hash + ' input[type="password"]');
-      if (input.eq(0).val() !== input.eq(1).val()) {
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean|null}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        if (!this._isChangeState || this._options.readonly) {
+          return true;
+        }
+        var input = $('.content-' + this._hash + ' input[type="password"]');
+        if (input.eq(0).val() !== input.eq(1).val()) {
+          return false;
+        }
+        if (input[0]) {
+          return input.eq(0).is(':valid');
+        }
+        return null;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
+      }
+
+      /**
+       *
+       * @private
+       */
+    }, {
+      key: "_renderContent",
+      value: function _renderContent() {
+        var attributes = [];
+        var attributes2 = [];
+        var options = this.getOptions();
+        this._isChangeState = !options.showBtn ? true : !this._value;
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (!this._isChangeState) {
+          options.attr.disabled = '';
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        options.attr.value = this._value ? '******' : '';
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        $.each(options.attr, function (name, value) {
+          if (['name', 'value'].indexOf(name) < 0) {
+            attributes2.push(name + '="' + value + '"');
+          }
+        });
+        var lang = this._form.getLang();
+        return ejs.render(tpl$1['fields/passwordRepeat.html'], {
+          field: options,
+          value: this._value !== null ? this._value : '',
+          lang: lang,
+          btn_text: this._isChangeState ? lang.cancel : lang.change,
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            attr2: attributes2.length > 0 ? ' ' + attributes2.join(' ') : ''
+          }
+        });
+      }
+
+      /**
+       *
+       * @private
+       */
+    }, {
+      key: "_renderContentReadonly",
+      value: function _renderContentReadonly() {
+        var options = this.getOptions();
+        return ejs.render(tpl$1['fields/passwordRepeat.html'], {
+          field: options,
+          value: this._value ? '******' : '',
+          hash: this._hash
+        });
+      }
+
+      /**
+       * Инициализация событий
+       * @private
+       */
+    }, {
+      key: "_initEvents",
+      value: function _initEvents() {
+        var that = this;
+        var noSend = that._options.noSend;
+        $('.content-' + this._hash + ' .btn-password-change').click(function (e) {
+          var textChange = $(this).data('change');
+          var textCancel = $(this).data('cancel');
+          if (that._isChangeState) {
+            $('.content-' + that._hash + ' [type="password"]').attr('disabled', 'disabled');
+            $(this).text(textChange);
+            that._isChangeState = false;
+            that._options.noSend = true;
+          } else {
+            $('.content-' + that._hash + ' [type="password"]').removeAttr('disabled');
+            $(this).text(textCancel);
+            that._isChangeState = true;
+            that._options.noSend = noSend;
+          }
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.passwordRepeat = FieldPasswordRepeat;
+
+  function _callSuper$1(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
         return false;
       }
-      if (input[0]) {
-        return input.eq(0).is(':valid');
-      }
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
-    },
-    /**
-     *
-     * @private
-     */
-    _renderContent: function _renderContent() {
-      var attributes = [];
-      var attributes2 = [];
-      var options = this.getOptions();
-      this._isChangeState = !options.showBtn ? true : !this._value;
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      if (!this._isChangeState) {
-        options.attr.disabled = '';
-      }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      options.attr.value = this._value ? '******' : '';
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      $.each(options.attr, function (name, value) {
-        if (['name', 'value'].indexOf(name) < 0) {
-          attributes2.push(name + '="' + value + '"');
-        }
-      });
-      var lang = this._form.getLang();
-      return ejs.render(tpl$1['fields/passwordRepeat.html'], {
-        field: options,
-        value: this._value !== null ? this._value : '',
-        lang: lang,
-        btn_text: this._isChangeState ? lang.cancel : lang.change,
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          attr2: attributes2.length > 0 ? ' ' + attributes2.join(' ') : ''
-        }
-      });
-    },
-    /**
-     *
-     * @private
-     */
-    _renderContentReadonly: function _renderContentReadonly() {
-      var options = this.getOptions();
-      return ejs.render(tpl$1['fields/passwordRepeat.html'], {
-        field: options,
-        value: this._value ? '******' : '',
-        hash: this._hash
-      });
-    },
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents: function _initEvents() {
-      var that = this;
-      $('.content-' + this._hash + ' .btn-password-change').click(function (e) {
-        var textChange = $(this).data('change');
-        var textCancel = $(this).data('cancel');
-        if (that._isChangeState) {
-          $('.content-' + that._hash + ' [type="password"]').attr('disabled', 'disabled');
-          $(this).text(textChange);
-          that._isChangeState = false;
-        } else {
-          $('.content-' + that._hash + ' [type="password"]').removeAttr('disabled');
-          $(this).text(textCancel);
-          that._isChangeState = true;
-        }
-      });
     }
-  };
-
-  coreuiForm.fields.file = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: '',
-    _options: {
-      type: 'file',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      attr: {
-        "class": 'form-control d-inline-block'
-      },
-      required: null,
-      invalidText: null,
-      validText: null,
-      readonly: null,
-      show: true,
-      column: null
-    },
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldFile = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function readonly(isReadonly) {
-      this._value = this.getValue();
-      this._options.readonly = !!isReadonly;
-      $('.content-' + this._hash).html(this.renderContent());
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
+    function FieldFile(form, options, index) {
+      _classCallCheck(this, FieldFile);
+      options = $.extend(true, {
+        type: 'file',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        field: null,
+        attr: {
+          "class": 'form-control d-inline-block'
+        },
+        required: null,
+        invalidText: null,
+        validText: null,
+        readonly: null,
+        show: true,
+        position: null,
+        noSend: null
+      }, options);
+      return _callSuper$1(this, FieldFile, [form, options, index]);
+    }
+
     /**
      * Получение значения в поле
      * @returns {File[]}
      */
-    getValue: function getValue() {
-      return this._options.readonly ? this._value : $('.content-' + this._hash + ' input')[0].files;
-    },
-    /**
-     * Установка значения в поле
-     * @param {File|File[]} value
-     */
-    setValue: function setValue(value) {
-      if (!(value instanceof File) && !(value instanceof FileList)) {
-        return;
-      }
-      this._value = value;
-      if (this._options.readonly) {
-        $('.content-' + this._hash).text('');
-      } else {
-        var container = new DataTransfer();
-        if (value instanceof File) {
-          container.items.add(value);
-        } else {
-          $.each(value, function (key, file) {
-            if (value instanceof File) {
-              container.items.add(file);
-            }
-          });
-        }
-        $('.content-' + this._hash + ' input')[0].files = container.files;
-      }
-    },
-    /**
-     * Установка валидности поля
-     * @param {bool|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      var input = $('input', container);
-      container.find('.valid-feedback').remove();
-      container.find('.invalid-feedback').remove();
-      if (isValid === null) {
-        input.removeClass('is-invalid');
-        input.removeClass('is-valid');
-      } else if (isValid) {
-        input.removeClass('is-invalid');
-        input.addClass('is-valid');
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="valid-feedback">' + text + '</div>');
-        }
-      } else {
-        input.removeClass('is-valid');
-        input.addClass('is-invalid');
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
-          }
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="invalid-feedback">' + text + '</div>');
-        }
-      }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean|null}
-     */
-    isValid: function isValid() {
-      var input = $('.content-' + this._hash + ' input');
-      if (input[0]) {
-        return input.is(':valid');
-      }
-      return null;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
-    },
-    /**
-     *
-     * @private
-     */
-    _renderContent: function _renderContent() {
-      var attributes = [];
-      var options = this.getOptions();
-      if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
-        options.attr = {};
-      }
-      if (options.name) {
-        options.attr.name = this._options.name;
-      }
-      options.attr.type = options.type;
-      options.attr.value = this._value !== null ? this._value : '';
-      if (options.width) {
-        options.attr = coreuiFormUtils.mergeAttr({
-          style: 'width:' + options.width
-        }, options.attr);
-      }
-      if (options.required) {
-        options.attr.required = 'required';
-      }
-      $.each(options.attr, function (name, value) {
-        attributes.push(name + '="' + value + '"');
-      });
-      return ejs.render(tpl$1['fields/input.html'], {
-        field: options,
-        datalistId: '',
-        value: this._value !== null ? this._value : '',
-        render: {
-          attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
-          datalist: []
-        }
-      });
-    },
-    /**
-     *
-     * @private
-     */
-    _renderContentReadonly: function _renderContentReadonly() {
-      var options = this.getOptions();
-      var type = 'text';
-      var value = this._value;
-      var lang = this._form.getLang();
-      if (options.hasOwnProperty('type') && typeof options.type === 'string') {
-        type = options.type;
-      }
-      try {
-        switch (type) {
-          case 'date':
-            value = coreuiFormUtils.formatDate(value);
-            break;
-          case 'datetime-local':
-            value = coreuiFormUtils.formatDateTime(value);
-            break;
-          case 'month':
-            value = coreuiFormUtils.formatDateMonth(value, lang);
-            break;
-          case 'week':
-            value = coreuiFormUtils.formatDateWeek(value, lang);
-            break;
-        }
-      } catch (e) {
-        console.error(e);
-        // ignore
+    _inherits(FieldFile, _Field);
+    return _createClass(FieldFile, [{
+      key: "getValue",
+      value: function getValue() {
+        return this._options.readonly ? this._value : $('.content-' + this._hash + ' input')[0].files;
       }
 
-      return ejs.render(tpl$1['fields/input.html'], {
-        field: options,
-        value: value,
-        hash: this._hash
-      });
-    }
-  };
+      /**
+       * Установка значения в поле
+       * @param {File|File[]} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (!(value instanceof File) && !(value instanceof FileList)) {
+          return;
+        }
+        this._value = value;
+        if (this._options.readonly) {
+          $('.content-' + this._hash).text('');
+        } else {
+          var container = new DataTransfer();
+          if (value instanceof File) {
+            container.items.add(value);
+          } else {
+            $.each(value, function (key, file) {
+              if (value instanceof File) {
+                container.items.add(file);
+              }
+            });
+          }
+          $('.content-' + this._hash + ' input')[0].files = container.files;
+        }
+      }
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        var input = $('input', container);
+        container.find('.valid-feedback').remove();
+        container.find('.invalid-feedback').remove();
+        if (isValid === null) {
+          input.removeClass('is-invalid');
+          input.removeClass('is-valid');
+        } else if (isValid) {
+          input.removeClass('is-invalid');
+          input.addClass('is-valid');
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="valid-feedback">' + text + '</div>');
+          }
+        } else {
+          input.removeClass('is-valid');
+          input.addClass('is-invalid');
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="invalid-feedback">' + text + '</div>');
+          }
+        }
+      }
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean|null}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        var input = $('.content-' + this._hash + ' input');
+        if (input[0]) {
+          return input.is(':valid');
+        }
+        return null;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
+      }
+
+      /**
+       *
+       * @private
+       */
+    }, {
+      key: "_renderContent",
+      value: function _renderContent() {
+        var attributes = [];
+        var options = this.getOptions();
+        if (!options.hasOwnProperty('attr') || _typeof(options.attr) !== 'object' || options.attr === null || Array.isArray(options.attr)) {
+          options.attr = {};
+        }
+        if (options.name) {
+          options.attr.name = this._options.name;
+        }
+        options.attr.type = options.type;
+        options.attr.value = this._value !== null ? this._value : '';
+        if (options.width) {
+          options.attr = coreuiFormUtils.mergeAttr({
+            style: 'width:' + options.width
+          }, options.attr);
+        }
+        if (options.required) {
+          options.attr.required = 'required';
+        }
+        $.each(options.attr, function (name, value) {
+          attributes.push(name + '="' + value + '"');
+        });
+        return ejs.render(tpl$1['fields/input.html'], {
+          field: options,
+          datalistId: '',
+          value: this._value !== null ? this._value : '',
+          render: {
+            attr: attributes.length > 0 ? ' ' + attributes.join(' ') : '',
+            datalist: []
+          }
+        });
+      }
+
+      /**
+       *
+       * @private
+       */
+    }, {
+      key: "_renderContentReadonly",
+      value: function _renderContentReadonly() {
+        var options = this.getOptions();
+        var type = 'text';
+        var value = this._value;
+        var lang = this._form.getLang();
+        if (options.hasOwnProperty('type') && typeof options.type === 'string') {
+          type = options.type;
+        }
+        try {
+          switch (type) {
+            case 'date':
+              value = coreuiFormUtils.formatDate(value);
+              break;
+            case 'datetime-local':
+              value = coreuiFormUtils.formatDateTime(value);
+              break;
+            case 'month':
+              value = coreuiFormUtils.formatDateMonth(value, lang);
+              break;
+            case 'week':
+              value = coreuiFormUtils.formatDateWeek(value, lang);
+              break;
+          }
+        } catch (e) {
+          console.error(e);
+          // ignore
+        }
+
+        return ejs.render(tpl$1['fields/input.html'], {
+          field: options,
+          value: value,
+          hash: this._hash
+        });
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.file = FieldFile;
 
   let fileUpUtils = {
     /**
@@ -8962,348 +8795,347 @@
     errorOldBrowser: 'Seu navegador não pode enviar os arquivos. Atualize para a versão mais recente'
   };
 
-  coreuiForm.fields.fileUpload = {
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: null,
-    _fileUp: null,
-    _options: {
-      type: 'fileUpload',
-      name: null,
-      label: null,
-      labelWidth: null,
-      width: null,
-      outContent: null,
-      description: null,
-      errorText: null,
-      attach: null,
-      required: null,
-      invalidText: null,
-      validText: null,
-      readonly: null,
-      show: true,
-      column: null,
-      options: {
-        url: '',
-        httpMethod: 'post',
-        fieldName: 'file',
-        showButton: true,
-        showDropzone: false,
-        autostart: true,
-        extraFields: true,
-        accept: null,
-        timeout: null,
-        filesLimit: null,
-        sizeLimit: null,
-        templateFile: null
+  function _callSuper(_this, derived, args) {
+    function isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+      try {
+        return !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (e) {
+        return false;
       }
-    },
+    }
+    derived = _getPrototypeOf(derived);
+    return _possibleConstructorReturn(_this, isNativeReflectConstruct() ? Reflect.construct(derived, args || [], _getPrototypeOf(_this).constructor) : derived.apply(_this, args));
+  }
+  var FieldFileUpload = /*#__PURE__*/function (_Field) {
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function init(form, options, index) {
-      this._form = form;
-      this._index = index;
-      this._id = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-      this._hash = coreuiFormUtils.hashCode();
-      this._value = coreuiFormUtils.getFieldValue(form, options);
-      this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-      var that = this;
+    function FieldFileUpload(form, options, index) {
+      var _this2;
+      _classCallCheck(this, FieldFileUpload);
+      options = $.extend(true, {
+        type: 'fileUpload',
+        name: null,
+        label: null,
+        labelWidth: null,
+        width: null,
+        outContent: null,
+        description: null,
+        errorText: null,
+        fields: null,
+        required: null,
+        invalidText: null,
+        validText: null,
+        readonly: null,
+        show: true,
+        position: null,
+        noSend: null,
+        options: {
+          url: '',
+          httpMethod: 'post',
+          fieldName: 'file',
+          showButton: true,
+          showDropzone: false,
+          autostart: true,
+          extraFields: true,
+          accept: null,
+          timeout: null,
+          filesLimit: null,
+          sizeLimit: null,
+          templateFile: null
+        }
+      }, options);
+      _this2 = _callSuper(this, FieldFileUpload, [form, options, index]);
+      _defineProperty(_this2, "_fileUp", null);
+      var that = _this2;
       form.on('show', function () {
         that._initEvents();
       });
-    },
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function getOptions() {
-      return $.extend(true, {}, this._options);
-    },
+      return _this2;
+    }
+
     /**
      * Изменение режима поля только для чтения
      * @param {boolean} isReadonly
      */
-    readonly: function readonly(isReadonly) {
-      this._value = this._getFiles();
-      this._options.readonly = !!isReadonly;
-      if (this._fileUp) {
-        this._fileUp.destruct();
-      }
-      $('.content-' + this._hash).html(this.renderContent());
-      this._initEvents();
-    },
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function hide(duration) {
-      $('#coreui-form-' + this._id).animate({
-        opacity: 0
-      }, duration || 200, function () {
-        $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-      });
-    },
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function show(duration) {
-      $('#coreui-form-' + this._id).addClass('d-flex').removeClass('d-none').css('opacity', 0).animate({
-        opacity: 1
-      }, duration || 200, function () {
-        $(this).css('opacity', '');
-      });
-    },
-    /**
-     * Получение значения из поля
-     * @returns {Array}
-     */
-    getValue: function getValue() {
-      var files = this._getFiles();
-      $.each(files, function (key, file) {
-        if (file.hasOwnProperty('urlPreview')) {
-          delete file.urlPreview;
+    _inherits(FieldFileUpload, _Field);
+    return _createClass(FieldFileUpload, [{
+      key: "readonly",
+      value: function readonly(isReadonly) {
+        this._value = this._getFiles();
+        this._options.readonly = !!isReadonly;
+        if (this._fileUp) {
+          this._fileUp.destruct();
         }
-        if (file.hasOwnProperty('urlDownload')) {
-          delete file.urlDownload;
-        }
-      });
-      return files;
-    },
-    /**
-     * Установка значения в поле
-     * @param {Array} value
-     */
-    setValue: function setValue(value) {
-      if (!Array.isArray(value)) {
-        return;
+        $('.content-' + this._hash).html(this.renderContent());
+        this._initEvents();
       }
-      var that = this;
-      this._fileUp.removeAll();
-      $.each(value, function (key, item) {
-        if (item instanceof File) {
-          that._fileUp.appendFile(item);
-        } else if (coreuiFormUtils.isObject(item)) {
-          that._fileUp.appendFileByData(item);
-        }
-      });
-    },
-    /**
-     * Установка валидности поля
-     * @param {boolean|null} isValid
-     * @param {text} text
-     */
-    validate: function validate(isValid, text) {
-      if (this._options.readonly) {
-        return;
-      }
-      var container = $('.content-' + this._hash);
-      container.find('> .validate-content').remove();
-      if (isValid) {
-        if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
-          text = this._options.validText;
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="validate-content text-success">' + text + '</div>');
-        }
-      } else if (isValid === false) {
-        if (typeof text === 'undefined') {
-          if (typeof this._options.invalidText === 'string') {
-            text = this._options.invalidText;
-          } else if (!text && this._options.required) {
-            text = this._form.getLang().required_field;
-          }
-        }
-        if (typeof text === 'string') {
-          container.append('<div class="validate-content text-danger">' + text + '</div>');
-        }
-      }
-    },
-    /**
-     * Проверка валидности поля
-     * @return {boolean|null}
-     */
-    isValid: function isValid() {
-      if (this._options.required && this._fileUp) {
-        return this._getFiles().length > 0;
-      }
-      return null;
-    },
-    /**
-     * Получение экземпляра fileUp
-     * @return {null}
-     */
-    getFileUp: function getFileUp() {
-      return this._fileUp;
-    },
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function render() {
-      var options = this.getOptions();
-      var attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-      return ejs.render(tpl$1['form-field-label.html'], {
-        id: this._id,
-        form: this._form,
-        hash: this._hash,
-        field: options,
-        content: this.renderContent(),
-        attachFields: attachFields
-      });
-    },
-    /**
-     * Формирование контента поля
-     * @return {*}
-     */
-    renderContent: function renderContent() {
-      return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
-    },
-    /**
-     * Сборка содержимого
-     * @private
-     */
-    _renderContent: function _renderContent() {
-      var lang = this._form.getLang();
-      var fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
-      var isMultiple = !(coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
-      var accept = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
-      return ejs.render(tpl$1['fields/file-upload.html'], {
-        id: this._hash,
-        showButton: !!fileUpOptions.showButton,
-        showDropzone: !!fileUpOptions.showDropzone,
-        isMultiple: isMultiple,
-        accept: accept,
-        lang: lang
-      });
-    },
-    /**
-     * Сборка содержимого только для просмотра
-     * @private
-     */
-    _renderContentReadonly: function _renderContentReadonly() {
-      var lang = this._form.getLang();
-      var fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
-      var isMultiple = !(coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
-      var accept = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
-      return ejs.render(tpl$1['fields/file-upload.html'], {
-        id: this._hash,
-        showButton: false,
-        showDropzone: false,
-        isMultiple: isMultiple,
-        accept: accept,
-        lang: lang
-      });
-    },
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents: function _initEvents() {
-      var options = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
-      var formOptions = this._form.getOptions();
-      var queue = $('#fileup-' + this._hash + '-queue');
-      var createOptions = {
-        url: typeof options.url === 'string' ? options.url : '',
-        input: 'fileup-' + this._hash,
-        queue: queue
-      };
-      if (formOptions.showDropzone) {
-        createOptions.dropzone = 'fileup-' + this._hash + '-dropzone';
-      }
-      if (typeof formOptions.lang === 'string') {
-        createOptions.lang = formOptions.lang;
-      }
-      if (typeof options.fieldName === 'string') {
-        createOptions.fieldName = options.fieldName;
-      }
-      if (typeof options.httpMethod === 'string') {
-        createOptions.httpMethod = options.httpMethod;
-      }
-      if (coreuiFormUtils.isObject(options.extraFields)) {
-        createOptions.extraFields = options.extraFields;
-      }
-      if (coreuiFormUtils.isNumeric(options.sizeLimit)) {
-        createOptions.sizeLimit = options.sizeLimit;
-      }
-      if (coreuiFormUtils.isNumeric(options.filesLimit)) {
-        createOptions.filesLimit = options.filesLimit;
-      }
-      if (coreuiFormUtils.isNumeric(options.timeout)) {
-        createOptions.timeout = options.timeout;
-      }
-      if (typeof options.autostart === 'boolean') {
-        createOptions.autostart = options.autostart;
-      }
-      if (typeof options.templateFile === 'string') {
-        createOptions.templateFile = options.templateFile;
-      }
-      if (this._options.readonly) {
-        createOptions.showRemove = false;
-      }
-      if (Array.isArray(this._value)) {
-        createOptions.files = this._value;
-      }
-      this._fileUp = fileUp.create(createOptions);
-      if (Array.isArray(this._value) && this._value.length > 0) {
-        queue.addClass('mt-2');
-      }
-      this._fileUp.on('select', function (file) {
-        queue.addClass('mt-2');
-      });
-      this._fileUp.on('remove', function (file) {
-        if (Object.keys(this.getFiles()).length === 0) {
-          setTimeout(function () {
-            queue.removeClass('mt-2');
-          }, 150);
-        }
-      });
-      this._fileUp.on('load_success', function (file, response) {
-        var data = null;
-        if (response) {
-          try {
-            data = JSON.parse(response);
-          } catch (e) {
-            file.showError('Incorrect response JSON format');
-          }
-        }
-        if (data) {
-          file.setOption('upload', data);
-        }
-      });
-    },
-    /**
-     * Получение текущего списка файлов
-     * @return {*[]}
-     * @private
-     */
-    _getFiles: function _getFiles() {
-      if (!this._fileUp) {
-        return [];
-      }
-      var files = this._fileUp.getFiles();
-      var results = [];
-      if (Object.keys(files).length > 0) {
+
+      /**
+       * Получение значения из поля
+       * @returns {Array}
+       */
+    }, {
+      key: "getValue",
+      value: function getValue() {
+        var files = this._getFiles();
         $.each(files, function (key, file) {
-          var fileBinary = file.getFile();
-          var result = file.getOptions();
-          result.name = file.getName();
-          result.size = file.getSize();
-          if (fileBinary && fileBinary instanceof File) {
-            result.type = fileBinary.type;
+          if (file.hasOwnProperty('urlPreview')) {
+            delete file.urlPreview;
           }
-          results.push(result);
+          if (file.hasOwnProperty('urlDownload')) {
+            delete file.urlDownload;
+          }
+        });
+        return files;
+      }
+
+      /**
+       * Установка значения в поле
+       * @param {Array} value
+       */
+    }, {
+      key: "setValue",
+      value: function setValue(value) {
+        if (!Array.isArray(value)) {
+          return;
+        }
+        var that = this;
+        this._fileUp.removeAll();
+        $.each(value, function (key, item) {
+          if (item instanceof File) {
+            that._fileUp.appendFile(item);
+          } else if (coreuiFormUtils.isObject(item)) {
+            that._fileUp.appendFileByData(item);
+          }
         });
       }
-      return results;
-    }
-  };
+
+      /**
+       * Установка валидности поля
+       * @param {boolean|null} isValid
+       * @param {text} text
+       */
+    }, {
+      key: "validate",
+      value: function validate(isValid, text) {
+        if (this._options.readonly) {
+          return;
+        }
+        var container = $('.content-' + this._hash);
+        container.find('> .validate-content').remove();
+        if (isValid) {
+          if (typeof text === 'undefined' && typeof this._options.validText === 'string') {
+            text = this._options.validText;
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="validate-content text-success">' + text + '</div>');
+          }
+        } else if (isValid === false) {
+          if (typeof text === 'undefined') {
+            if (typeof this._options.invalidText === 'string') {
+              text = this._options.invalidText;
+            } else if (!text && this._options.required) {
+              text = this._form.getLang().required_field;
+            }
+          }
+          if (typeof text === 'string') {
+            container.append('<div class="validate-content text-danger">' + text + '</div>');
+          }
+        }
+      }
+
+      /**
+       * Проверка валидности поля
+       * @return {boolean|null}
+       */
+    }, {
+      key: "isValid",
+      value: function isValid() {
+        if (this._options.required && this._fileUp) {
+          return this._getFiles().length > 0;
+        }
+        return null;
+      }
+
+      /**
+       * Получение экземпляра fileUp
+       * @return {null}
+       */
+    }, {
+      key: "getFileUp",
+      value: function getFileUp() {
+        return this._fileUp;
+      }
+
+      /**
+       * Формирование контента поля
+       * @return {*}
+       */
+    }, {
+      key: "renderContent",
+      value: function renderContent() {
+        return this._options.readonly ? this._renderContentReadonly() : this._renderContent();
+      }
+
+      /**
+       * Сборка содержимого
+       * @private
+       */
+    }, {
+      key: "_renderContent",
+      value: function _renderContent() {
+        var lang = this._form.getLang();
+        var fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
+        var isMultiple = !(coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
+        var accept = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
+        return ejs.render(tpl$1['fields/file-upload.html'], {
+          id: this._hash,
+          showButton: !!fileUpOptions.showButton,
+          showDropzone: !!fileUpOptions.showDropzone,
+          isMultiple: isMultiple,
+          accept: accept,
+          lang: lang
+        });
+      }
+
+      /**
+       * Сборка содержимого только для просмотра
+       * @private
+       */
+    }, {
+      key: "_renderContentReadonly",
+      value: function _renderContentReadonly() {
+        var lang = this._form.getLang();
+        var fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
+        var isMultiple = !(coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
+        var accept = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
+        return ejs.render(tpl$1['fields/file-upload.html'], {
+          id: this._hash,
+          showButton: false,
+          showDropzone: false,
+          isMultiple: isMultiple,
+          accept: accept,
+          lang: lang
+        });
+      }
+
+      /**
+       * Инициализация событий
+       * @private
+       */
+    }, {
+      key: "_initEvents",
+      value: function _initEvents() {
+        var options = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
+        var formOptions = this._form.getOptions();
+        var queue = $('#fileup-' + this._hash + '-queue');
+        var createOptions = {
+          url: typeof options.url === 'string' ? options.url : '',
+          input: 'fileup-' + this._hash,
+          queue: queue
+        };
+        if (formOptions.showDropzone) {
+          createOptions.dropzone = 'fileup-' + this._hash + '-dropzone';
+        }
+        if (typeof formOptions.lang === 'string') {
+          createOptions.lang = formOptions.lang;
+        }
+        if (typeof options.fieldName === 'string') {
+          createOptions.fieldName = options.fieldName;
+        }
+        if (typeof options.httpMethod === 'string') {
+          createOptions.httpMethod = options.httpMethod;
+        }
+        if (coreuiFormUtils.isObject(options.extraFields)) {
+          createOptions.extraFields = options.extraFields;
+        }
+        if (coreuiFormUtils.isNumeric(options.sizeLimit)) {
+          createOptions.sizeLimit = options.sizeLimit;
+        }
+        if (coreuiFormUtils.isNumeric(options.filesLimit)) {
+          createOptions.filesLimit = options.filesLimit;
+        }
+        if (coreuiFormUtils.isNumeric(options.timeout)) {
+          createOptions.timeout = options.timeout;
+        }
+        if (typeof options.autostart === 'boolean') {
+          createOptions.autostart = options.autostart;
+        }
+        if (typeof options.templateFile === 'string') {
+          createOptions.templateFile = options.templateFile;
+        }
+        if (this._options.readonly) {
+          createOptions.showRemove = false;
+        }
+        if (Array.isArray(this._value)) {
+          createOptions.files = this._value;
+        }
+        this._fileUp = fileUp.create(createOptions);
+        if (Array.isArray(this._value) && this._value.length > 0) {
+          queue.addClass('mt-2');
+        }
+        this._fileUp.on('select', function (file) {
+          queue.addClass('mt-2');
+        });
+        this._fileUp.on('remove', function (file) {
+          if (Object.keys(this.getFiles()).length === 0) {
+            setTimeout(function () {
+              queue.removeClass('mt-2');
+            }, 150);
+          }
+        });
+        this._fileUp.on('load_success', function (file, response) {
+          var data = null;
+          if (response) {
+            try {
+              data = JSON.parse(response);
+            } catch (e) {
+              file.showError('Incorrect response JSON format');
+            }
+          }
+          if (data) {
+            file.setOption('upload', data);
+          }
+        });
+      }
+
+      /**
+       * Получение текущего списка файлов
+       * @return {*[]}
+       * @private
+       */
+    }, {
+      key: "_getFiles",
+      value: function _getFiles() {
+        if (!this._fileUp) {
+          return [];
+        }
+        var files = this._fileUp.getFiles();
+        var results = [];
+        if (Object.keys(files).length > 0) {
+          $.each(files, function (key, file) {
+            var fileBinary = file.getFile();
+            var result = file.getOptions();
+            result.name = file.getName();
+            result.size = file.getSize();
+            if (fileBinary && fileBinary instanceof File) {
+              result.type = fileBinary.type;
+            }
+            results.push(result);
+          });
+        }
+        return results;
+      }
+    }]);
+  }(Field);
+  coreuiForm.fields.fileUpload = FieldFileUpload;
 
   return coreuiForm;
 

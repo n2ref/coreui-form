@@ -3,110 +3,44 @@ import 'ejs/ejs.min';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import coreuiForm      from "../coreui.form";
+import Field           from "../abstract/Field";
 
 
-coreuiForm.fields.checkbox = {
-
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: [],
-    _options: {
-        type: 'checkbox',
-        name: null,
-        label: null,
-        labelWidth: null,
-        inline: false,
-        outContent: null,
-        description: null,
-        errorText: null,
-        options: [],
-        fields: null,
-        required: null,
-        readonly: null,
-        show: true,
-        column: null
-    },
+class FieldCheckbox extends Field {
 
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
+        options = $.extend(true, {
+            type: 'checkbox',
+            name: null,
+            label: null,
+            labelWidth: null,
+            inline: false,
+            outContent: null,
+            description: null,
+            errorText: null,
+            options: [],
+            fields: null,
+            required: null,
+            readonly: null,
+            show: true,
+        }, options);
 
-        this._form    = form;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils.hashCode();
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
-
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
-
-
-    /**
-     * Изменение режима поля только для чтения
-     * @param {boolean} isReadonly
-     */
-    readonly: function (isReadonly) {
-
-        this._value            = this.getValue();
-        this._options.readonly = !! isReadonly;
-
-        $('.content-' + this._hash).html(
-            this.renderContent()
-        );
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
+        super(form, options, index);
+    }
 
 
     /**
      * Получение значения в поле
-     * @returns {object}
+     * @returns {Array}
      */
-    getValue: function () {
+    getValue() {
 
         if (this._options.readonly) {
             return this._value;
@@ -120,14 +54,14 @@ coreuiForm.fields.checkbox = {
 
             return values;
         }
-    },
+    }
 
 
     /**
      * Установка значений в поле
      * @param {object|null|string|number} value
      */
-    setValue: function (value) {
+    setValue(value) {
 
         if (['string', 'number', 'object'].indexOf(typeof value) < 0) {
             return;
@@ -194,15 +128,15 @@ coreuiForm.fields.checkbox = {
                 });
             }
         }
-    },
+    }
 
 
     /**
      * Установка валидности поля
-     * @param {bool|null} isValid
+     * @param {boolean|null} isValid
      * @param {text} text
      */
-    validate: function (isValid, text) {
+    validate(isValid, text) {
 
         if (this._options.readonly) {
             return;
@@ -248,28 +182,28 @@ coreuiForm.fields.checkbox = {
                 lastInput.append('<div class="invalid-feedback">' + text + '</div>');
             }
         }
-    },
+    }
 
 
     /**
      * Проверка валидности поля
      * @return {boolean}
      */
-    isValid: function () {
+    isValid() {
 
         if (this._options.required && ! this._options.readonly) {
             return this.getValue().length > 0;
         }
 
         return true;
-    },
+    }
 
 
     /**
      * Формирование поля
      * @returns {string}
      */
-    render: function() {
+    render() {
 
         let options      = this.getOptions();
         let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
@@ -282,14 +216,14 @@ coreuiForm.fields.checkbox = {
             content: this.renderContent(),
             attachFields: attachFields,
         });
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {*}
      */
-    renderContent: function () {
+    renderContent() {
 
         let that            = this;
         let checkboxOptions = [];
@@ -377,3 +311,7 @@ coreuiForm.fields.checkbox = {
         });
     }
 }
+
+coreuiForm.fields.checkbox = FieldCheckbox;
+
+export default FieldCheckbox;

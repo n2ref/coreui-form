@@ -3,113 +3,48 @@ import 'ejs/ejs.min';
 import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
+import Field           from "../abstract/Field";
 
 
-coreuiForm.fields.select = {
-
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: [],
-    _options: {
-        type: 'select',
-        name: null,
-        label: null,
-        labelWidth: null,
-        width: null,
-        outContent: null,
-        description: null,
-        errorText: null,
-        attach: null,
-        attr: {
-            class: 'form-select d-inline-block'
-        },
-        required: null,
-        readonly: null,
-        show: true,
-        column: null
-    },
-
+class FieldSelect extends Field {
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
-        this._form    = form;
-        this._index   = index;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils.hashCode();
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-    },
+        options = $.extend(true, {
+            type: 'select',
+            name: null,
+            label: null,
+            labelWidth: null,
+            width: null,
+            outContent: null,
+            description: null,
+            errorText: null,
+            fields: null,
+            attr: {
+                class: 'form-select d-inline-block'
+            },
+            required: null,
+            readonly: null,
+            show: true,
+            position: null,
+            noSend: null,
+        }, options);
 
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
-
-
-    /**
-     * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
-     */
-    readonly: function (isReadonly) {
-
-        this._value            = this.getValue();
-        this._options.readonly = !! isReadonly;
-
-        $('.content-' + this._hash).html(
-            this.renderContent()
-        );
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
+        super(form, options, index);
+    }
 
 
     /**
      * Получение значения из поля
      * @returns {array|string}
      */
-    getValue: function () {
+    getValue() {
 
         if (this._options.readonly) {
             return this._value;
@@ -133,14 +68,14 @@ coreuiForm.fields.select = {
                 return $('.content-' + this._hash + ' select option:selected').val()
             }
         }
-    },
+    }
 
 
     /**
      * Установка значения в поле
      * @param {string} value
      */
-    setValue: function (value) {
+    setValue(value) {
 
         if (['string', 'number', 'object'].indexOf(typeof value) < 0) {
             return;
@@ -207,15 +142,15 @@ coreuiForm.fields.select = {
                 });
             }
         }
-    },
+    }
 
 
     /**
      * Установка валидности поля
-     * @param {bool|null} isValid
+     * @param {boolean|null} isValid
      * @param {text} text
      */
-    validate: function (isValid, text) {
+    validate(isValid, text) {
 
         if (this._options.readonly) {
             return;
@@ -259,14 +194,14 @@ coreuiForm.fields.select = {
                 container.append('<div class="invalid-feedback">' + text + '</div>');
             }
         }
-    },
+    }
 
 
     /**
      * Проверка валидности поля
      * @return {boolean|null}
      */
-    isValid: function () {
+    isValid() {
 
         let select = $('.content-' + this._hash + ' select');
 
@@ -279,39 +214,19 @@ coreuiForm.fields.select = {
         }
 
         return null;
-    },
-
-
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function() {
-
-        let options      = this.getOptions();
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form:  this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields
-        });
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {*}
      */
-    renderContent: function () {
+    renderContent() {
 
         return this._options.readonly
             ? this._renderContentReadonly()
             : this._renderContent();
-    },
+    }
 
 
     /**
@@ -319,7 +234,7 @@ coreuiForm.fields.select = {
      * @return {*}
      * @private
      */
-    _renderContent: function () {
+    _renderContent() {
 
         let that          = this;
         let options       = this.getOptions();
@@ -421,7 +336,7 @@ coreuiForm.fields.select = {
                 options: selectOptions
             },
         });
-    },
+    }
 
 
     /**
@@ -429,7 +344,7 @@ coreuiForm.fields.select = {
      * @return {string}
      * @private
      */
-    _renderContentReadonly: function () {
+    _renderContentReadonly() {
 
         let that            = this;
         let options         = this.getOptions();
@@ -500,7 +415,7 @@ coreuiForm.fields.select = {
                 selectedOptions: selectedOptions
             },
         });
-    },
+    }
 
 
     /**
@@ -509,7 +424,7 @@ coreuiForm.fields.select = {
      * @return {object}
      * @private
      */
-    _renderOption: function (option) {
+    _renderOption(option) {
 
         let optionAttr = [];
         let optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(typeof(option.text)) >= 0
@@ -542,3 +457,7 @@ coreuiForm.fields.select = {
         };
     }
 }
+
+coreuiForm.fields.select = FieldSelect;
+
+export default FieldSelect;

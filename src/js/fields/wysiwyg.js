@@ -3,51 +3,46 @@ import 'ejs/ejs.min';
 import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
+import Field           from "../abstract/Field";
 
 
-coreuiForm.fields.wysiwyg = {
+class FieldWysiwyg extends Field {
 
-    _id: '',
-    _hash: '',
-    _form: null,
-    _value: null,
-    _editor: null,
-    _editorHash: null,
-    _options: {
-        type: 'wysiwyg',
-        label: null,
-        labelWidth: null,
-        width: null,
-        minWidth: null,
-        maxWidth: null,
-        height: null,
-        minHeight: null,
-        maxHeight: null,
-        options: {},
-        outContent: null,
-        description: null,
-        required: null,
-        readonly: false,
-        show: true,
-        column: null
-    },
+    _editor = null;
+    _editorHash = null;
 
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
-        this._form       = form;
-        this._index      = index;
-        this._id         = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash       = coreuiFormUtils.hashCode();
+        options = $.extend(true, {
+            type: 'wysiwyg',
+            label: null,
+            labelWidth: null,
+            width: null,
+            minWidth: null,
+            maxWidth: null,
+            height: null,
+            minHeight: null,
+            maxHeight: null,
+            options: {},
+            outContent: null,
+            description: null,
+            required: null,
+            readonly: false,
+            show: true,
+            positions: null,
+            noSend: null
+        }, options);
+
+        super(form, options, index);
+
         this._editorHash = coreuiFormUtils.hashCode();
-        this._value      = coreuiFormUtils.getFieldValue(form, options);
-        this._options    = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
 
         let that = this;
 
@@ -56,88 +51,42 @@ coreuiForm.fields.wysiwyg = {
                 that._initEvents();
             }
         });
-    },
-
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+    }
 
 
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function (isReadonly) {
+    readonly(isReadonly) {
 
-        this._value            = this.getValue();
-        this._options.readonly = !! isReadonly;
+        super.readonly(isReadonly);
 
-        $('.content-' + this._hash).html(
-            this.renderContent()
-        );
-
-        if ( ! this._options.readonly) {
+        if ( ! isReadonly) {
             this._initEvents();
         }
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
+    }
 
 
     /**
      * Получение значения из поля
      * @return {string|null}
      */
-    getValue: function () {
+    getValue() {
 
         if (this._options.readonly) {
             return this._value;
         } else {
             return this._editor ? this._editor.getContent() : this._value;
         }
-    },
+    }
 
 
     /**
      * Установка значения в поле
      * @param {string} value
      */
-    setValue: function (value) {
+    setValue(value) {
 
         this._value = value;
 
@@ -148,15 +97,15 @@ coreuiForm.fields.wysiwyg = {
                 this._editor.setContent(value);
             }
         }
-    },
+    }
 
 
     /**
      * Установка валидности поля
-     * @param {bool|null} isValid
+     * @param {boolean|null} isValid
      * @param {text} text
      */
-    validate: function (isValid, text) {
+    validate(isValid, text) {
 
         if (this._options.readonly) {
             return;
@@ -194,48 +143,28 @@ coreuiForm.fields.wysiwyg = {
                 container.append('<div class="ps-2 text-danger">' + text + '</div>');
             }
         }
-    },
+    }
 
 
     /**
      * Проверка валидности поля
      * @return {boolean}
      */
-    isValid: function () {
+    isValid() {
 
         if (this._options.required && ! this._options.readonly) {
             return !! this.getValue();
         }
 
         return true;
-    },
-
-
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function() {
-
-        let options      = this.getOptions();
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form:  this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields
-        });
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {*}
      */
-    renderContent: function () {
+    renderContent() {
 
         let options = this.getOptions();
 
@@ -244,21 +173,21 @@ coreuiForm.fields.wysiwyg = {
             value: this._value !== null ? this._value : '',
             editorHash: this._editorHash
         });
-    },
+    }
 
 
     /**
      * Инициализация событий
      * @private
      */
-    _initEvents: function () {
+    _initEvents() {
 
         if (this._options.readonly) {
             return;
         }
 
         let tinyMceOptions = {};
-        let than           = this;
+        let that           = this;
         let textareaId     = 'editor-' + this._editorHash;
 
         if (typeof this._options.options === 'object' &&
@@ -271,8 +200,8 @@ coreuiForm.fields.wysiwyg = {
             tinyMceOptions = {
                 plugins: 'image lists anchor charmap',
                 toolbar: 'blocks | bold italic underline | alignleft aligncenter ' +
-                         'alignright alignjustify | bullist numlist outdent indent | ' +
-                         'forecolor backcolor removeformat',
+                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                    'forecolor backcolor removeformat',
                 menubar: false,
                 branding: false
             }
@@ -282,13 +211,13 @@ coreuiForm.fields.wysiwyg = {
                 promotion: false,
                 branding: false,
                 plugins: 'preview importcss searchreplace autolink autosave save directionality code ' +
-                         'visualblocks visualchars fullscreen image link media template codesample table ' +
-                         'charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+                    'visualblocks visualchars fullscreen image link media template codesample table ' +
+                    'charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
                 menubar: 'file edit view insert format tools table help',
                 toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | ' +
-                         'alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | ' +
-                         'forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen ' +
-                         'preview save print | insertfile image media template link anchor codesample | ltr rtl',
+                    'alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | ' +
+                    'forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen ' +
+                    'preview save print | insertfile image media template link anchor codesample | ltr rtl',
             }
         }
 
@@ -314,7 +243,11 @@ coreuiForm.fields.wysiwyg = {
         }
 
         tinymce.init(tinyMceOptions).then(function () {
-            than._editor = tinymce.get(textareaId);
+            that._editor = tinymce.get(textareaId);
         });
     }
 }
+
+coreuiForm.fields.wysiwyg = FieldWysiwyg;
+
+export default FieldWysiwyg;

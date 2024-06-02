@@ -4,87 +4,70 @@ import fileUp          from 'fileup-js/src/js/main';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import coreuiForm      from "../coreui.form";
+import Field           from "../abstract/Field";
 
 
-coreuiForm.fields.fileUpload = {
+class FieldFileUpload extends Field {
 
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _value: null,
-    _fileUp: null,
-
-    _options: {
-        type: 'fileUpload',
-        name: null,
-        label: null,
-        labelWidth: null,
-        width: null,
-        outContent: null,
-        description: null,
-        errorText: null,
-        attach: null,
-        required: null,
-        invalidText: null,
-        validText: null,
-        readonly: null,
-        show: true,
-        column: null,
-        options: {
-            url: '',
-            httpMethod: 'post',
-            fieldName: 'file',
-            showButton: true,
-            showDropzone: false,
-            autostart: true,
-            extraFields: true,
-            accept: null,
-            timeout: null,
-            filesLimit: null,
-            sizeLimit: null,
-            templateFile: null,
-        }
-    },
+    _fileUp = null;
 
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
-        this._form    = form;
-        this._index   = index;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils.hashCode();
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        options = $.extend(true, {
+            type: 'fileUpload',
+            name: null,
+            label: null,
+            labelWidth: null,
+            width: null,
+            outContent: null,
+            description: null,
+            errorText: null,
+            fields: null,
+            required: null,
+            invalidText: null,
+            validText: null,
+            readonly: null,
+            show: true,
+            position: null,
+            noSend: null,
+            options: {
+                url: '',
+                httpMethod: 'post',
+                fieldName: 'file',
+                showButton: true,
+                showDropzone: false,
+                autostart: true,
+                extraFields: true,
+                accept: null,
+                timeout: null,
+                filesLimit: null,
+                sizeLimit: null,
+                templateFile: null,
+            }
+        }, options);
+
+        super(form, options, index);
 
         let that = this;
 
         form.on('show', function () {
             that._initEvents();
         });
-    },
-
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+    }
 
 
     /**
      * Изменение режима поля только для чтения
      * @param {boolean} isReadonly
      */
-    readonly: function (isReadonly) {
+    readonly(isReadonly) {
 
         this._value            = this._getFiles();
         this._options.readonly = !! isReadonly;
@@ -98,46 +81,14 @@ coreuiForm.fields.fileUpload = {
         );
 
         this._initEvents();
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
+    }
 
 
     /**
      * Получение значения из поля
      * @returns {Array}
      */
-    getValue: function () {
+    getValue() {
 
         let files = this._getFiles();
 
@@ -151,14 +102,14 @@ coreuiForm.fields.fileUpload = {
         });
 
         return files;
-    },
+    }
 
 
     /**
      * Установка значения в поле
      * @param {Array} value
      */
-    setValue: function (value) {
+    setValue(value) {
 
         if ( ! Array.isArray(value)) {
             return;
@@ -176,7 +127,7 @@ coreuiForm.fields.fileUpload = {
                 that._fileUp.appendFileByData(item);
             }
         });
-    },
+    }
 
 
     /**
@@ -184,7 +135,7 @@ coreuiForm.fields.fileUpload = {
      * @param {boolean|null} isValid
      * @param {text} text
      */
-    validate: function (isValid, text) {
+    validate(isValid, text) {
 
         if (this._options.readonly) {
             return;
@@ -217,70 +168,50 @@ coreuiForm.fields.fileUpload = {
                 container.append('<div class="validate-content text-danger">' + text + '</div>');
             }
         }
-    },
+    }
 
 
     /**
      * Проверка валидности поля
      * @return {boolean|null}
      */
-    isValid: function () {
+    isValid() {
 
         if (this._options.required && this._fileUp) {
             return this._getFiles().length > 0;
         }
 
         return null;
-    },
+    }
 
 
     /**
      * Получение экземпляра fileUp
      * @return {null}
      */
-    getFileUp: function () {
+    getFileUp() {
 
         return this._fileUp;
-    },
-
-
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function() {
-
-        let options      = this.getOptions();
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form: this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields
-        });
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {*}
      */
-    renderContent: function () {
+    renderContent() {
 
         return this._options.readonly
             ? this._renderContentReadonly()
             : this._renderContent();
-    },
+    }
 
 
     /**
      * Сборка содержимого
      * @private
      */
-    _renderContent: function () {
+    _renderContent() {
 
         let lang          = this._form.getLang();
         let fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
@@ -295,14 +226,14 @@ coreuiForm.fields.fileUpload = {
             accept: accept,
             lang: lang,
         });
-    },
+    }
 
 
     /**
      * Сборка содержимого только для просмотра
      * @private
      */
-    _renderContentReadonly: function () {
+    _renderContentReadonly() {
 
         let lang          = this._form.getLang();
         let fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
@@ -317,14 +248,14 @@ coreuiForm.fields.fileUpload = {
             accept: accept,
             lang: lang,
         });
-    },
+    }
 
 
     /**
      * Инициализация событий
      * @private
      */
-    _initEvents: function () {
+    _initEvents() {
 
         let options     = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
         let formOptions = this._form.getOptions();
@@ -410,7 +341,7 @@ coreuiForm.fields.fileUpload = {
                 file.setOption('upload', data);
             }
         });
-    },
+    }
 
 
     /**
@@ -418,7 +349,7 @@ coreuiForm.fields.fileUpload = {
      * @return {*[]}
      * @private
      */
-    _getFiles: function () {
+    _getFiles() {
 
         if ( ! this._fileUp) {
             return [];
@@ -446,3 +377,7 @@ coreuiForm.fields.fileUpload = {
         return results;
     }
 }
+
+coreuiForm.fields.fileUpload = FieldFileUpload;
+
+export default FieldFileUpload;

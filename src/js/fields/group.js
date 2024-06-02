@@ -5,28 +5,28 @@ import coreuiFormTpl     from "../coreui.form.templates";
 import coreuiFormPrivate from "../coreui.form.private";
 
 
-coreuiForm.fields.group = {
+class FieldGroup {
 
-    _id: '',
-    _form: null,
-    _index: 0,
-    _options: {
+    _id = '';
+    _form = null;
+    _index = 0;
+    _options = {
         type: 'group',
         label: '',
         show: true,
         showCollapsible: true,
         fields: [],
         column: null
-    },
+    };
 
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
         this._form    = form;
         this._index   = index;
@@ -38,23 +38,23 @@ coreuiForm.fields.group = {
         form.on('show', function () {
             that._initEvents();
         });
-    },
+    }
 
 
     /**
      * Получение параметров
      * @returns {object}
      */
-    getOptions: function () {
+    getOptions() {
         return $.extend(true, {}, this._options, options);
-    },
+    }
 
 
     /**
      * Скрытие группы
      * @param {int} duration
      */
-    collapse: function (duration) {
+    collapse(duration) {
 
         let container = '#coreui-form-' + this._id;
 
@@ -62,14 +62,14 @@ coreuiForm.fields.group = {
         $(container + ' > .coreui-form__group_label .btn-collapsible .bi').addClass('bi-chevron-right');
 
         $(container + ' .coreui-form__group_content').slideUp(duration);
-    },
+    }
 
 
     /**
      * Показ группы
      * @param {int} duration
      */
-    expand: function (duration) {
+    expand(duration) {
 
         let container = '#coreui-form-' + this._id;
 
@@ -77,14 +77,14 @@ coreuiForm.fields.group = {
         $(container + ' > .coreui-form__group_label .btn-collapsible .bi').addClass('bi-chevron-down');
 
         $(container + ' .coreui-form__group_content').slideDown(duration);
-    },
+    }
 
 
     /**
      * Формирование поля
      * @returns {string}
      */
-    render: function() {
+    render() {
 
         let container = $(
             ejs.render(coreuiFormTpl['form-field-group.html'], {
@@ -102,14 +102,14 @@ coreuiForm.fields.group = {
         });
 
         return container;
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {Array}
      */
-    renderContent: function () {
+    renderContent() {
 
         let fields = [];
         let that   = this;
@@ -126,7 +126,7 @@ coreuiForm.fields.group = {
         });
 
         return fields;
-    },
+    }
 
 
 
@@ -134,7 +134,7 @@ coreuiForm.fields.group = {
      * Инициализация событий
      * @private
      */
-    _initEvents: function () {
+    _initEvents() {
 
         if (this._options.showCollapsible) {
             let that      = this;
@@ -151,3 +151,8 @@ coreuiForm.fields.group = {
         }
     }
 }
+
+
+coreuiForm.fields.group = FieldGroup;
+
+export default FieldGroup;

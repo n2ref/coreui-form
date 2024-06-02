@@ -4,54 +4,50 @@ import coreuiForm        from "../coreui.form";
 import coreuiFormTpl     from "../coreui.form.templates";
 import coreuiFormUtils   from "../coreui.form.utils";
 import coreuiFormPrivate from "../coreui.form.private";
+import Field           from "../abstract/Field";
 
 
-coreuiForm.fields.modal = {
+class FieldModal extends Field {
 
-    _id: '',
-    _hash: '',
-    _form: null,
-    _value: '',
-    _text: '',
-    _options: {
-        type: 'modal',
-        name: null,
-        label: null,
-        labelWidth: null,
-        width: null,
-        outContent: null,
-        description: null,
-        errorText: null,
-        fields: [],
-        options: {
-            title: '',
-            size: 'lg',
-            url: '',
-            onHidden: null,
-            onClear: null,
-            onChange: null,
-        },
-        required: null,
-        readonly: null,
-        show: true,
-        column: null
-    },
+    _text = '';
 
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}               options
-     * @param {int}                  index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
+
+        options = $.extend(true, {
+            type: 'modal',
+            name: null,
+            label: null,
+            labelWidth: null,
+            width: null,
+            outContent: null,
+            description: null,
+            errorText: null,
+            fields: [],
+            options: {
+                title: '',
+                size: 'lg',
+                url: '',
+                onHidden: null,
+                onClear: null,
+                onChange: null,
+            },
+            required: null,
+            readonly: null,
+            show: true,
+            position: null,
+            noSend: null,
+        }, options);
+
+        super(form, options, index);
 
         let formRecord = form.getRecord();
-
-        this._form    = form;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-        this._hash    = coreuiFormUtils.hashCode();
 
         if (typeof options.name === 'string' &&
             formRecord.hasOwnProperty(options.name) &&
@@ -69,91 +65,48 @@ coreuiForm.fields.modal = {
         form.on('show', function () {
             that._initEvents();
         });
-    },
-
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+    }
 
 
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function (isReadonly) {
+    readonly(isReadonly) {
 
-        this._value            = this.getValue();
-        this._options.readonly = !! isReadonly;
+        super.readonly(isReadonly);
 
-        $('.content-' + this._hash).html(
-            this.renderContent()
-        );
-
-        if ( ! this._options.readonly) {
+        if ( ! isReadonly) {
             this._initEvents();
         }
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
+    }
 
 
     /**
      * Получение значения в поле
      * @returns {string}
      */
-    getValue: function () {
+    getValue() {
 
         return this._options.readonly
             ? this._value
             : $('.content-' + this._hash + ' input.coreui-form-modal-value').val();
-    },
+    }
 
 
     /**
      * Установка значения в поле
-     * @param {string} value
-     * @param {string} text
+     * @param {object} value
      */
-    setValue: function (value, text) {
+    setValue(value) {
 
-        if (['string', 'number'].indexOf(typeof value) < 0) {
+        if ( ! coreuiFormUtils.isObject(value)) {
             return;
         }
+
+        let text  = value.hasOwnProperty('text') && typeof value.text === 'string' ? value.text : '';
+
+        value = value.hasOwnProperty('value') && typeof value.value === 'string' ? value.value : '';
 
         this._value = value;
 
@@ -186,15 +139,15 @@ coreuiForm.fields.modal = {
                 coreuiFormPrivate.trigger(this._form, 'change-modal.coreui.form', [this], this);
             }
         }
-    },
+    }
 
 
     /**
      * Установка валидности поля
-     * @param {bool|null} isValid
+     * @param {boolean|null} isValid
      * @param {text} text
      */
-    validate: function (isValid, text) {
+    validate(isValid, text) {
 
         if (this._options.readonly) {
             return;
@@ -232,48 +185,28 @@ coreuiForm.fields.modal = {
                 container.append('<div class="ps-2 text-danger">' + text + '</div>');
             }
         }
-    },
+    }
 
 
     /**
      * Проверка валидности поля
      * @return {boolean}
      */
-    isValid: function () {
+    isValid() {
 
         if (this._options.required && ! this._options.readonly) {
             return !! this.getValue();
         }
 
         return true;
-    },
-
-
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function() {
-
-        let options      = this.getOptions();
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form:  this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields
-        });
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {*}
      */
-    renderContent: function () {
+    renderContent () {
 
         let fieldOptions = this.getOptions();
         let attributes   = [];
@@ -309,14 +242,14 @@ coreuiForm.fields.modal = {
                 attr: attributes.length > 0 ? attributes.join(' ') : ''
             },
         });
-    },
+    }
 
 
     /**
      * Инициализация событий
      * @private
      */
-    _initEvents: function () {
+    _initEvents() {
 
         let that  = this;
         let modal = this._options.hasOwnProperty('options') && typeof(this._options.options) === 'object'
@@ -337,7 +270,7 @@ coreuiForm.fields.modal = {
 
             coreuiFormPrivate.trigger(that._form, 'modal_clear', [ that, e ], that);
 
-            that.setValue('', '');
+            that.setValue({value: '', text: ''});
         });
 
         // Выбор
@@ -418,3 +351,7 @@ coreuiForm.fields.modal = {
         });
     }
 }
+
+coreuiForm.fields.modal = FieldModal;
+
+export default FieldModal;

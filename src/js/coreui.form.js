@@ -7,6 +7,7 @@ let coreuiForm = {
     lang: {},
     fields: {},
     controls: {},
+    abstract: {},
 
     _instances: {},
     _settings: {

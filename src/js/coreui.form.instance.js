@@ -330,6 +330,19 @@ let coreuiFormInstance = {
         let onsubmit = null;
         let data     = this.getData();
 
+        $.each(this._fields, function (key, field) {
+            if ( ! field.isAlloySend()) {
+                let fieldOptions = field.getOptions();
+                if (fieldOptions.hasOwnProperty('name') &&
+                    fieldOptions.name &&
+                    data.hasOwnProperty(fieldOptions.name)
+                ) {
+                    delete data[fieldOptions.name];
+                }
+            }
+        });
+
+
         if (typeof this._options.onSubmit === 'function') {
             onsubmit = this._options.onSubmit;
 

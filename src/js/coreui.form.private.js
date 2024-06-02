@@ -66,21 +66,7 @@ let coreuiFormPrivate = {
         }
 
 
-        let fieldInstance = $.extend(true, {
-            render:        function () {},
-            renderContent: function () {},
-            init:          function () {},
-            getValue:      function () {},
-            setValue:      function () {},
-            getOptions:    function () {},
-            show:          function () {},
-            hide:          function () {},
-            readonly:      function () {},
-            validate:      function () {},
-            isValid:       function () {},
-        }, coreuiForm.fields[type]);
-
-        fieldInstance.init(form, field, form._fieldsIndex++);
+        let fieldInstance = new coreuiForm.fields[type](form, field, form._fieldsIndex++);
 
         form._fields.push(fieldInstance);
 
@@ -107,15 +93,7 @@ let coreuiFormPrivate = {
             return null;
         }
 
-        let groupInstance = $.extend(true, {
-            render:     function () {},
-            init:       function () {},
-            getOptions: function () {},
-            expand:     function () {},
-            collapse:   function () {},
-        }, coreuiForm.fields[type]);
-
-        groupInstance.init(form, group, form._groupsIndex++);
+        let groupInstance = new coreuiForm.fields.group(form, group, form._groupsIndex++);
 
         form._groups.push(groupInstance);
 

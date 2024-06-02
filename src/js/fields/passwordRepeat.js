@@ -3,129 +3,75 @@ import 'ejs/ejs.min';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import coreuiForm      from "../coreui.form";
+import Field           from "../abstract/Field";
 
 
-coreuiForm.fields.passwordRepeat = {
+class FieldPasswordRepeat extends Field {
 
-    _id: '',
-    _hash: '',
-    _form: null,
-    _index: 0,
-    _isChangeState: true,
-    _value: '',
-    _options: {
-        type: 'password_repeat',
-        name: null,
-        label: null,
-        labelWidth: null,
-        width: null,
-        outContent: null,
-        description: null,
-        errorText: null,
-        attach: null,
-        attr: {
-            type: 'password',
-            class: 'form-control d-inline-block flex-shrink-0'
-        },
-        required: null,
-        invalidText: null,
-        validText: null,
-        readonly: null,
-        show: true,
-        showBtn: true,
-        column: null
-    },
+    _isChangeState = true;
 
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
-        this._form    = form;
-        this._index   = index;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils.hashCode();
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        options = $.extend(true, {
+            type: 'password_repeat',
+            name: null,
+            label: null,
+            labelWidth: null,
+            width: null,
+            outContent: null,
+            description: null,
+            errorText: null,
+            fields: null,
+            attr: {
+                type: 'password',
+                class: 'form-control d-inline-block flex-shrink-0'
+            },
+            required: null,
+            invalidText: null,
+            validText: null,
+            readonly: null,
+            show: true,
+            showBtn: true,
+            position: null,
+            noSend: null
+        }, options);
 
+        super(form, options, index);
 
         let that = this;
 
         form.on('show', function () {
             that._initEvents();
         });
-    },
-
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+    }
 
 
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function (isReadonly) {
+    readonly(isReadonly) {
 
-        this._value            = this.getValue();
-        this._options.readonly = !! isReadonly;
+        super.readonly(isReadonly);
 
-        $('.content-' + this._hash).html(
-            this.renderContent()
-        );
-
-        if ( ! this._options.readonly) {
+        if ( ! isReadonly) {
             this._initEvents();
         }
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
+    }
 
 
     /**
      * Получение значения в поле
      * @returns {string}
      */
-    getValue: function () {
+    getValue () {
 
         let result;
 
@@ -143,14 +89,14 @@ coreuiForm.fields.passwordRepeat = {
         }
 
         return result;
-    },
+    }
 
 
     /**
      * Установка значения в поле
      * @param {string} value
      */
-    setValue: function (value) {
+    setValue(value) {
 
         if (['string', 'number'].indexOf(typeof value) < 0) {
             return;
@@ -163,15 +109,15 @@ coreuiForm.fields.passwordRepeat = {
         } else {
             $('.content-' + this._hash + ' input[type="password"]').val(value);
         }
-    },
+    }
 
 
     /**
      * Установка валидности поля
-     * @param {bool|null} isValid
+     * @param {boolean|null} isValid
      * @param {text} text
      */
-    validate: function (isValid, text) {
+    validate(isValid, text) {
 
         if (this._options.readonly) {
             return;
@@ -215,14 +161,14 @@ coreuiForm.fields.passwordRepeat = {
                 container.append('<div class="invalid-feedback d-block">' + text + '</div>');
             }
         }
-    },
+    }
 
 
     /**
      * Проверка валидности поля
      * @return {boolean|null}
      */
-    isValid: function () {
+    isValid() {
 
         if ( ! this._isChangeState || this._options.readonly) {
             return true;
@@ -239,46 +185,26 @@ coreuiForm.fields.passwordRepeat = {
         }
 
         return null;
-    },
-
-
-    /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render: function() {
-
-        let options      = this.getOptions();
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form: this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields
-        });
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {*}
      */
-    renderContent: function () {
+    renderContent() {
 
         return this._options.readonly
             ? this._renderContentReadonly()
             : this._renderContent();
-    },
+    }
 
 
     /**
      *
      * @private
      */
-    _renderContent: function () {
+    _renderContent() {
 
         let attributes  = [];
         let attributes2 = [];
@@ -338,14 +264,14 @@ coreuiForm.fields.passwordRepeat = {
                 attr2: attributes2.length > 0 ? (' ' + attributes2.join(' ')) : ''
             },
         });
-    },
+    }
 
 
     /**
      *
      * @private
      */
-    _renderContentReadonly: function () {
+    _renderContentReadonly() {
 
         let options = this.getOptions();
 
@@ -354,16 +280,17 @@ coreuiForm.fields.passwordRepeat = {
             value: this._value ? '******' : '',
             hash: this._hash
         });
-    },
+    }
 
 
     /**
      * Инициализация событий
      * @private
      */
-    _initEvents: function () {
+    _initEvents() {
 
-        let that = this;
+        let that   = this;
+        let noSend = that._options.noSend;
 
         $('.content-' + this._hash + ' .btn-password-change').click(function (e) {
             let textChange = $(this).data('change');
@@ -372,13 +299,19 @@ coreuiForm.fields.passwordRepeat = {
             if (that._isChangeState) {
                 $('.content-' + that._hash + ' [type="password"]').attr('disabled', 'disabled');
                 $(this).text(textChange);
-                that._isChangeState = false;
+                that._isChangeState  = false;
+                that._options.noSend = true;
 
             } else {
                 $('.content-' + that._hash + ' [type="password"]').removeAttr('disabled');
                 $(this).text(textCancel);
                 that._isChangeState = true;
+                that._options.noSend = noSend;
             }
         });
     }
 }
+
+coreuiForm.fields.passwordRepeat = FieldPasswordRepeat;
+
+export default FieldPasswordRepeat;

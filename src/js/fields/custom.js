@@ -2,116 +2,49 @@
 import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
+import Field           from "../abstract/Field";
 
 
-coreuiForm.fields.custom = {
-
-    _id: '',
-    _hash: '',
-    _form: null,
-    _value: null,
-    _options: {
-        type: 'custom',
-        label: null,
-        labelWidth: null,
-        width: null,
-        content: '',
-        outContent: null,
-        description: null,
-        required: null,
-        show: true,
-        column: null
-    },
-
+class FieldCustom extends Field {
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}             options
-     * @param {int}                index Порядковый номер на форме
+     * @param {object} form
+     * @param {object} options
+     * @param {int}    index Порядковый номер на форме
      */
-    init: function (form, options, index) {
+    constructor(form, options, index) {
 
-        this._form    = form;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
-        this._hash    = coreuiFormUtils.hashCode();
-    },
+        options = $.extend(true, {
+            type: 'custom',
+            label: null,
+            labelWidth: null,
+            width: null,
+            content: '',
+            outContent: null,
+            description: null,
+            required: null,
+            show: true
+        }, options);
 
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+        super(form, options, index);
+    }
 
 
     /**
      * Изменение режима поля только для чтения
-     * @param {bool} isReadonly
+     * @param {boolean} isReadonly
      */
-    readonly: function (isReadonly) {
+    readonly(isReadonly) {
 
-    },
-
-
-    /**
-     * Скрытие поля
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
-    },
-
-
-    /**
-     * Показ поля
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._id)
-            .addClass('d-flex')
-            .removeClass('d-none')
-            .css('opacity', 0)
-            .animate({
-                opacity: 1,
-            }, duration || 200, function () {
-                $(this).css('opacity', '');
-            });
-    },
-
-
-    /**
-     * Получение значения из поля
-     */
-    getValue: function () {
-
-    },
-
-
-    /**
-     * Установка значения в поле
-     * @param {object} value
-     */
-    setValue: function (value) {
-
-    },
+    }
 
 
     /**
      * Формирование поля
      * @returns {object}
      */
-    render: function() {
+    render() {
 
         let that         = this;
         let options      = this.getOptions();
@@ -133,14 +66,14 @@ coreuiForm.fields.custom = {
         });
 
         return field;
-    },
+    }
 
 
     /**
      * Формирование контента поля
      * @return {Array}
      */
-    renderContent: function () {
+    renderContent() {
 
         let content = this.getOptions().content;
         let result  = [];
@@ -158,9 +91,9 @@ coreuiForm.fields.custom = {
                     result.push(content[i]);
 
                 } else if ( ! Array.isArray(content[i]) &&
-                        content[i].hasOwnProperty('component') &&
-                        typeof content[i].component === 'string' &&
-                        content[i].component.substring(0, 6) === 'coreui'
+                    content[i].hasOwnProperty('component') &&
+                    typeof content[i].component === 'string' &&
+                    content[i].component.substring(0, 6) === 'coreui'
                 ) {
                     let name = content[i].component.split('.')[1];
 
@@ -181,3 +114,8 @@ coreuiForm.fields.custom = {
         return result;
     }
 }
+
+
+coreuiForm.fields.custom = FieldCustom;
+
+export default FieldCustom;
