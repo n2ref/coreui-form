@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         type:  'text',
                         title: 'Номер',
                         name:  'nmbr',
-                        attr:  { style: 'width: 200px' }
+                        width: 200,
                     },
                     {
                         type:  'date',
