@@ -1231,7 +1231,7 @@
   tpl$1['form-error.html'] = '<div class="coreui-form__error alert alert-danger alert-dismissible fade show mb-3 <%= options.class %>"> <%- message %> <% if (options.dismiss) { %> <button type="button" class="btn-close" data-bs-dismiss="alert"></button> <% } %> </div>';
   tpl$1['form-field-content.html'] = '<%- content %>';
   tpl$1['form-field-group.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__group_container mb-3"> <div class="coreui-form__group_label pe-2"> <h6 class="coreui-form__field_label_text col-form-label"> <%- group.label %> <% if (group.showCollapsible) { %> <button type="button" class="btn btn-link btn-collapsible text-dark"> <% if ( ! group.show) { %> <i class="bi bi-chevron-right"></i> <% } else { %> <i class="bi bi-chevron-down"></i> <% } %> </button> <% } %> </h6> </div> <div class="coreui-form__group_content"<% if ( ! group.show) { %> style="display:none"<% } %>></div> </div>';
-  tpl$1['form-field-label.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__field_container d-flex flex-column flex-md-row mb-3<% if ( ! field.show) { %> d-none<% } %>"> <% if (field.labelWidth !== 0 && field.labelWidth !== \'0px\') { %> <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>> <div class="coreui-form__field_label_content col-form-label"> <% if (field.required) { %> <span class="coreui-form__field_label_req text-danger">*</span> <% } %> <% if (field.descriptionHelp) { %> <span class="coreui-form__field_label_help" title="<%- field.descriptionHelp %>" data-bs-toggle="tooltip" data-bs-placement="bottom" > <i class="bi bi-question-circle"></i> </span> <% } %> <span class="coreui-form__field_label_text fw-medium"><%- field.label %></span> </div> <% if (field.description) { %> <div class="coreui-form__field_label_description text-muted"> <small><%- field.description %></small> </div> <% } %> </div> <% } %> <div class="coreui-form__field_content flex-fill"> <div class="d-inline-block content-<%= hash %>"> <%- content %> </div> <% if (field.outContent) { %> <span class="coreui-form__field-content-out d-inline-block align-top ps-1"> <%- field.outContent %> </span> <% } %> <% if (attachFields && attachFields.length > 0) { %> <% $.each(attachFields, function(key, attachField) { %> <div class="<% if (attachField.hasOwnProperty(\'direction\') && attachField.direction === \'column\') { %>d-block mt-2<% } else { %>d-inline-block<% } %> content-<%= attachField.hash %>"> <%- attachField.content %> </div> <% }); %> <% } %> </div> </div>';
+  tpl$1['form-field-label.html'] = '<div id="coreui-form-<%= id %>" class="coreui-form__field_container d-flex flex-column flex-md-row mb-3<% if ( ! field.show) { %> d-none<% } %>"> <% if (field.labelWidth !== 0 && field.labelWidth !== \'0px\') { %> <div class="coreui-form__field_label text-md-end text-sm-start pe-2"<% if (field.labelWidth) { %> style="min-width:<%= field.labelWidth %>;width:<%= field.labelWidth %>"<% } %>> <div class="coreui-form__field_label_content col-form-label"> <% if (field.required) { %> <span class="coreui-form__field_label_req text-danger">*</span> <% } %> <% if (field.descriptionHelp) { %> <span class="coreui-form__field_label_help text-body-secondary" title="<%- field.descriptionHelp %>" data-bs-toggle="tooltip" data-bs-placement="bottom"> <i class="bi bi-question-circle"></i> </span> <% } %> <span class="coreui-form__field_label_text fw-medium"><%- field.label %></span> </div> <% if (field.description) { %> <div class="coreui-form__field_label_description text-muted"> <small><%- field.description %></small> </div> <% } %> </div> <% } %> <div class="coreui-form__field_content flex-fill"> <div class="d-inline-block content-<%= hash %>"> <%- content %> </div> <% if (field.outContent) { %> <span class="coreui-form__field-content-out d-inline-block align-top ps-1"> <%- field.outContent %> </span> <% } %> <% if (attachFields && attachFields.length > 0) { %> <% $.each(attachFields, function(key, attachField) { %> <div class="<% if (attachField.hasOwnProperty(\'direction\') && attachField.direction === \'column\') { %>d-block mt-2<% } else { %>d-inline-block<% } %> content-<%= attachField.hash %>"> <%- attachField.content %> </div> <% }); %> <% } %> </div> </div>';
   tpl$1['form.html'] = '<div id="coreui-form-<%= form.id %>" class="coreui-form mb-2" <% if (widthSizes) { %>style="<%= widthSizes.join(\';\') %>"<% } %>> <% if (form.title) { %> <h5 class="mb-4"><%- form.title %></h5> <% } %> <form action="<%= form.send.url %>" method="<%= form.send.method %>"<%- formAttr %>> <div class="coreui-form__fields d-flex justify-content-start flex-column flex-wrap"></div> <% if (controls) { %> <div class="coreui-form__controls d-flex justify-content-start flex-sm-wrap flex-md-nowrap"> <% if (form.controlsOffset !== 0 && form.controlsOffset !== \'0px\') { %> <div class="d-none d-md-block" style="width:<%= form.controlsOffset %>;min-width:<%= form.controlsOffset %>"></div> <% } %> <div class="d-flex justify-content-start flex-wrap gap-2"> <% $.each(controls, function(key, control) { %> <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container" <% if ( ! control.show) { %>style="display:none"<% } %>> </div> <% }); %> </div> </div> <% } %> </form> </div>';
   tpl$1['controls/button.html'] = '<button <%- render.attr %>><%- control.content %></button>';
   tpl$1['controls/link.html'] = '<a href="<%- control.url %>"<%- render.attr %>><%- control.content %></a>';
@@ -1709,6 +1709,11 @@
         }, 0);
         return false;
       });
+      if (window.hasOwnProperty('bootstrap') && bootstrap.hasOwnProperty('Tooltip')) {
+        $('.coreui-form__field_label_help', formContainer).each(function () {
+          new bootstrap.Tooltip(this);
+        });
+      }
       coreuiFormPrivate.trigger(this, 'show');
     },
     /**
@@ -3567,7 +3572,9 @@
     _inherits(FieldCustom, _Field);
     return _createClass(FieldCustom, [{
       key: "readonly",
-      value: function readonly(isReadonly) {}
+      value: function readonly(isReadonly) {
+        this._options.readonly = !!isReadonly;
+      }
 
       /**
        * Получение значения из поля
@@ -3712,8 +3719,9 @@
           var type = option.hasOwnProperty('type') && typeof option.type === 'string' ? option.type : 'text';
           var attributes = option.hasOwnProperty('attr') && _typeof(option.attr) === 'object' && !Array.isArray(option.attr) ? option.attr : {};
           var items = option.hasOwnProperty('items') && _typeof(option.items) === 'object' && Array.isArray(option.items) ? option.items : [];
-          var valueY = option.hasOwnProperty('valueY') && ['string', 'numeric'].indexOf(_typeof(option.valueY)) >= 0 ? option.valueY : 'Y';
-          var valueN = option.hasOwnProperty('valueN') && ['string', 'numeric'].indexOf(_typeof(option.valueN)) >= 0 ? option.valueN : 'N';
+          var valueY = option.hasOwnProperty('valueY') && ['string', 'number'].indexOf(_typeof(option.valueY)) >= 0 ? option.valueY : 'Y';
+          var valueN = option.hasOwnProperty('valueN') && ['string', 'number'].indexOf(_typeof(option.valueN)) >= 0 ? option.valueN : 'N';
+          var width = option.hasOwnProperty('width') && ['string', 'number'].indexOf(_typeof(option.width)) >= 0 ? option.width : null;
           if (name) {
             attributes.name = name;
           }
@@ -3736,7 +3744,8 @@
             attr: attributes,
             items: items,
             valueY: valueY,
-            valueN: valueN
+            valueN: valueN,
+            width: width
           });
         });
       }
@@ -3900,7 +3909,7 @@
         if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && Array.isArray(options.options)) {
           // Заголовок
           $.each(options.options, function (key, option) {
-            var title = option.hasOwnProperty('title') && ['string', 'numeric'].indexOf(_typeof(option.title)) >= 0 ? option.title : '';
+            var title = option.hasOwnProperty('title') && ['string', 'number'].indexOf(_typeof(option.title)) >= 0 ? option.title : '';
             headers.push({
               title: title
             });
@@ -3941,7 +3950,7 @@
         if (options.hasOwnProperty('options') && _typeof(options.options) === 'object' && Array.isArray(options.options)) {
           // Заголовок
           $.each(options.options, function (key, option) {
-            var title = option.hasOwnProperty('title') && ['string', 'numeric'].indexOf(_typeof(option.title)) >= 0 ? option.title : '';
+            var title = option.hasOwnProperty('title') && ['string', 'number'].indexOf(_typeof(option.title)) >= 0 ? option.title : '';
             headers.push({
               title: title
             });
@@ -4021,8 +4030,8 @@
           var cellValue = row.hasOwnProperty(option.name) ? row[option.name] : '';
           if (option.type === 'select') {
             $.each(option.items, function (key, item) {
-              var text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
-              var itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
+              var text = item.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
+              var itemValue = item.hasOwnProperty('value') && ['string', 'number'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
               var itemAttr = {};
               $.each(item, function (name, value) {
                 if (name !== 'text') {
@@ -4057,6 +4066,13 @@
               option.attr.value = cellValue !== null ? cellValue : '';
             }
           }
+          if (option.width > 0 && option.width !== null) {
+            var unit = typeof option.width === 'number' ? 'px' : '';
+            var widthVal = option.width + unit;
+            option.attr = coreuiFormUtils.mergeAttr(option.attr || {}, {
+              style: 'width:' + widthVal
+            });
+          }
           var attributes = [];
           $.each(option.attr, function (name, value) {
             attributes.push(name + '="' + value + '"');
@@ -4089,8 +4105,8 @@
           if (option.type === 'select') {
             var itemOptions = [];
             $.each(option.items, function (key, item) {
-              var text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
-              var itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
+              var text = item.hasOwnProperty('text') && ['string', 'number'].indexOf(_typeof(item.text)) >= 0 ? item.text : '';
+              var itemValue = item.hasOwnProperty('value') && ['string', 'number'].indexOf(_typeof(item.value)) >= 0 ? item.value : '';
               if (Array.isArray(cellValue)) {
                 $.each(cellValue, function (key, cellItemValue) {
                   if (cellItemValue == itemValue) {
@@ -6639,6 +6655,7 @@
         label: null,
         labelWidth: null,
         width: null,
+        height: null,
         outContent: null,
         description: null,
         errorText: null,
@@ -6755,10 +6772,17 @@
         if (options.name) {
           options.attr.name = this._options.name;
         }
-        if (options.width) {
-          options.attr = coreuiFormUtils.mergeAttr({
-            style: 'width:' + options.width
-          }, options.attr);
+        if (options.width >= 0 && options.width !== null) {
+          var unit = coreuiFormUtils.isNumeric(options.width) ? 'px' : '';
+          options.attr = coreuiFormUtils.mergeAttr(options.attr, {
+            style: 'width:' + options.width + unit
+          });
+        }
+        if (options.height >= 0 && options.height !== null) {
+          var _unit = coreuiFormUtils.isNumeric(options.height) ? 'px' : '';
+          options.attr = coreuiFormUtils.mergeAttr(options.attr, {
+            style: 'height:' + options.height + _unit
+          });
         }
         if (options.required) {
           options.attr.required = 'required';
