@@ -161,7 +161,7 @@ class FieldTextarea extends Field {
             options.attr.name = this._options.name;
         }
 
-        if (options.width >= 0 && options.width !== null) {
+        if (options.width) {
             let unit = coreuiFormUtils.isNumeric(options.width) ? 'px' : '';
             options.attr = coreuiFormUtils.mergeAttr(
                 options.attr,
@@ -169,7 +169,7 @@ class FieldTextarea extends Field {
             );
         }
 
-        if (options.height >= 0 && options.height !== null) {
+        if (options.height) {
             let unit = coreuiFormUtils.isNumeric(options.height) ? 'px' : '';
             options.attr = coreuiFormUtils.mergeAttr(
                 options.attr,

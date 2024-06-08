@@ -6772,13 +6772,13 @@
         if (options.name) {
           options.attr.name = this._options.name;
         }
-        if (options.width >= 0 && options.width !== null) {
+        if (options.width) {
           var unit = coreuiFormUtils.isNumeric(options.width) ? 'px' : '';
           options.attr = coreuiFormUtils.mergeAttr(options.attr, {
             style: 'width:' + options.width + unit
           });
         }
-        if (options.height >= 0 && options.height !== null) {
+        if (options.height) {
           var _unit = coreuiFormUtils.isNumeric(options.height) ? 'px' : '';
           options.attr = coreuiFormUtils.mergeAttr(options.attr, {
             style: 'height:' + options.height + _unit
