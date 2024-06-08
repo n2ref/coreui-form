@@ -23,6 +23,7 @@ class FieldTextarea extends Field {
             label: null,
             labelWidth: null,
             width: null,
+            height: null,
             outContent: null,
             description: null,
             errorText: null,
@@ -160,12 +161,22 @@ class FieldTextarea extends Field {
             options.attr.name = this._options.name;
         }
 
-        if (options.width) {
+        if (options.width >= 0 && options.width !== null) {
+            let unit = coreuiFormUtils.isNumeric(options.width) ? 'px' : '';
             options.attr = coreuiFormUtils.mergeAttr(
-                { style: 'width:' + options.width },
-                options.attr
+                options.attr,
+                { style: 'width:' + options.width + unit }
             );
         }
+
+        if (options.height >= 0 && options.height !== null) {
+            let unit = coreuiFormUtils.isNumeric(options.height) ? 'px' : '';
+            options.attr = coreuiFormUtils.mergeAttr(
+                options.attr,
+                { style: 'height:' + options.height + unit }
+            );
+        }
+
         if (options.required) {
             options.attr.required = 'required';
         }

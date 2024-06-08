@@ -36,7 +36,43 @@ class FieldCustom extends Field {
      * @param {boolean} isReadonly
      */
     readonly(isReadonly) {
+        this._options.readonly = !! isReadonly;
+    }
 
+
+    /**
+     * Получение значения из поля
+     * @returns {*}
+     */
+    getValue() {
+
+        if (this._options.readonly) {
+            return this._value;
+
+        } else {
+            let value  = null;
+            let inputs = $('.content-' + this._hash + ' input,select,textarea');
+
+            if (inputs.length === 1) {
+                value = $(inputs).val()
+
+            } else {
+                let values = {};
+                inputs.each(function () {
+
+                    let name = $(this).attr('name');
+                    if (name) {
+                        values[name] = $(this).val()
+                    }
+                });
+
+                if (Object.keys(values).length > 0) {
+                    value = values;
+                }
+            }
+
+            return value;
+        }
     }
 
 

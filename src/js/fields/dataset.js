@@ -50,24 +50,27 @@ class FieldDataset extends Field {
             Array.isArray(options.options)
         ) {
             $.each(options.options, function (key, option) {
-                let name = option.hasOwnProperty('name') && ['string', 'number'].indexOf(typeof (option.name)) >= 0
+                let name = option.hasOwnProperty('name') && ['string', 'number'].indexOf(typeof option.name) >= 0
                     ? option.name
                     : '';
-                let type = option.hasOwnProperty('type') && typeof (option.type) === 'string'
+                let type = option.hasOwnProperty('type') && typeof option.type === 'string'
                     ? option.type
                     : 'text';
-                let attributes = option.hasOwnProperty('attr') && typeof (option.attr) === 'object' && ! Array.isArray(option.attr)
+                let attributes = option.hasOwnProperty('attr') && typeof option.attr === 'object' && ! Array.isArray(option.attr)
                     ? option.attr
                     : {};
-                let items = option.hasOwnProperty('items') && typeof (option.items) === 'object' && Array.isArray(option.items)
+                let items = option.hasOwnProperty('items') && typeof option.items === 'object' && Array.isArray(option.items)
                     ? option.items
                     : [];
-                let valueY = option.hasOwnProperty('valueY') && ['string', 'numeric'].indexOf(typeof (option.valueY)) >= 0
+                let valueY = option.hasOwnProperty('valueY') && ['string', 'number'].indexOf(typeof option.valueY) >= 0
                     ? option.valueY
                     : 'Y';
-                let valueN = option.hasOwnProperty('valueN') && ['string', 'numeric'].indexOf(typeof (option.valueN)) >= 0
+                let valueN = option.hasOwnProperty('valueN') && ['string', 'number'].indexOf(typeof option.valueN) >= 0
                     ? option.valueN
                     : 'N';
+                let width = option.hasOwnProperty('width') && ['string', 'number'].indexOf(typeof option.width) >= 0
+                    ? option.width
+                    : null;
 
                 if (name) {
                     attributes.name = name;
@@ -105,6 +108,7 @@ class FieldDataset extends Field {
                     items : items,
                     valueY: valueY,
                     valueN: valueN,
+                    width:  width,
                 });
             });
         }
@@ -294,7 +298,7 @@ class FieldDataset extends Field {
         ) {
             // Заголовок
             $.each(options.options, function (key, option) {
-                let title = option.hasOwnProperty('title') && ['string', 'numeric'].indexOf(typeof(option.title)) >= 0
+                let title = option.hasOwnProperty('title') && ['string', 'number'].indexOf(typeof(option.title)) >= 0
                     ? option.title
                     : '';
 
@@ -345,7 +349,7 @@ class FieldDataset extends Field {
         ) {
             // Заголовок
             $.each(options.options, function (key, option) {
-                let title = option.hasOwnProperty('title') && ['string', 'numeric'].indexOf(typeof(option.title)) >= 0
+                let title = option.hasOwnProperty('title') && ['string', 'number'].indexOf(typeof(option.title)) >= 0
                     ? option.title
                     : '';
 
@@ -435,10 +439,10 @@ class FieldDataset extends Field {
 
             if (option.type === 'select') {
                 $.each(option.items, function (key, item) {
-                    let text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(typeof(item.text)) >= 0
+                    let text = item.hasOwnProperty('text') && ['string', 'number'].indexOf(typeof item.text) >= 0
                         ? item.text
                         : '';
-                    let itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(typeof(item.value)) >= 0
+                    let itemValue = item.hasOwnProperty('value') && ['string', 'number'].indexOf(typeof item.value) >= 0
                         ? item.value
                         : '';
                     let itemAttr = {};
@@ -485,6 +489,16 @@ class FieldDataset extends Field {
                 }
             }
 
+            if (option.width > 0 && option.width !== null) {
+                let unit     = typeof option.width === 'number' ? 'px' : '';
+                let widthVal = option.width + unit;
+
+                option.attr = coreuiFormUtils.mergeAttr(
+                    option.attr || {},
+                    { style: 'width:' + widthVal }
+                );
+            }
+
             let attributes = [];
 
             $.each(option.attr, function (name, value) {
@@ -524,10 +538,10 @@ class FieldDataset extends Field {
                 let itemOptions = [];
 
                 $.each(option.items, function (key, item) {
-                    let text = item.hasOwnProperty('text') && ['string', 'numeric'].indexOf(typeof(item.text)) >= 0
+                    let text = item.hasOwnProperty('text') && ['string', 'number'].indexOf(typeof item.text) >= 0
                         ? item.text
                         : '';
-                    let itemValue = item.hasOwnProperty('value') && ['string', 'numeric'].indexOf(typeof(item.value)) >= 0
+                    let itemValue = item.hasOwnProperty('value') && ['string', 'number'].indexOf(typeof item.value) >= 0
                         ? item.value
                         : '';
 

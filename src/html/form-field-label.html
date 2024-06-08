@@ -5,6 +5,12 @@
             <% if (field.required) { %>
             <span class="coreui-form__field_label_req text-danger">*</span>
             <% } %>
+            <% if (field.descriptionHelp) { %>
+            <span class="coreui-form__field_label_help text-body-secondary"
+                  title="<%- field.descriptionHelp %>" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <i class="bi bi-question-circle"></i>
+            </span>
+            <% } %>
             <span class="coreui-form__field_label_text fw-medium"><%- field.label %></span>
         </div>
 

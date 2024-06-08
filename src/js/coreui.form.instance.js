@@ -98,6 +98,12 @@ let coreuiFormInstance = {
             return false;
         });
 
+        if (window.hasOwnProperty('bootstrap') && bootstrap.hasOwnProperty('Tooltip')) {
+            $('.coreui-form__field_label_help', formContainer).each(function () {
+                new bootstrap.Tooltip(this);
+            });
+        }
+
         coreuiFormPrivate.trigger(this, 'show');
     },
 
