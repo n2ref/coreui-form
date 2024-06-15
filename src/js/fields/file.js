@@ -1,8 +1,6 @@
 
-import 'ejs/ejs.min';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
-import coreuiForm      from "../coreui.form";
 import Field           from "../abstract/Field";
 
 
@@ -12,9 +10,8 @@ class FieldFile extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'file',
@@ -38,7 +35,7 @@ class FieldFile extends Field {
             noSend: null
         }, options);
 
-        super(form, options, index);
+        super(form, options);
     }
 
 
@@ -48,9 +45,9 @@ class FieldFile extends Field {
      */
     getValue () {
 
-        return this._options.readonly
+        return this._readonly
             ? this._value
-            : $('.content-' + this._hash + ' input')[0].files;
+            : $('.content-' + this.getContentId() + ' input')[0].files;
     }
 
 
@@ -67,8 +64,8 @@ class FieldFile extends Field {
         this._value = value;
 
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text('');
+        if (this._readonly) {
+            $('.content-' + this.getContentId()).text('');
         } else {
             let container = new DataTransfer();
 
@@ -83,7 +80,7 @@ class FieldFile extends Field {
                 });
             }
 
-            $('.content-' + this._hash + ' input')[0].files = container.files;
+            $('.content-' + this.getContentId() + ' input')[0].files = container.files;
         }
     }
 
@@ -95,11 +92,11 @@ class FieldFile extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
         let input     = $('input', container);
 
         container.find('.valid-feedback').remove();
@@ -146,7 +143,7 @@ class FieldFile extends Field {
      */
     isValid() {
 
-        let input = $('.content-' + this._hash + ' input');
+        let input = $('.content-' + this.getContentId() + ' input');
 
         if (input[0]) {
             return input.is(':valid');
@@ -162,7 +159,7 @@ class FieldFile extends Field {
      */
     renderContent() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._renderContentReadonly()
             : this._renderContent();
     }
@@ -209,14 +206,12 @@ class FieldFile extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
-            field: options,
-            datalistId: '',
+        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+            readonly: this._readonly,
             value: this._value !== null ? this._value : '',
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                datalist: []
-            },
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            datalistId: '',
+            datalist: []
         });
     }
 
@@ -249,14 +244,11 @@ class FieldFile extends Field {
             // ignore
         }
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
-            field: options,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+            readonly: this._readonly,
             value: value,
-            hash: this._hash
         });
     }
 }
-
-coreuiForm.fields.file = FieldFile;
 
 export default FieldFile;

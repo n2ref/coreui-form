@@ -90,3 +90,10 @@
   opacity: 0.7;
   border-style: solid;
 }
+
+.coreui-form .coreui-form__attach-fields.d-inline-block > * {
+  margin-right: 5px;
+}
+.coreui-form .coreui-form__attach-fields.d-inline-block > *:last-child {
+  margin-right: unset;
+}

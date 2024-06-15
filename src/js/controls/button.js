@@ -1,56 +1,82 @@
 
-import 'ejs/ejs.min';
-import coreuiFormTpl from "../coreui.form.templates";
-import coreuiForm    from "../coreui.form";
+
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+import Control         from "../abstract/Control";
 
 
-coreuiForm.controls.button = {
-
-    _form: null,
-    _index: null,
-    _options: {
-        type: 'button',
-        content: null,
-        onClick: null,
-        attr: {
-            class: 'btn btn-secondary'
-        }
-    },
-
+class ControlButton extends Control {
 
     /**
      * Инициализация
      * @param {coreuiFormInstance} form
-     * @param {object} options
-     * @param {int} index
+     * @param {object}            options
      */
-    init: function (form, options, index) {
+    constructor(form, options) {
 
-        this._options = $.extend({}, this._options, options);
-        this._form    = form;
-        this._index   = index;
-        let that      = this;
+        options = $.extend(true, {
+            type: 'button',
+            content: null,
+            onClick: null,
+            attr: {
+                class: 'btn btn-secondary'
+            }
+        }, options);
 
-        form.on('show', function () {
-            that._initEvents();
-        });
-    },
+        super(form, options);
+
+        if (['function', 'string'].indexOf(typeof this._options.onClick) >= 0) {
+            let that = this;
+
+            form.on('show', function () {
+
+                $('#coreui-form-' + that.getId() + ' > button')
+                    .click(function (event) {
+
+                        if (typeof that._options.onClick === 'function') {
+                            that._options.onClick(that._form, event);
+                        } else {
+                            (new Function('form', 'event', that._options.onClick))(that._form, event);
+                        }
+                    });
+            });
+        }
+    }
 
 
     /**
-     * Получение параметров
-     * @returns {object}
+     * Блокировка
      */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+    lock() {
+
+        let button = $('#coreui-form-' + this.getId() + ' > button');
+
+        if ( ! button.find('.spinner-border')[0]) {
+            button.prepend('<span class="spinner-border spinner-border-sm"></span> ');
+        }
+        if ( ! button.attr('disabled')) {
+            button.attr('disabled', 'disabled');
+        }
+    }
+
+
+    /**
+     * Разблокировка
+     */
+    unlock () {
+
+        let button = $('#coreui-form-' + this.getId() + ' > button');
+
+        button.find('.spinner-border').remove();
+        button.removeAttr('disabled');
+    }
 
 
     /**
      * Формирование контента для размещения на странице
      * @returns {string}
      */
-    render: function() {
+    render() {
 
         let attributes = [];
         let options    = this.getOptions();
@@ -61,68 +87,11 @@ coreuiForm.controls.button = {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['controls/button.html'], {
-            control: this._options,
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-            },
+        return coreuiFormUtils.render(coreuiFormTpl['controls/button.html'], {
+            content: this._options.content,
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : ''
         });
-    },
-
-
-    /**
-     * Показ контрола
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._form.getId() + '-control-' + this._index).show(duration || 0)
-    },
-
-
-    /**
-     * Скрытие контрола
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._form.getId() + '-control-' + this._index).hide(duration || 0)
-    },
-
-
-    /**
-     *
-     */
-    lock: function () {
-
-        let button = $('#coreui-form-' + this._form.getId() + '-control-' + this._index + ' > button');
-
-        if ( ! button.find('.spinner-border')[0]) {
-            button.prepend('<span class="spinner-border spinner-border-sm"></span> ');
-        }
-        if ( ! button.attr('disabled')) {
-            button.attr('disabled', 'disabled');
-        }
-    },
-
-
-    /**
-     * Инициализация событий связанных с элементом управления
-     */
-    _initEvents: function () {
-
-        let that = this;
-
-        if (['function', 'string'].indexOf(typeof this._options.onClick) >= 0) {
-            $('#coreui-form-' + this._form.getId() + '-control-' + this._index + ' > button')
-                .click(function (event) {
-
-                    if (typeof that._options.onClick === 'function') {
-                        that._options.onClick(that._form, event);
-                    } else {
-                        (new Function('form', 'event', that._options.onClick))(that._form, event);
-                    }
-                });
-        }
     }
 }
+
+export default ControlButton;

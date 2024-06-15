@@ -1,8 +1,8 @@
-<% if (field.readonly) { %>
-    <div class="coreui-form__field-readonly col-form-label"><%= render.selectedOptions.join(', ') %></div>
+<% if (readonly) { %>
+    <div class="coreui-form__field-readonly col-form-label"><%= readonlyOptions.join(', ') %></div>
 <% } else { %>
-    <select <%- render.attr %>>
-        <% $.each(render.options, function(key, option) { %>
+    <select <%- attr %>>
+        <% $.each(options, function(key, option) { %>
             <% if (option.type === 'group') { %>
                 <optgroup<%- option.attr %>/>
                 <% $.each(option.options, function(key, groupOption) { %>

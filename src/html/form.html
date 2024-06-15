@@ -15,9 +15,11 @@
 
             <div class="d-flex justify-content-start flex-wrap gap-2">
                 <% $.each(controls, function(key, control) { %>
-                <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container"
-                     <% if ( ! control.show) { %>style="display:none"<% } %>>
-                </div>
+                    <% if (control.content !== null) { %>
+                    <div id="coreui-form-<%= form.id %>-control-<%= control.index %>" class="coreui-form__control_container"
+                         <% if ( ! control.show) { %>style="display:none"<% } %>>
+                    </div>
+                    <% } %>
                 <% }); %>
             </div>
         </div>

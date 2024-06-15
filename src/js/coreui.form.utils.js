@@ -1,11 +1,16 @@
+import 'ejs/ejs.min';
 import coreuiFormPrivate from "./coreui.form.private";
+
 
 let coreuiFormUtils = {
 
+    _templates: {},
+
+
     /**
      * Получение значения поля
-     * @param {coreuiFormInstance} form
-     * @param {object}             fieldOptions
+     * @param {object} form
+     * @param {object} fieldOptions
      * @returns {string|number|null}
      */
     getFieldValue: function (form, fieldOptions) {
@@ -158,8 +163,7 @@ let coreuiFormUtils = {
                 }
 
                 fields.push({
-                    hash: instance._hash,
-                    direction: options.hasOwnProperty('fieldsDirection') ? options.fieldsDirection : 'row',
+                    contentId: instance.getContentId(),
                     content: instance.renderContent()
                 });
             });
@@ -375,6 +379,24 @@ let coreuiFormUtils = {
             let pow = Math.pow(10, precision);
             return Math.round(number / pow) * pow;
         }
+    },
+
+
+    /**
+     * Рендер шаблона
+     * @param {string} template
+     * @param {object} options
+     * @returns {string}
+     */
+    render: function (template, options) {
+
+        let tplName = this.crc32(template);
+
+        if ( ! this._templates.hasOwnProperty(tplName)) {
+            this._templates[tplName] = ejs.compile(template)
+        }
+
+        return this._templates[tplName](options);
     }
 }
 

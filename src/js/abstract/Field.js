@@ -1,16 +1,15 @@
-import coreuiFormUtils from "../coreui.form.utils";
-import coreuiForm      from "../coreui.form";
-import coreuiFormTpl from "../coreui.form.templates";
 
+import coreuiFormUtils from "../coreui.form.utils";
 
 
 class Field {
 
-    _id      = null;
-    _form    = null;
-    _index   = 0;
-    _hash    = '';
-    _value   = null;
+    _id        = null;
+    _form      = null;
+    _contentId = '';
+    _readonly  = null;
+    _value     = null;
+
     _options = {
         type: '',
         name: null,
@@ -26,16 +25,33 @@ class Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
-        this._form    = form;
-        this._index   = index;
-        this._id      = form.getId() + "-field-" + (options.hasOwnProperty('name') ? options.name : index);
-        this._hash    = coreuiFormUtils.hashCode();
-        this._value   = coreuiFormUtils.getFieldValue(form, options);
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._form      = form;
+        this._id        = options.id || '';
+        this._contentId = coreuiFormUtils.hashCode();
+        this._readonly  = options.hasOwnProperty('readonly') && typeof options.readonly === 'boolean' ? options.readonly : false;
+        this._value     = coreuiFormUtils.getFieldValue(form, options);
+        this._options   = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+    }
+
+
+    /**
+     * Получение id поля
+     * @return {string}
+     */
+    getId() {
+        return this._id;
+    }
+
+
+    /**
+     * Получение id контентаполя
+     * @return {string}
+     */
+    getContentId() {
+        return this._contentId;
     }
 
 
@@ -54,7 +70,7 @@ class Field {
      */
     show(duration) {
 
-        $('#coreui-form-' + this._id)
+        $('#coreui-form-' + this.getId())
             .addClass('d-flex')
             .removeClass('d-none')
             .css('opacity', 0)
@@ -72,11 +88,12 @@ class Field {
      */
     hide(duration) {
 
-        $('#coreui-form-' + this._id).animate({
-            opacity: 0,
-        }, duration || 200, function () {
-            $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
-        });
+        $('#coreui-form-' + this.getId())
+            .animate({
+                opacity: 0,
+            }, duration || 200, function () {
+                $(this).removeClass('d-flex').addClass('d-none').css('opacity', '');
+            });
     }
 
 
@@ -86,11 +103,11 @@ class Field {
      */
     readonly(isReadonly) {
 
-        this._value            = this.getValue();
-        this._options.readonly = !! isReadonly;
+        this._value    = this.getValue();
+        this._readonly = !! isReadonly;
 
-        $('.content-' + this._hash).html(
-                this.renderContent()
+        $('.content-' + this._contentId).html(
+            this.renderContent()
         );
     }
 
@@ -138,26 +155,6 @@ class Field {
 
 
     /**
-     * Формирование поля
-     * @returns {string|HTMLElement|jQuery}
-     */
-    render() {
-
-        let options      = this.getOptions();
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        return ejs.render(coreuiFormTpl['form-field-label.html'], {
-            id: this._id,
-            form:  this._form,
-            hash: this._hash,
-            field: options,
-            content: this.renderContent(),
-            attachFields: attachFields,
-        });
-    }
-
-
-    /**
      * Формирование контента поля
      * @return {*}
      */
@@ -165,7 +162,5 @@ class Field {
         return '';
     }
 }
-
-coreuiForm.abstract.field = Field;
 
 export default Field;

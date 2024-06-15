@@ -1,9 +1,7 @@
 
-import 'ejs/ejs.min';
 import fileUp          from 'fileup-js/src/js/main';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
-import coreuiForm      from "../coreui.form";
 import Field           from "../abstract/Field";
 
 
@@ -16,9 +14,8 @@ class FieldFileUpload extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'fileUpload',
@@ -53,7 +50,7 @@ class FieldFileUpload extends Field {
             }
         }, options);
 
-        super(form, options, index);
+        super(form, options);
 
         let that = this;
 
@@ -70,13 +67,13 @@ class FieldFileUpload extends Field {
     readonly(isReadonly) {
 
         this._value            = this._getFiles();
-        this._options.readonly = !! isReadonly;
+        this._readonly = !! isReadonly;
 
         if (this._fileUp) {
             this._fileUp.destruct();
         }
 
-        $('.content-' + this._hash).html(
+        $('.content-' + this.getContentId()).html(
             this.renderContent()
         );
 
@@ -137,11 +134,11 @@ class FieldFileUpload extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
 
         container.find('> .validate-content').remove();
 
@@ -201,7 +198,7 @@ class FieldFileUpload extends Field {
      */
     renderContent() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._renderContentReadonly()
             : this._renderContent();
     }
@@ -218,8 +215,8 @@ class FieldFileUpload extends Field {
         let isMultiple    = ! (coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
         let accept        = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
 
-        return ejs.render(coreuiFormTpl['fields/file-upload.html'], {
-            id: this._hash,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/file-upload.html'], {
+            id: this.getContentId(),
             showButton: !! fileUpOptions.showButton,
             showDropzone: !! fileUpOptions.showDropzone,
             isMultiple: isMultiple,
@@ -240,8 +237,8 @@ class FieldFileUpload extends Field {
         let isMultiple    = ! (coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
         let accept        = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
 
-        return ejs.render(coreuiFormTpl['fields/file-upload.html'], {
-            id: this._hash,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/file-upload.html'], {
+            id: this.getContentId(),
             showButton: false,
             showDropzone: false,
             isMultiple: isMultiple,
@@ -259,16 +256,17 @@ class FieldFileUpload extends Field {
 
         let options     = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
         let formOptions = this._form.getOptions();
-        let queue       = $('#fileup-' + this._hash + '-queue');
+        let contentId   = this.getContentId();
+        let queue       = $('#fileup-' + contentId + '-queue');
 
         let createOptions = {
             url: typeof options.url === 'string' ? options.url : '',
-            input: 'fileup-' + this._hash,
+            input: 'fileup-' + contentId,
             queue: queue
         };
 
         if (formOptions.showDropzone) {
-            createOptions.dropzone = 'fileup-' + this._hash + '-dropzone';
+            createOptions.dropzone = 'fileup-' + contentId + '-dropzone';
         }
         if (typeof formOptions.lang === 'string') {
             createOptions.lang = formOptions.lang;
@@ -297,7 +295,7 @@ class FieldFileUpload extends Field {
         if (typeof options.templateFile === 'string') {
             createOptions.templateFile = options.templateFile;
         }
-        if (this._options.readonly) {
+        if (this._readonly) {
             createOptions.showRemove = false;
         }
         if (Array.isArray(this._value)) {
@@ -377,7 +375,5 @@ class FieldFileUpload extends Field {
         return results;
     }
 }
-
-coreuiForm.fields.fileUpload = FieldFileUpload;
 
 export default FieldFileUpload;

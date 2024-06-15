@@ -1,7 +1,5 @@
 
-import coreuiForm from "../coreui.form";
-
-coreuiForm.lang.en = {
+let langEn = {
     "modal_select": "Select",
     "modal_loading": "Loading...",
     "switch_yes": "Yes",
@@ -16,3 +14,5 @@ coreuiForm.lang.en = {
     "change": "change",
     "cancel": "cancel"
 }
+
+export default langEn;

@@ -1,11 +1,11 @@
-<% if (field.readonly) { %>
+<% if (readonly) { %>
     <div class="coreui-form__field-readonly col-form-label"><%- value %></div>
 <% } else { %>
-    <input <%- render.attr %>/>
+    <input <%- attr %>/>
 
-    <% if (render.datalist.length > 0) { %>
+    <% if (datalist.length > 0) { %>
     <datalist id="<%= datalistId %>">
-        <% $.each(render.datalist, function(key, item) { %>
+        <% $.each(datalist, function(key, item) { %>
         <option <%- item.attr %>/>
         <% }); %>
     </datalist>

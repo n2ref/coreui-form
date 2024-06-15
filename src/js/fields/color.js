@@ -1,5 +1,4 @@
 
-import 'ejs/ejs.min';
 import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
@@ -12,9 +11,8 @@ class FieldColor extends FieldInput {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'color',
@@ -37,7 +35,7 @@ class FieldColor extends FieldInput {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        super(form, options);
     }
 
 
@@ -102,14 +100,13 @@ class FieldColor extends FieldInput {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/color.html'], {
+        return coreuiFormUtils.render(coreuiFormTpl['fields/color.html'], {
+            readonly: this._readonly,
             field: options,
-            datalistId: datalistId,
             value: this._value,
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                datalist: datalist,
-            },
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            datalistId: datalistId,
+            datalist: datalist,
         });
     }
 
@@ -121,10 +118,8 @@ class FieldColor extends FieldInput {
      */
     _renderContentReadonly () {
 
-        let options = this.getOptions();
-
-        return ejs.render(coreuiFormTpl['fields/color.html'], {
-            field: options,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/color.html'], {
+            readonly: this._readonly,
             value: this._value
         });
     }

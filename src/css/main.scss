@@ -1,2 +1,13 @@
 
 @import "fileup-js/src/css/main";
+
+.coreui-form {
+
+  .coreui-form__attach-fields.d-inline-block > * {
+    margin-right: 5px;
+
+    &:last-child {
+      margin-right: unset;
+    }
+  }
+}

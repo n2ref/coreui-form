@@ -1,4 +1,6 @@
-import coreuiForm from "./coreui.form";
+import coreuiForm      from "./coreui.form";
+import coreuiFormUtils from "./coreui.form.utils";
+import coreuiFormTpl   from "./coreui.form.templates";
 
 
 let coreuiFormPrivate = {
@@ -41,17 +43,17 @@ let coreuiFormPrivate = {
     /**
      * Инициализация поля
      * @param {object} form
-     * @param {object} field
+     * @param {object} options
      * @return {object|null}
      * @private
      */
-    initField: function (form, field) {
+    initField: function (form, options) {
 
-        if (typeof field !== 'object') {
+        if (typeof options !== 'object') {
             return null;
         }
 
-        let type = field.hasOwnProperty('type') && typeof field.type === 'string' ? field.type : 'input';
+        let type = options.hasOwnProperty('type') && typeof options.type === 'string' ? options.type : 'input';
 
         if (type === 'group') {
             return null;
@@ -61,12 +63,18 @@ let coreuiFormPrivate = {
             type = 'input';
         }
 
-        if (form._options.readonly) {
-            field.readonly = true;
+        if (form._readonly) {
+            options.readonly = true;
         }
 
 
-        let fieldInstance = new coreuiForm.fields[type](form, field, form._fieldsIndex++);
+        let index   = form._fieldsIndex++;
+        let name    = options.hasOwnProperty('name') && typeof options.name === 'string' && options.name ? options.name : null;
+        let fieldId = options.hasOwnProperty('id') && typeof options.id === 'string' && options.id ? options.id : null;
+
+        options.id = form.getId() + '-' + (fieldId || name || index);
+
+        let fieldInstance = new coreuiForm.fields[type](form, options);
 
         form._fields.push(fieldInstance);
 
@@ -77,23 +85,29 @@ let coreuiFormPrivate = {
     /**
      * Инициализация группы
      * @param {object} form
-     * @param {object} group
+     * @param {object} options
      * @return {object|null}
      * @private
      */
-    initGroup: function (form, group) {
+    initGroup: function (form, options) {
 
-        if (typeof group !== 'object') {
+        if (typeof options !== 'object') {
             return null;
         }
 
-        let type = group.hasOwnProperty('type') && typeof group.type === 'string' ? group.type : '';
+        let type = options.hasOwnProperty('type') && typeof options.type === 'string' ? options.type : '';
 
         if (type !== 'group') {
             return null;
         }
 
-        let groupInstance = new coreuiForm.fields.group(form, group, form._groupsIndex++);
+        let index   = form._groupsIndex++;
+        let fieldId = options.hasOwnProperty('id') && typeof options.id === 'string' && options.id ? options.id : null;
+
+        options.id = form.getId() + '-' + (fieldId || index);
+
+
+        let groupInstance = new coreuiForm.fields.group(form, options);
 
         form._groups.push(groupInstance);
 
@@ -120,24 +134,110 @@ let coreuiFormPrivate = {
             return null;
         }
 
-        if (type === 'submit' && form._options.readonly) {
+        if (type === 'submit' && form._readonly) {
             control.show = false;
         }
 
+        let index     = form._controlsIndex++;
+        let name      = control.hasOwnProperty('name') && typeof control.name === 'string' && control.name ? control.name : null;
+        let controlId = control.hasOwnProperty('id') && typeof control.id === 'string' && control.id ? control.id : null;
 
-        let controlInstance = $.extend(true, {
-            render:     function () {},
-            init:       function () {},
-            getOptions: function () {},
-            show:       function () {},
-            hide:       function () {},
-        }, coreuiForm.controls[type]);
+        control.id = form.getId() + '-control-' + (controlId || name || index);
 
-        controlInstance.init(form, control, form._controlsIndex++);
+        let controlInstance = new coreuiForm.controls[type](form, control);
 
         form._controls.push(controlInstance);
 
         return controlInstance;
+    },
+
+
+    /**
+     * Рендер группы
+     * @param {FieldGroup} group
+     * @return {*|null}
+     */
+    renderGroup: function (group) {
+
+        let container = $(
+            coreuiFormUtils.render(coreuiFormTpl['form-field-group.html'], {
+                id: group.getId(),
+                group: group.getOptions(),
+            })
+        );
+
+        let groupContent = container.find('.coreui-form__group_content');
+        let fields       = group.renderContent();
+
+        $.each(fields, function (key, field) {
+            groupContent.append(field);
+        });
+
+        return container;
+    },
+
+
+    /**
+     * Рендер поля
+     * @param {object} form
+     * @param {Field}  field
+     * @return {*|null}
+     */
+    renderField: function (form, field) {
+
+        if ( ! field || typeof field !== 'object') {
+            return null;
+        }
+
+        let options      = field.getOptions();
+        let contentId    = field.getContentId();
+        let attachFields = coreuiFormUtils.getAttacheFields(form, options);
+        let direction    = options.hasOwnProperty('fieldsDirection') && typeof options.fieldsDirection === 'string'
+            ? options.fieldsDirection
+            : 'row';
+        let directionClass = direction === 'column' ? 'd-block mt-2' : 'd-inline-block';
+
+        let fieldContainer = $(
+            coreuiFormUtils.render(coreuiFormTpl['form-field-label.html'], {
+                id: field.getId(),
+                field: options,
+                contentId: contentId,
+                issetAttachFields: attachFields.length > 0,
+                directionClass: directionClass,
+            })
+        );
+
+        let fiendContent = $('.content-' + contentId, fieldContainer);
+        let content     = field.renderContent();
+
+        if (Array.isArray(content) || content instanceof jQuery) {
+            $.each(content, function (key, item) {
+                fiendContent.append(item);
+            });
+
+        } else if (content) {
+            fiendContent.append(content);
+        }
+
+
+        if (attachFields.length > 0) {
+            let fiendAttachContainer = $('.coreui-form__attach-fields', fieldContainer);
+
+            $.each(attachFields, function (i, attachField) {
+                let attachContainer = $(
+                    coreuiFormUtils.render(coreuiFormTpl['form-field-attach.html'], {
+                        contentId     : attachField.contentId,
+                        directionClass: directionClass,
+                    })
+                );
+
+                attachContainer.append(attachField.content)
+
+                fiendAttachContainer.append(attachContainer);
+            });
+        }
+
+        return fieldContainer;
     }
 }
 

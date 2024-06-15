@@ -1,8 +1,6 @@
 
-import 'ejs/ejs.min';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
-import coreuiForm      from "../coreui.form";
 import Field           from "../abstract/Field";
 
 
@@ -15,9 +13,8 @@ class FieldPasswordRepeat extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'password_repeat',
@@ -43,7 +40,7 @@ class FieldPasswordRepeat extends Field {
             noSend: null
         }, options);
 
-        super(form, options, index);
+        super(form, options);
 
         let that = this;
 
@@ -75,11 +72,11 @@ class FieldPasswordRepeat extends Field {
 
         let result;
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             result = this._value;
 
         } else {
-            let pass = $('.content-' + this._hash + ' input[type="password"]').eq(0);
+            let pass = $('.content-' + this.getContentId() + ' input[type="password"]').eq(0);
 
             if (typeof pass.attr('disabled') !== 'undefined' && pass.attr('disabled') !== false) {
                 result = null;
@@ -104,10 +101,10 @@ class FieldPasswordRepeat extends Field {
 
         this._value = value;
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text(value ? '******' : '');
+        if (this._readonly) {
+            $('.content-' + this.getContentId()).text(value ? '******' : '');
         } else {
-            $('.content-' + this._hash + ' input[type="password"]').val(value);
+            $('.content-' + this.getContentId() + ' input[type="password"]').val(value);
         }
     }
 
@@ -119,11 +116,11 @@ class FieldPasswordRepeat extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
         let input     = $('input[type="password"]', container);
 
         container.find('.valid-feedback').remove();
@@ -170,11 +167,11 @@ class FieldPasswordRepeat extends Field {
      */
     isValid() {
 
-        if ( ! this._isChangeState || this._options.readonly) {
+        if ( ! this._isChangeState || this._readonly) {
             return true;
         }
 
-        let input = $('.content-' + this._hash + ' input[type="password"]');
+        let input = $('.content-' + this.getContentId() + ' input[type="password"]');
 
         if (input.eq(0).val() !== input.eq(1).val()) {
             return false;
@@ -194,7 +191,7 @@ class FieldPasswordRepeat extends Field {
      */
     renderContent() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._renderContentReadonly()
             : this._renderContent();
     }
@@ -254,15 +251,14 @@ class FieldPasswordRepeat extends Field {
 
         let lang = this._form.getLang();
 
-        return ejs.render(coreuiFormTpl['fields/passwordRepeat.html'], {
-            field: options,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/passwordRepeat.html'], {
+            readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             lang: lang,
+            showBtn: options.showBtn,
             btn_text: this._isChangeState ? lang.cancel : lang.change,
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                attr2: attributes2.length > 0 ? (' ' + attributes2.join(' ')) : ''
-            },
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            attr2: attributes2.length > 0 ? (' ' + attributes2.join(' ')) : ''
         });
     }
 
@@ -273,12 +269,9 @@ class FieldPasswordRepeat extends Field {
      */
     _renderContentReadonly() {
 
-        let options = this.getOptions();
-
-        return ejs.render(coreuiFormTpl['fields/passwordRepeat.html'], {
-            field: options,
-            value: this._value ? '******' : '',
-            hash: this._hash
+        return coreuiFormUtils.render(coreuiFormTpl['fields/passwordRepeat.html'], {
+            readonly: this._readonly,
+            value: this._value ? '******' : ''
         });
     }
 
@@ -292,18 +285,18 @@ class FieldPasswordRepeat extends Field {
         let that   = this;
         let noSend = that._options.noSend;
 
-        $('.content-' + this._hash + ' .btn-password-change').click(function (e) {
+        $('.content-' + this.getContentId() + ' .btn-password-change').click(function (e) {
             let textChange = $(this).data('change');
             let textCancel = $(this).data('cancel');
 
             if (that._isChangeState) {
-                $('.content-' + that._hash + ' [type="password"]').attr('disabled', 'disabled');
+                $('.content-' + that.getContentId() + ' [type="password"]').attr('disabled', 'disabled');
                 $(this).text(textChange);
                 that._isChangeState  = false;
                 that._options.noSend = true;
 
             } else {
-                $('.content-' + that._hash + ' [type="password"]').removeAttr('disabled');
+                $('.content-' + that.getContentId() + ' [type="password"]').removeAttr('disabled');
                 $(this).text(textCancel);
                 that._isChangeState = true;
                 that._options.noSend = noSend;
@@ -311,7 +304,5 @@ class FieldPasswordRepeat extends Field {
         });
     }
 }
-
-coreuiForm.fields.passwordRepeat = FieldPasswordRepeat;
 
 export default FieldPasswordRepeat;

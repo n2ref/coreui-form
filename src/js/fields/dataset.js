@@ -1,6 +1,4 @@
 
-import 'ejs/ejs.min';
-import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import Field           from "../abstract/Field";
@@ -15,9 +13,8 @@ class FieldDataset extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'dataset',
@@ -35,12 +32,12 @@ class FieldDataset extends Field {
             noSend: null
         }, options);
 
-        super(form, options, index);
+        super(form, options);
 
         let that = this;
 
         form.on('show', function () {
-            if ( ! that._options.readonly) {
+            if ( ! that._readonly) {
                 that._initEvents();
             }
         });
@@ -135,11 +132,11 @@ class FieldDataset extends Field {
      */
     getValue () {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return this._value;
 
         } else {
-            let container = $('.content-' + this._hash);
+            let container = $('.content-' + this.getContentId());
             let data      = [];
 
             $('.coreui-form__field-dataset-list .coreui-form__field-dataset-item', container).each(function () {
@@ -171,8 +168,8 @@ class FieldDataset extends Field {
 
         this._value.push(value);
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash + ' .coreui-form__field-dataset-list').append(
+        if (this._readonly) {
+            $('.content-' + this.getContentId() + ' .coreui-form__field-dataset-list').append(
                 this._renderRowReadonly(value)
             );
         } else {
@@ -188,11 +185,11 @@ class FieldDataset extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
 
         container.find('.text-success').remove();
         container.find('.text-danger').remove();
@@ -233,7 +230,7 @@ class FieldDataset extends Field {
      */
     isValid() {
 
-        if (this._options.required && ! this._options.readonly) {
+        if (this._options.required && ! this._readonly) {
             return this.getValue().length > 0;
         }
 
@@ -246,7 +243,7 @@ class FieldDataset extends Field {
      */
     removeItems() {
 
-        $('#coreui-form-' + this._id + ' .content-' + this._hash + ' .coreui-form__field-dataset-list').empty();
+        $('#coreui-form-' + this.getId() + ' .content-' + this.getContentId() + ' .coreui-form__field-dataset-list').empty();
     }
 
 
@@ -256,7 +253,7 @@ class FieldDataset extends Field {
      */
     removeItem(itemId) {
 
-        let element = '#coreui-form-' + this._id + ' .content-' + this._hash;
+        let element = '#coreui-form-' + this.getId() + ' .content-' + this.getContentId();
 
         $('#' + itemId).hide('fast', function () {
             $('#' + itemId).remove();
@@ -274,7 +271,7 @@ class FieldDataset extends Field {
      */
     renderContent () {
 
-        return this._options.readonly
+        return this._readonly
             ? this._renderContentReadonly()
             : this._renderContent();
     }
@@ -319,14 +316,12 @@ class FieldDataset extends Field {
             }
         }
 
-        return ejs.render(coreuiFormTpl['fields/dataset.html'], {
-            field: options,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/dataset.html'], {
+            readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             lang: this._form.getLang(),
-            render: {
-                headers: headers,
-                rows: rows,
-            },
+            headers: headers,
+            rows: rows,
         });
     }
 
@@ -370,14 +365,13 @@ class FieldDataset extends Field {
             }
         }
 
-        return ejs.render(coreuiFormTpl['fields/dataset.html'], {
+        return coreuiFormUtils.render(coreuiFormTpl['fields/dataset.html'], {
+            readonly: this._readonly,
             field: options,
             value: this._value !== null ? this._value : '',
             lang: this._form.getLang(),
-            render: {
-                headers: headers,
-                rows: rows,
-            },
+            headers: headers,
+            rows: rows,
         });
     }
 
@@ -389,7 +383,7 @@ class FieldDataset extends Field {
     _initEvents() {
 
         let that    = this;
-        let element = '#coreui-form-' + this._id + ' .content-' + this._hash;
+        let element = '#coreui-form-' + this.getId() + ' .content-' + this.getContentId();
 
         // Кнопка удаления
         $(element + ' .btn-dataset-remove').click(function () {
@@ -409,7 +403,7 @@ class FieldDataset extends Field {
     _eventAdd(row) {
 
         let that    = this;
-        let element = '#coreui-form-' + this._id + ' .content-' + this._hash;
+        let element = '#coreui-form-' + this.getId() + ' .content-' + this.getContentId();
         row = row || {};
 
         if ($(element + ' .coreui-form__field-dataset-item').length === 0) {
@@ -512,7 +506,7 @@ class FieldDataset extends Field {
             });
         });
 
-        return ejs.render(coreuiFormTpl['fields/dataset-row.html'], {
+        return coreuiFormUtils.render(coreuiFormTpl['fields/dataset-row.html'], {
             hashItem: coreuiFormUtils.hashCode(),
             options: rowOptions,
         });
@@ -588,12 +582,10 @@ class FieldDataset extends Field {
             });
         });
 
-        return ejs.render(coreuiFormTpl['fields/dataset-row-readonly.html'], {
+        return coreuiFormUtils.render(coreuiFormTpl['fields/dataset-row-readonly.html'], {
             options: rowOptions,
         });
     }
 }
-
-coreuiForm.fields.dataset = FieldDataset;
 
 export default FieldDataset;

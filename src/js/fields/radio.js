@@ -1,6 +1,4 @@
 
-import 'ejs/ejs.min';
-import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import Field           from "../abstract/Field";
@@ -12,9 +10,8 @@ class FieldRadio extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'radio',
@@ -34,7 +31,7 @@ class FieldRadio extends Field {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        super(form, options);
     }
 
 
@@ -44,9 +41,9 @@ class FieldRadio extends Field {
      */
     getValue () {
 
-        return this._options.readonly
+        return this._readonly
             ? this._value
-            : $('.content-' + this._hash + ' input[type=radio]:checked').val();
+            : $('.content-' + this.getContentId() + ' input[type=radio]:checked').val();
     }
 
 
@@ -60,7 +57,7 @@ class FieldRadio extends Field {
             return;
         }
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             let that         = this;
             let fieldOptions = this.getOptions();
 
@@ -75,7 +72,7 @@ class FieldRadio extends Field {
                             ? option.text
                             : '';
 
-                        $('.content-' + that._hash).text(text);
+                        $('.content-' + that.getContentId()).text(text);
                         that._value = value;
                         return false;
                     }
@@ -83,7 +80,7 @@ class FieldRadio extends Field {
             }
 
         } else {
-            let input = $('.content-' + this._hash + ' input[type=radio][value="' + value + '"]');
+            let input = $('.content-' + this.getContentId() + ' input[type=radio][value="' + value + '"]');
 
             if (input[0]) {
                 input.prop('checked', true);
@@ -100,11 +97,11 @@ class FieldRadio extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
         let lastInput = $('.form-check:last-child', container);
         let inputs    = $('input', container);
 
@@ -152,7 +149,7 @@ class FieldRadio extends Field {
      */
     isValid() {
 
-        if (this._options.required && ! this._options.readonly) {
+        if (this._options.required && ! this._readonly) {
             let value = this.getValue();
             return typeof value === 'string' && value !== '';
         }
@@ -226,17 +223,15 @@ class FieldRadio extends Field {
             });
         }
 
-        return ejs.render(coreuiFormTpl['fields/radio.html'], {
-            field: fieldOptions,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/radio.html'], {
+            readonly: this._readonly,
+            inline: fieldOptions.inline,
             value: this._value,
-            render: {
-                options: radioOptions,
-                selectedItem: selectedItem
-            },
+            options: radioOptions,
+            selectedItem: selectedItem,
         });
     }
 }
 
-coreuiForm.fields.radio = FieldRadio;
 
 export default FieldRadio;

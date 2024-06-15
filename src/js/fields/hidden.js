@@ -1,8 +1,7 @@
 
-import 'ejs/ejs.min';
-import coreuiForm    from "../coreui.form";
 import coreuiFormTpl from "../coreui.form.templates";
 import Field         from "../abstract/Field";
+import coreuiFormUtils from "../coreui.form.utils";
 
 
 class FieldHidden extends Field {
@@ -11,9 +10,8 @@ class FieldHidden extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'hidden',
@@ -22,7 +20,7 @@ class FieldHidden extends Field {
             required: null
         }, options);
 
-        super(form, options, index);
+        super(form, options);
     }
 
 
@@ -32,9 +30,9 @@ class FieldHidden extends Field {
      */
     getValue() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._value
-            : $('#coreui-form-' + this._id).val();
+            : $('#coreui-form-' + this.getId()).val();
     }
 
 
@@ -50,8 +48,8 @@ class FieldHidden extends Field {
 
         this._value = value;
 
-        if ( ! this._options.readonly) {
-            $('#coreui-form-' + this._id).val(value);
+        if ( ! this._readonly) {
+            $('#coreui-form-' + this.getId()).val(value);
         }
     }
 
@@ -62,9 +60,7 @@ class FieldHidden extends Field {
      */
     render() {
 
-        return ejs.render(coreuiFormTpl['form-field-content.html'], {
-            content: this.renderContent(),
-        });
+        return this.renderContent();
     }
 
 
@@ -86,7 +82,7 @@ class FieldHidden extends Field {
         }
 
 
-        options.attr.id = 'coreui-form-' + this._id;
+        options.attr.id = 'coreui-form-' + this.getId();
 
         if (options.name) {
             options.attr.name = options.name;
@@ -100,16 +96,11 @@ class FieldHidden extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/hidden.html'], {
-            value: this._value !== null ? this._value : '',
-            field: options,
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-            },
+        return coreuiFormUtils.render(coreuiFormTpl['fields/hidden.html'], {
+            readonly: this._readonly,
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
         });
     }
 }
-
-coreuiForm.fields.hidden = FieldHidden;
 
 export default FieldHidden;

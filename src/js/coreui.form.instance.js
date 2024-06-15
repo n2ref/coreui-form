@@ -1,5 +1,4 @@
 
-import 'ejs/ejs.min';
 import coreuiForm        from './coreui.form';
 import coreuiFormTpl     from './coreui.form.templates';
 import coreuiFormUtils   from './coreui.form.utils';
@@ -43,6 +42,7 @@ let coreuiFormInstance = {
     },
 
     _lock: false,
+    _readonly: false,
     _fieldsIndex: 0,
     _groupsIndex: 0,
     _controlsIndex: 0,
@@ -64,6 +64,8 @@ let coreuiFormInstance = {
         if ( ! this._options.id) {
             this._options.id = coreuiFormUtils.hashCode();
         }
+
+        this._readonly = options.hasOwnProperty('readonly') && typeof options.readonly === 'boolean' ? options.readonly : false;
 
         if (this._options.hasOwnProperty('labelWidth')) {
             if (this._options.labelWidth >= 0 && this._options.labelWidth !== null) {
@@ -178,25 +180,23 @@ let coreuiFormInstance = {
                         return;
                     }
 
-                    let type     = field.hasOwnProperty('type') && typeof field.type === 'string' ? field.type : '';
-                    let instance = null;
+                    let type    = field.hasOwnProperty('type') && typeof field.type === 'string' ? field.type : '';
+                    let content = null;
 
                     if (type === 'group') {
-                        instance = coreuiFormPrivate.initGroup(that, field);
+                        let instance = coreuiFormPrivate.initGroup(that, field);
+                        content      = coreuiFormPrivate.renderGroup(instance);
 
                     } else {
-                        instance = coreuiFormPrivate.initField(that, field);
+                        let instance = coreuiFormPrivate.initField(that, field);
+                        content      = coreuiFormPrivate.renderField(that, instance);
                     }
 
-
-                    if ( ! instance || typeof instance !== 'object') {
-                        return;
-                    }
 
                     if ( ! positionsContent.hasOwnProperty(position)) {
                         positionsContent[position] = [];
                     }
-                    positionsContent[position].push(instance.render());
+                    positionsContent[position].push(content);
                 });
             }
 
@@ -242,7 +242,7 @@ let coreuiFormInstance = {
 
 
         let containerElement = $(
-            ejs.render(coreuiFormTpl['form.html'], {
+            coreuiFormUtils.render(coreuiFormTpl['form.html'], {
                 form: this._options,
                 formAttr: formAttr ? ' ' + formAttr.join(' ') : '',
                 widthSizes: widthSizes,
@@ -826,7 +826,7 @@ let coreuiFormInstance = {
         };
 
         formContainer.prepend(
-            ejs.render(coreuiFormTpl['form-error.html'], {
+            coreuiFormUtils.render(coreuiFormTpl['form-error.html'], {
                 message: message,
                 options: errorOptions,
             })

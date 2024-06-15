@@ -1,35 +1,69 @@
 
 import coreuiForm from "./coreui.form";
-import './coreui.form.instance';
-import './coreui.form.templates';
-import './coreui.form.utils';
 
-import "./lang/ru";
-import "./lang/en";
+import langEn from "./lang/en";
+import langRu from "./lang/ru";
 
-import "./controls/button";
-import "./controls/custom";
-import "./controls/link";
-import "./controls/submit";
+import Field   from "./abstract/Field";
+import Control from "./abstract/Control";
 
-import "./fields/checkbox";
-import "./fields/color";
-import "./fields/custom";
-import "./fields/dataset";
-import "./fields/group";
-import "./fields/hidden";
-import "./fields/input";
-import "./fields/mask";
-import "./fields/modal";
-import "./fields/number";
-import "./fields/radio";
-import "./fields/range";
-import "./fields/select";
-import "./fields/switch";
-import "./fields/textarea";
-import "./fields/wysiwyg";
-import "./fields/passwordRepeat";
-import "./fields/file";
-import "./fields/fileUpload";
+import ControlButton from "./controls/button";
+import ControlSubmit from "./controls/submit";
+import ControlLink   from "./controls/link";
+import ControlCustom from "./controls/custom";
+
+import FieldCheckbox       from "./fields/checkbox";
+import FieldColor          from "./fields/color";
+import FieldCustom         from "./fields/custom";
+import FieldDataset        from "./fields/dataset";
+import FieldGroup          from "./fields/group";
+import FieldHidden         from "./fields/hidden";
+import FieldInput          from "./fields/input";
+import FieldMask           from "./fields/mask";
+import FieldModal          from "./fields/modal";
+import FieldNumber         from "./fields/number";
+import FieldRadio          from "./fields/radio";
+import FieldRange          from "./fields/range";
+import FieldSelect         from "./fields/select";
+import FieldSwitch         from "./fields/switch";
+import FieldTextarea       from "./fields/textarea";
+import FieldWysiwyg        from "./fields/wysiwyg";
+import FieldPasswordRepeat from "./fields/passwordRepeat";
+import FieldFile           from "./fields/file";
+import FieldFileUpload     from "./fields/fileUpload";
+
+
+
+coreuiForm.lang.ru = langRu;
+coreuiForm.lang.en = langEn;
+
+coreuiForm.abstract.field   = Field;
+coreuiForm.abstract.control = Control;
+
+coreuiForm.controls.button = ControlButton;
+coreuiForm.controls.submit = ControlSubmit;
+coreuiForm.controls.link   = ControlLink;
+coreuiForm.controls.custom = ControlCustom;
+
+coreuiForm.fields.checkbox       = FieldCheckbox;
+coreuiForm.fields.color          = FieldColor;
+coreuiForm.fields.custom         = FieldCustom;
+coreuiForm.fields.dataset        = FieldDataset;
+coreuiForm.fields.group          = FieldGroup;
+coreuiForm.fields.hidden         = FieldHidden;
+coreuiForm.fields.input          = FieldInput;
+coreuiForm.fields.mask           = FieldMask;
+coreuiForm.fields.modal          = FieldModal;
+coreuiForm.fields.number         = FieldNumber;
+coreuiForm.fields.radio          = FieldRadio;
+coreuiForm.fields.range          = FieldRange;
+coreuiForm.fields.select         = FieldSelect;
+coreuiForm.fields.switch         = FieldSwitch;
+coreuiForm.fields.textarea       = FieldTextarea;
+coreuiForm.fields.wysiwyg        = FieldWysiwyg;
+coreuiForm.fields.passwordRepeat = FieldPasswordRepeat;
+coreuiForm.fields.file           = FieldFile;
+coreuiForm.fields.fileUpload     = FieldFileUpload;
+coreuiForm.fields.checkbox       = FieldCheckbox;
 
 export default coreuiForm;

@@ -1,6 +1,4 @@
 
-import 'ejs/ejs.min';
-import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import Field           from "../abstract/Field";
@@ -13,9 +11,8 @@ class FieldNumber extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'number',
@@ -40,12 +37,11 @@ class FieldNumber extends Field {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        super(form, options);
 
         // Установка точности
         if (this._options.precision === null) {
             let precision = 0;
-
             if (this._options.attr.hasOwnProperty('step') &&
                 this._options.attr.step !== 'any' &&
                 ['string', 'number'].indexOf(typeof this._options.attr.step) >= 0
@@ -64,7 +60,7 @@ class FieldNumber extends Field {
         let that = this;
 
         form.on('show', function () {
-            if ( ! that._options.readonly) {
+            if ( ! that._readonly) {
                 that._initEvents();
             }
         });
@@ -91,9 +87,9 @@ class FieldNumber extends Field {
      */
     getValue() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._value
-            : $('.content-' + this._hash + ' input').val();
+            : $('.content-' + this.getContentId() + ' input').val();
     }
 
 
@@ -127,10 +123,10 @@ class FieldNumber extends Field {
 
         this._value = value;
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text(value);
+        if (this._readonly) {
+            $('.content-' + this.getContentId()).text(value);
         } else {
-            $('.content-' + this._hash + ' input').val(value);
+            $('.content-' + this.getContentId() + ' input').val(value);
         }
     }
 
@@ -142,11 +138,11 @@ class FieldNumber extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
         let input     = $('input', container);
 
         container.find('.valid-feedback').remove();
@@ -193,7 +189,7 @@ class FieldNumber extends Field {
      */
     isValid() {
 
-        let input = $('.content-' + this._hash + ' input');
+        let input = $('.content-' + this.getContentId() + ' input');
 
         if (input[0]) {
             return input.is(':valid');
@@ -265,14 +261,13 @@ class FieldNumber extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
-            field: options,
-            datalistId: datalistId,
+
+        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+            readonly: this._readonly,
             value: this._value !== null ? this._value : '',
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                datalist: datalist
-            },
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            datalistId: datalistId,
+            datalist: datalist
         });
     }
 
@@ -283,7 +278,9 @@ class FieldNumber extends Field {
      */
     _initEvents() {
 
-        $('.content-' + this._hash + ' input').keydown(function (e) {
+        let contentId = this.getContentId();
+
+        $('.content-' + contentId + ' input').keydown(function (e) {
             let k = e.keyCode || e.which;
             let ok = k >= 35 && k <= 40 ||      // arrows
                 k >= 96 && k <= 105 ||     // 0-9 numpad
@@ -301,7 +298,7 @@ class FieldNumber extends Field {
 
         let that = this;
 
-        $('.content-' + this._hash + ' input').blur(function (e) {
+        $('.content-' + contentId + ' input').blur(function (e) {
             let value = $(this).val();
 
             if (that._options.precision >= 0) {
@@ -324,7 +321,5 @@ class FieldNumber extends Field {
         });
     }
 }
-
-coreuiForm.fields.number = FieldNumber;
 
 export default FieldNumber;

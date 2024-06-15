@@ -1,9 +1,7 @@
 
-import 'ejs/ejs.min';
 import 'jquery-mask-plugin/dist/jquery.mask';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
-import coreuiForm      from "../coreui.form";
 import FieldInput      from "../fields/input";
 
 
@@ -13,9 +11,8 @@ class FieldMask extends FieldInput {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'mask',
@@ -38,12 +35,12 @@ class FieldMask extends FieldInput {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        super(form, options);
 
         let that = this;
 
         form.on('show', function () {
-            if ( ! that._options.readonly) {
+            if ( ! that._readonly) {
                 that._initEvents();
             }
         });
@@ -78,10 +75,10 @@ class FieldMask extends FieldInput {
 
         this._value = value;
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text(value);
+        if (this._readonly) {
+            $('.content-' + this.getContentId()).text(value);
         } else {
-            $('.content-' + this._hash + ' input').val(value);
+            $('.content-' + this.getContentId() + ' input').val(value);
         }
     }
 
@@ -147,14 +144,12 @@ class FieldMask extends FieldInput {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
-            field: options,
-            datalistId: datalistId,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+            readonly: this._readonly,
             value: this._value !== null ? this._value : '',
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                datalist: datalist
-            },
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            datalistId: datalistId,
+            datalist: datalist,
         });
     }
 
@@ -167,8 +162,8 @@ class FieldMask extends FieldInput {
 
         let options = this.getOptions();
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
-            field: options,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+            readonly: this._readonly,
             value: this._value !== null ? this._value : ''
         });
     }
@@ -180,12 +175,10 @@ class FieldMask extends FieldInput {
      */
     _initEvents () {
 
-        $('#coreui-form-' + this._id + ' .content-' + this._hash + ' input')
+        $('#coreui-form-' + this.getId() + ' .content-' + this.getContentId() + ' input')
             .mask(this._options.mask, this._options.options)
     }
 }
 
-
-coreuiForm.fields.mask = FieldMask;
 
 export default FieldMask;

@@ -69,7 +69,7 @@ gulp.task('build_js', function() {
     return rollup({
         input: conf.js.main,
         output: {
-            sourcemap: false,
+            sourcemap: true,
             format: 'umd',
             name: "CoreUI.form"
         },
@@ -94,7 +94,7 @@ gulp.task('build_js_min_fast', function() {
     return rollup({
         input: conf.js.main,
         output: {
-            sourcemap: false,
+            sourcemap: true,
             format: 'umd',
             name: "CoreUI.form"
         },
@@ -121,7 +121,7 @@ gulp.task('build_js_min', function() {
     return rollup({
         input: conf.js.main,
         output: {
-            sourcemap: false,
+            sourcemap: true,
             format: 'umd',
             name: "CoreUI.form"
         },

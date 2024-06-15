@@ -1,6 +1,4 @@
 
-import coreuiForm      from "../coreui.form";
-import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import Field           from "../abstract/Field";
 
@@ -11,9 +9,8 @@ class FieldCustom extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'custom',
@@ -27,7 +24,7 @@ class FieldCustom extends Field {
             show: true
         }, options);
 
-        super(form, options, index);
+        super(form, options);
     }
 
 
@@ -36,7 +33,7 @@ class FieldCustom extends Field {
      * @param {boolean} isReadonly
      */
     readonly(isReadonly) {
-        this._options.readonly = !! isReadonly;
+        this._readonly = !! isReadonly;
     }
 
 
@@ -46,12 +43,12 @@ class FieldCustom extends Field {
      */
     getValue() {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return this._value;
 
         } else {
             let value  = null;
-            let inputs = $('.content-' + this._hash + ' input,select,textarea');
+            let inputs = $('.content-' + this.getContentId() + ' input,select,textarea');
 
             if (inputs.length === 1) {
                 value = $(inputs).val()
@@ -73,35 +70,6 @@ class FieldCustom extends Field {
 
             return value;
         }
-    }
-
-
-    /**
-     * Формирование поля
-     * @returns {object}
-     */
-    render() {
-
-        let that         = this;
-        let options      = this.getOptions();
-        let attachFields = coreuiFormUtils.getAttacheFields(this._form, options);
-
-        let field = $(
-            ejs.render(coreuiFormTpl['form-field-label.html'], {
-                id: this._id,
-                form:  this._form,
-                hash: this._hash,
-                field: options,
-                content: '',
-                attachFields: attachFields
-            })
-        );
-
-        $.each(this.renderContent(), function (i, content) {
-            field.find(".content-" + that._hash).append(content);
-        });
-
-        return field;
     }
 
 
@@ -151,7 +119,5 @@ class FieldCustom extends Field {
     }
 }
 
-
-coreuiForm.fields.custom = FieldCustom;
 
 export default FieldCustom;

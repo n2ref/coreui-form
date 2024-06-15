@@ -1,5 +1,4 @@
 
-import 'ejs/ejs.min';
 import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
@@ -12,9 +11,8 @@ class FieldRange extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'range',
@@ -37,7 +35,7 @@ class FieldRange extends Field {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        super(form, options);
     }
 
 
@@ -47,9 +45,9 @@ class FieldRange extends Field {
      */
     getValue() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._value
-            : $('.content-' + this._hash + ' input').val();
+            : $('.content-' + this.getContentId() + ' input').val();
     }
 
 
@@ -65,10 +63,10 @@ class FieldRange extends Field {
 
         this._value = value;
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text(value);
+        if (this._readonly) {
+            $('.content-' + this.getContentId()).text(value);
         } else {
-            $('.content-' + this._hash + ' input').val(value);
+            $('.content-' + this.getContentId() + ' input').val(value);
         }
     }
 
@@ -80,11 +78,11 @@ class FieldRange extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
         let input     = $('input', container);
 
         container.find('.valid-feedback').remove();
@@ -131,7 +129,7 @@ class FieldRange extends Field {
      */
     isValid() {
 
-        let input = $('.content-' + this._hash + ' input');
+        let input = $('.content-' + this.getContentId() + ' input');
 
         if (input[0]) {
             return input.is(':valid');
@@ -201,18 +199,15 @@ class FieldRange extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
-            field: options,
-            datalistId: datalistId,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+            readonly: this._readonly,
             value: this._value,
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                datalist: datalist
-            },
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            datalistId: datalistId,
+            datalist: datalist
         });
     }
 }
 
-coreuiForm.fields.range = FieldRange;
 
 export default FieldRange;

@@ -1,6 +1,4 @@
 
-import 'ejs/ejs.min';
-import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import Field           from "../abstract/Field";
@@ -47,7 +45,7 @@ class FieldWysiwyg extends Field {
         let that = this;
 
         form.on('show', function () {
-            if ( ! that._options.readonly) {
+            if ( ! that._readonly) {
                 that._initEvents();
             }
         });
@@ -74,7 +72,7 @@ class FieldWysiwyg extends Field {
      */
     getValue() {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return this._value;
         } else {
             return this._editor ? this._editor.getContent() : this._value;
@@ -90,8 +88,8 @@ class FieldWysiwyg extends Field {
 
         this._value = value;
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text(value);
+        if (this._readonly) {
+            $('.content-' + this.getContentId()).text(value);
         } else {
             if (this._editor) {
                 this._editor.setContent(value);
@@ -107,11 +105,11 @@ class FieldWysiwyg extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
 
         container.find('.text-success').remove();
         container.find('.text-danger').remove();
@@ -152,7 +150,7 @@ class FieldWysiwyg extends Field {
      */
     isValid() {
 
-        if (this._options.required && ! this._options.readonly) {
+        if (this._options.required && ! this._readonly) {
             return !! this.getValue();
         }
 
@@ -166,10 +164,8 @@ class FieldWysiwyg extends Field {
      */
     renderContent() {
 
-        let options = this.getOptions();
-
-        return ejs.render(coreuiFormTpl['fields/wysiwyg.html'], {
-            field: options,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/wysiwyg.html'], {
+            readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             editorHash: this._editorHash
         });
@@ -182,7 +178,7 @@ class FieldWysiwyg extends Field {
      */
     _initEvents() {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
@@ -248,6 +244,5 @@ class FieldWysiwyg extends Field {
     }
 }
 
-coreuiForm.fields.wysiwyg = FieldWysiwyg;
 
 export default FieldWysiwyg;

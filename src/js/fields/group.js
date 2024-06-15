@@ -1,15 +1,14 @@
 
-import 'ejs/ejs.min';
-import coreuiForm        from "../coreui.form";
 import coreuiFormTpl     from "../coreui.form.templates";
 import coreuiFormPrivate from "../coreui.form.private";
+import coreuiFormUtils   from "../coreui.form.utils";
 
 
 class FieldGroup {
 
     _id = '';
     _form = null;
-    _index = 0;
+
     _options = {
         type: 'group',
         label: '',
@@ -24,13 +23,11 @@ class FieldGroup {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         this._form    = form;
-        this._index   = index;
-        this._id      = form.getId() + "-group-" + index;
+        this._id      = options.id;
         this._options = $.extend(true, {}, this._options, options);
 
         let that = this;
@@ -38,6 +35,15 @@ class FieldGroup {
         form.on('show', function () {
             that._initEvents();
         });
+    }
+
+
+    /**
+     * Получение id группы
+     * @return {string}
+     */
+    getId() {
+        return this._id;
     }
 
 
@@ -81,31 +87,6 @@ class FieldGroup {
 
 
     /**
-     * Формирование поля
-     * @returns {string}
-     */
-    render() {
-
-        let container = $(
-            ejs.render(coreuiFormTpl['form-field-group.html'], {
-                id: this._id,
-                form:  this._form,
-                group: this._options,
-            })
-        );
-
-        let fields       = this.renderContent();
-        let groupContent = container.find('.coreui-form__group_content');
-
-        $.each(fields, function (key, field) {
-            groupContent.append(field);
-        });
-
-        return container;
-    }
-
-
-    /**
      * Формирование контента поля
      * @return {Array}
      */
@@ -122,7 +103,7 @@ class FieldGroup {
                 return;
             }
 
-            fields.push(fieldInstance.render());
+            fields.push(coreuiFormPrivate.renderField(that._form, fieldInstance));
         });
 
         return fields;
@@ -152,7 +133,5 @@ class FieldGroup {
     }
 }
 
-
-coreuiForm.fields.group = FieldGroup;
 
 export default FieldGroup;

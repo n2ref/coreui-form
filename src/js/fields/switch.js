@@ -1,6 +1,4 @@
 
-import 'ejs/ejs.min';
-import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import Field           from "../abstract/Field";
@@ -12,9 +10,8 @@ class FieldSwitch extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'switch',
@@ -34,7 +31,7 @@ class FieldSwitch extends Field {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        super(form, options);
     }
 
 
@@ -46,10 +43,10 @@ class FieldSwitch extends Field {
 
         let result;
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             result = this._value;
         } else {
-            result = $('.content-' + this._hash + ' input').prop('checked')
+            result = $('.content-' + this.getContentId() + ' input').prop('checked')
                 ? this._options.valueY
                 : this._options.valueN
         }
@@ -70,10 +67,10 @@ class FieldSwitch extends Field {
 
         this._value = value;
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text(value);
+        if (this._readonly) {
+            $('.content-' + this.getContentId()).text(value);
         } else {
-            $('.content-' + this._hash + ' input[type=checkbox]').prop('checked', value === this._options.valueY);
+            $('.content-' + this.getContentId() + ' input[type=checkbox]').prop('checked', value === this._options.valueY);
         }
     }
 
@@ -85,11 +82,11 @@ class FieldSwitch extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container       = $('.content-' + this._hash);
+        let container       = $('.content-' + this.getContentId());
         let switchContainer = $('.form-switch', container);
         let inputs          = $('input', container);
 
@@ -170,17 +167,15 @@ class FieldSwitch extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/switch.html'], {
-            field: options,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/switch.html'], {
+            readonly: this._readonly,
+            valueY: options.valueY,
             value: this._value,
             lang: this._form.getLang(),
-            render: {
-                attr: attributes.length > 0 ? attributes.join(' ') : ''
-            },
+            attr: attributes.length > 0 ? attributes.join(' ') : ''
         });
     }
 }
 
-coreuiForm.fields.switch = FieldSwitch;
 
 export default FieldSwitch;

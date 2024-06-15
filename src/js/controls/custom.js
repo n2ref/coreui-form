@@ -1,65 +1,32 @@
+import Control from "../abstract/Control";
 
-import coreuiForm from "../coreui.form";
 
-coreuiForm.controls.custom = {
-
-    _form: null,
-    _index: null,
-    _options: {
-        type: 'custom',
-        content: null
-    },
-
+class ControlCustom extends Control {
 
     /**
      * Инициализация
      * @param {coreuiFormInstance} form
      * @param {object} options
-     * @param {int} index
      */
-    init: function (form, options, index) {
+    constructor(form, options) {
 
-        this._options = $.extend({}, this._options, options);
-        this._form   = form;
-        this._index   = index;
-    },
+        options = $.extend(true, {
+            type: 'custom',
+            content: null
+        }, options);
 
-
-    /**
-     * Получение параметров
-     * @returns {object}
-     */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
-
-
-    /**
-     * Показ контрола
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + form.getId() + '-control-' + this._index).show(duration || 0)
-    },
-
-
-    /**
-     * Скрытие контрола
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + form.getId() + '-control-' + this._index).hide(duration || 0)
-    },
+        super(form, options);
+    }
 
 
     /**
      * Формирование контента для размещения на странице
      * @returns {string}
      */
-    render: function() {
+    render() {
 
         return this._options.content;
     }
 }
+
+export default ControlCustom;

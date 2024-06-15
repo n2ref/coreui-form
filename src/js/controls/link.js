@@ -1,93 +1,65 @@
 
-import 'ejs/ejs.min';
-import coreuiFormTpl from "../coreui.form.templates";
-import coreuiForm    from "../coreui.form";
+import coreuiFormTpl   from "../coreui.form.templates";
+import coreuiFormUtils from "../coreui.form.utils";
+import ControlButton   from "./button";
 
 
-coreuiForm.controls.link = {
-
-    _form: null,
-    _index: null,
-    _options: {
-        type: 'link',
-        url: null,
-        content: null,
-        onClick: null,
-        attr: {
-            class: 'btn btn-link'
-        }
-    },
-
+class ControlLink extends ControlButton {
 
     /**
      * Инициализация
      * @param {coreuiFormInstance} form
      * @param {object} options
-     * @param {int} index
      */
-    init: function (form, options, index) {
+    constructor(form, options) {
 
-        this._options = $.extend({}, this._options, options);
-        this._form    = form;
-        this._index   = index;
-        let that      = this;
+        options = $.extend(true, {
+            type   : 'link',
+            url    : null,
+            content: null,
+            onClick: null,
+            attr   : {
+                class: 'btn btn-link'
+            }
+        }, options);
 
-        form.on('show', function () {
-            that._initEvents();
-        });
-    },
+        super(form, options);
+    }
 
 
     /**
-     * Получение параметров
-     * @returns {object}
+     * Блокировка
      */
-    getOptions: function () {
-        return $.extend(true, {}, this._options);
-    },
+    lock() {
 
+        let link = $('#coreui-form-' + this.getId() + ' > a');
 
-    /**
-     * Показ контрола
-     * @param {int} duration
-     */
-    show: function (duration) {
-
-        $('#coreui-form-' + this._form.getId() + '-control-' + this._index).show(duration || 0)
-    },
-
-
-    /**
-     * Скрытие контрола
-     * @param {int} duration
-     */
-    hide: function (duration) {
-
-        $('#coreui-form-' + this._form.getId() + '-control-' + this._index).hide(duration || 0)
-    },
-
-
-    /**
-     *
-     */
-    lock: function () {
-
-        let button = $('#coreui-form-' + this._form.getId() + '-control-' + this._index + ' > button');
-
-        if ( ! button.find('.spinner-border')[0]) {
-            button.prepend('<span class="spinner-border spinner-border-sm"></span> ');
+        if ( ! link.find('.spinner-border')[0]) {
+            link.prepend('<span class="spinner-border spinner-border-sm"></span> ');
         }
-        if ( ! button.attr('disabled')) {
-            button.attr('disabled', 'disabled');
+        if ( ! link.attr('disabled')) {
+            link.attr('disabled', 'disabled');
         }
-    },
+    }
+
+
+    /**
+     * Разблокировка
+     */
+    unlock () {
+
+        let link = $('#coreui-form-' + this.getId() + ' > a');
+
+        link.find('.spinner-border').remove();
+        link.removeAttr('disabled');
+    }
 
 
     /**
      * Формирование контента для размещения на странице
      * @returns {string}
      */
-    render: function() {
+    render() {
 
         let attributes = [];
         let options    = this.getOptions();
@@ -96,32 +68,12 @@ coreuiForm.controls.link = {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['controls/link.html'], {
-            control: this._options,
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-            },
+        return coreuiFormUtils.render(coreuiFormTpl['controls/link.html'], {
+            url    : this._options.url,
+            content: this._options.content,
+            attr   : attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
         });
-    },
-
-
-    /**
-     * Инициализация событий связанных с элементом управления
-     */
-    _initEvents: function () {
-
-        let that = this;
-
-        if (['function', 'string'].indexOf(typeof this._options.onClick) >= 0) {
-            $('#coreui-form-' + this._form.getId() + '-control-' + this._index + ' > a')
-                .click(function (event) {
-
-                    if (typeof that._options.onClick === 'function') {
-                        that._options.onClick(that._form, event);
-                    } else {
-                        (new Function('form', 'event', that._options.onClick))(that._form, event);
-                    }
-                });
-        }
     }
 }
+
+export default ControlLink;

@@ -1,6 +1,4 @@
 
-import 'ejs/ejs.min';
-import coreuiForm        from "../coreui.form";
 import coreuiFormTpl     from "../coreui.form.templates";
 import coreuiFormUtils   from "../coreui.form.utils";
 import coreuiFormPrivate from "../coreui.form.private";
@@ -16,9 +14,8 @@ class FieldModal extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'modal',
@@ -45,7 +42,7 @@ class FieldModal extends Field {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        super(form, options);
 
         let formRecord = form.getRecord();
 
@@ -88,9 +85,9 @@ class FieldModal extends Field {
      */
     getValue() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._value
-            : $('.content-' + this._hash + ' input.coreui-form-modal-value').val();
+            : $('.content-' + this.getContentId() + ' input.coreui-form-modal-value').val();
     }
 
 
@@ -104,18 +101,19 @@ class FieldModal extends Field {
             return;
         }
 
-        let text  = value.hasOwnProperty('text') && typeof value.text === 'string' ? value.text : '';
+        let text      = value.hasOwnProperty('text') && typeof value.text === 'string' ? value.text : '';
+        let contentId = this.getContentId();
 
         value = value.hasOwnProperty('value') && typeof value.value === 'string' ? value.value : '';
 
         this._value = value;
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text(text);
+        if (this._readonly) {
+            $('.content-' + contentId).text(text);
 
         } else {
-            let elementValue = $('.content-' + this._hash + ' .coreui-form-modal-value');
-            let elementText  = $('.content-' + this._hash + ' .coreui-form-modal-text');
+            let elementValue = $('.content-' + contentId + ' .coreui-form-modal-value');
+            let elementText  = $('.content-' + contentId + ' .coreui-form-modal-text');
             let oldValue     = elementValue.val();
 
             elementValue.val(value);
@@ -149,11 +147,11 @@ class FieldModal extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
 
         container.find('.text-success').remove();
         container.find('.text-danger').remove();
@@ -194,7 +192,7 @@ class FieldModal extends Field {
      */
     isValid() {
 
-        if (this._options.required && ! this._options.readonly) {
+        if (this._options.required && ! this._readonly) {
             return !! this.getValue();
         }
 
@@ -232,15 +230,14 @@ class FieldModal extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/modal.html'], {
-            field: fieldOptions,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/modal.html'], {
+            readonly: this._readonly,
+            required: fieldOptions.required,
+            name: fieldOptions.name,
             value: this._value !== null ? this._value : '',
             text: this._text !== null ? this._text : '',
-            lang: this._form.getLang(),
-            render: {
-                width: this._options.width,
-                attr: attributes.length > 0 ? attributes.join(' ') : ''
-            },
+            lang: this._form.getLang(),width: this._options.width,
+            attr: attributes.length > 0 ? attributes.join(' ') : '',
         });
     }
 
@@ -251,14 +248,15 @@ class FieldModal extends Field {
      */
     _initEvents() {
 
-        let that  = this;
-        let modal = this._options.hasOwnProperty('options') && typeof(this._options.options) === 'object'
+        let that      = this;
+        let contentId = this.getContentId();
+        let modal     = this._options.hasOwnProperty('options') && typeof(this._options.options) === 'object'
             ? this._options.options
             : {};
 
 
         // Очистка
-        $('.content-' + this._hash + ' .btn-modal-clear').click(function (e) {
+        $('.content-' + contentId + ' .btn-modal-clear').click(function (e) {
             if (modal.hasOwnProperty('onClear')) {
                 if (typeof(modal.onClear) === 'function') {
                     modal.onClear(that);
@@ -274,7 +272,7 @@ class FieldModal extends Field {
         });
 
         // Выбор
-        $('.content-' + this._hash + ' .btn-modal-select').click(function (e) {
+        $('.content-' + contentId + ' .btn-modal-select').click(function (e) {
             let title = modal.hasOwnProperty('title') && typeof(modal.title) === 'string'
                 ? modal.title
                 : '';
@@ -293,7 +291,7 @@ class FieldModal extends Field {
 
 
             let modalId      = coreuiFormUtils.hashCode();
-            let modalLoading = ejs.render(coreuiFormTpl['fields/modal-loading.html'], {
+            let modalLoading = coreuiFormUtils.render(coreuiFormTpl['fields/modal-loading.html'], {
                 lang: that._form.getLang(),
             });
 
@@ -351,7 +349,5 @@ class FieldModal extends Field {
         });
     }
 }
-
-coreuiForm.fields.modal = FieldModal;
 
 export default FieldModal;

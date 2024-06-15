@@ -1,7 +1,5 @@
 
-import coreuiForm from "../coreui.form";
-
-coreuiForm.lang.ru = {
+let langRu = {
     "modal_select": "Выбрать",
     "modal_loading": "Загрузка...",
     "switch_yes": "Да",
@@ -16,3 +14,5 @@ coreuiForm.lang.ru = {
     "change": "изменить",
     "cancel": "отмена"
 }
+
+export default langRu;

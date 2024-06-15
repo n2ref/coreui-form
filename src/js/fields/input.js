@@ -1,8 +1,6 @@
 
-import 'ejs/ejs.min';
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
-import coreuiForm      from "../coreui.form";
 import Field           from "../abstract/Field";
 
 
@@ -12,9 +10,8 @@ class FieldInput extends Field {
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'text',
@@ -39,7 +36,7 @@ class FieldInput extends Field {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        super(form, options);
     }
 
 
@@ -49,9 +46,9 @@ class FieldInput extends Field {
      */
     getValue() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._value
-            : $('.content-' + this._hash + ' input').val();
+            : $('.content-' + this.getContentId() + ' input').val();
     }
 
 
@@ -67,10 +64,10 @@ class FieldInput extends Field {
 
         this._value = value;
 
-        if (this._options.readonly) {
-            $('.content-' + this._hash).text(value);
+        if (this._readonly) {
+            $('.content-' + this.getContentId()).text(value);
         } else {
-            $('.content-' + this._hash + ' input').val(value);
+            $('.content-' + this.getContentId() + ' input').val(value);
         }
     }
 
@@ -82,11 +79,11 @@ class FieldInput extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
         let input     = $('input', container);
 
         container.find('.valid-feedback').remove();
@@ -133,7 +130,7 @@ class FieldInput extends Field {
      */
     isValid() {
 
-        let input = $('.content-' + this._hash + ' input');
+        let input = $('.content-' + this.getContentId() + ' input');
 
         if (input[0]) {
             return input.is(':valid');
@@ -149,7 +146,7 @@ class FieldInput extends Field {
      */
     renderContent() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._renderContentReadonly()
             : this._renderContent();
     }
@@ -216,14 +213,12 @@ class FieldInput extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
-            field: options,
+        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+            readonly: this._readonly,
             datalistId: datalistId,
             value: this._value !== null ? this._value : '',
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                datalist: datalist
-            },
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            datalist: datalist
         });
     }
 
@@ -256,14 +251,11 @@ class FieldInput extends Field {
             // ignore
         }
 
-        return ejs.render(coreuiFormTpl['fields/input.html'], {
-            field: options,
-            value: value,
-            hash: this._hash
+        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+            readonly: this._readonly,
+            value: value
         });
     }
 }
-
-coreuiForm.fields.input = FieldInput;
 
 export default FieldInput;

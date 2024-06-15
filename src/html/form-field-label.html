@@ -22,9 +22,7 @@
     </div>
     <% } %>
     <div class="coreui-form__field_content flex-fill">
-        <div class="d-inline-block content-<%= hash %>">
-            <%- content %>
-        </div>
+        <div class="d-inline-block content-<%= contentId %>"></div>
 
         <% if (field.outContent) { %>
         <span class="coreui-form__field-content-out d-inline-block align-top ps-1">
@@ -32,12 +30,8 @@
         </span>
         <% } %>
 
-        <% if (attachFields && attachFields.length > 0) { %>
-            <% $.each(attachFields, function(key, attachField) { %>
-                <div class="<% if (attachField.hasOwnProperty('direction') && attachField.direction === 'column') { %>d-block mt-2<% } else { %>d-inline-block<% } %> content-<%= attachField.hash %>">
-                    <%- attachField.content %>
-                </div>
-            <% }); %>
+        <% if (issetAttachFields) { %>
+            <div class="coreui-form__attach-fields <%= directionClass %>"></div>
         <% } %>
     </div>
 </div>

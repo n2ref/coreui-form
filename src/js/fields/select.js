@@ -1,6 +1,4 @@
 
-import 'ejs/ejs.min';
-import coreuiForm      from "../coreui.form";
 import coreuiFormTpl   from "../coreui.form.templates";
 import coreuiFormUtils from "../coreui.form.utils";
 import Field           from "../abstract/Field";
@@ -8,13 +6,14 @@ import Field           from "../abstract/Field";
 
 class FieldSelect extends Field {
 
+    _selectOptions = [];
+
     /**
      * Инициализация
      * @param {object} form
      * @param {object} options
-     * @param {int}    index Порядковый номер на форме
      */
-    constructor(form, options, index) {
+    constructor(form, options) {
 
         options = $.extend(true, {
             type: 'select',
@@ -36,7 +35,18 @@ class FieldSelect extends Field {
             noSend: null,
         }, options);
 
-        super(form, options, index);
+        let selectOptions = [];
+
+        if (options.hasOwnProperty('options') &&
+            (Array.isArray(options.options) || coreuiFormUtils.isObject(options.options))
+        ) {
+            selectOptions   = options.options;
+            options.options = [];
+        }
+
+        super(form, options);
+
+        this._selectOptions = selectOptions
     }
 
 
@@ -46,7 +56,7 @@ class FieldSelect extends Field {
      */
     getValue() {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return this._value;
 
         } else {
@@ -58,14 +68,14 @@ class FieldSelect extends Field {
             ) {
                 let values = [];
 
-                $('.content-' + this._hash + ' select option:selected').each(function () {
+                $('.content-' + this.getContentId() + ' select option:selected').each(function () {
                     values.push($(this).val());
                 });
 
                 return values;
 
             } else {
-                return $('.content-' + this._hash + ' select option:selected').val()
+                return $('.content-' + this.getContentId() + ' select option:selected').val()
             }
         }
     }
@@ -90,22 +100,19 @@ class FieldSelect extends Field {
             value = [ value ];
         }
 
-        let that    = this;
-        this._value = [];
+        let that      = this;
+        let contentId = this.getContentId();
+        this._value   = [];
 
-        if (this._options.readonly) {
-            $('.content-' + that._hash).empty();
+        if (this._readonly) {
+            $('.content-' + contentId).empty();
 
-            let fieldOptions = this.getOptions();
-
-            if (fieldOptions.hasOwnProperty('options') &&
-                typeof fieldOptions.options === 'object' &&
-                Array.isArray(fieldOptions.options) &&
+            if (Array.isArray(this._selectOptions) &&
                 Array.isArray(value)
             ) {
                 let selectedItems = [];
 
-                $.each(fieldOptions.options, function (key, option) {
+                $.each(this._selectOptions, function (key, option) {
 
                     if (option.hasOwnProperty('value')) {
                         $.each(value, function (key, val) {
@@ -123,14 +130,14 @@ class FieldSelect extends Field {
                 });
 
 
-                $('.content-' + that._hash).text(selectedItems.join(', '));
+                $('.content-' + contentId).text(selectedItems.join(', '));
             }
 
         } else {
-            $('.content-' + this._hash + ' select > option').prop('selected', false);
+            $('.content-' + contentId + ' select > option').prop('selected', false);
 
             if (Array.isArray(value)) {
-                $('.content-' + this._hash + ' select > option').each(function (key, itemValue) {
+                $('.content-' + contentId + ' select > option').each(function (key, itemValue) {
                     $.each(value, function (key, val) {
                         if (val == $(itemValue).val()) {
                             $(itemValue).prop('selected', true);
@@ -152,11 +159,11 @@ class FieldSelect extends Field {
      */
     validate(isValid, text) {
 
-        if (this._options.readonly) {
+        if (this._readonly) {
             return;
         }
 
-        let container = $('.content-' + this._hash);
+        let container = $('.content-' + this.getContentId());
         let select    = $('select', container);
 
         container.find('.valid-feedback').remove();
@@ -203,7 +210,7 @@ class FieldSelect extends Field {
      */
     isValid() {
 
-        let select = $('.content-' + this._hash + ' select');
+        let select = $('.content-' + this.getContentId() + ' select');
 
         if (this._options.required && select.val() === '') {
             return false;
@@ -223,7 +230,7 @@ class FieldSelect extends Field {
      */
     renderContent() {
 
-        return this._options.readonly
+        return this._readonly
             ? this._renderContentReadonly()
             : this._renderContent();
     }
@@ -266,75 +273,67 @@ class FieldSelect extends Field {
         }
 
 
-        if (options.hasOwnProperty('options') &&
-            typeof options.options === 'object' &&
-            options.options !== null
-        ) {
-            $.each(options.options, function (key, option) {
+        $.each(this._selectOptions, function (key, option) {
 
-                if (typeof option === 'string' || typeof option === 'number') {
-                    selectOptions.push(that._renderOption({
-                        type: 'option',
-                        value: key,
-                        text: option
-                    }));
+            if (typeof option === 'string' || typeof option === 'number') {
+                selectOptions.push(that._renderOption({
+                    type: 'option',
+                    value: key,
+                    text: option
+                }));
 
-                } else if (typeof option === 'object') {
-                    let type = option.hasOwnProperty('type') && typeof option.type === 'string'
-                        ? option.type
-                        : 'option';
+            } else if (typeof option === 'object') {
+                let type = option.hasOwnProperty('type') && typeof option.type === 'string'
+                    ? option.type
+                    : 'option';
 
-                    if (type === 'group') {
-                        let renderAttr   = [];
-                        let groupAttr    = {};
-                        let groupOptions = [];
+                if (type === 'group') {
+                    let renderAttr   = [];
+                    let groupAttr    = {};
+                    let groupOptions = [];
 
-                        if (option.hasOwnProperty('attr') &&
-                            typeof option.attr === 'object' &&
-                            option.attr !== null &&
-                            ! Array.isArray(option.attr)
-                        ) {
-                            groupAttr = option.attr;
-                        }
-
-                        if (option.hasOwnProperty('label') && ['string', 'number'].indexOf(typeof(option.label)) >= 0) {
-                            groupAttr.label = option.label;
-                        }
-
-                        $.each(groupAttr, function (name, value) {
-                            renderAttr.push(name + '="' + value + '"');
-                        });
-
-                        if (Array.isArray(option.options)) {
-                            $.each(option.options, function (key, groupOption) {
-                                groupOptions.push(that._renderOption(groupOption));
-                            });
-                        }
-
-                        selectOptions.push({
-                            type: 'group',
-                            attr: renderAttr.length > 0 ? (' ' + renderAttr.join(' ')) : '',
-                            options: groupOptions,
-                        });
-
-                    } else {
-                        selectOptions.push(that._renderOption(option));
+                    if (option.hasOwnProperty('attr') &&
+                        typeof option.attr === 'object' &&
+                        option.attr !== null &&
+                        ! Array.isArray(option.attr)
+                    ) {
+                        groupAttr = option.attr;
                     }
+
+                    if (option.hasOwnProperty('label') && ['string', 'number'].indexOf(typeof(option.label)) >= 0) {
+                        groupAttr.label = option.label;
+                    }
+
+                    $.each(groupAttr, function (name, value) {
+                        renderAttr.push(name + '="' + value + '"');
+                    });
+
+                    if (Array.isArray(option.options)) {
+                        $.each(option.options, function (key, groupOption) {
+                            groupOptions.push(that._renderOption(groupOption));
+                        });
+                    }
+
+                    selectOptions.push({
+                        type: 'group',
+                        attr: renderAttr.length > 0 ? (' ' + renderAttr.join(' ')) : '',
+                        options: groupOptions,
+                    });
+
+                } else {
+                    selectOptions.push(that._renderOption(option));
                 }
-            });
-        }
+            }
+        });
 
         $.each(options.attr, function (name, value) {
             attributes.push(name + '="' + value + '"');
         });
 
-        return ejs.render(coreuiFormTpl['fields/select.html'], {
-            field: options,
-            value: this._value,
-            render: {
-                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-                options: selectOptions
-            },
+        return coreuiFormUtils.render(coreuiFormTpl['fields/select.html'], {
+            readonly: false,
+            options: selectOptions,
+            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
         });
     }
 
@@ -347,73 +346,65 @@ class FieldSelect extends Field {
     _renderContentReadonly() {
 
         let that            = this;
-        let options         = this.getOptions();
         let selectedOptions = [];
 
-        if (options.hasOwnProperty('options') &&
-            typeof options.options === 'object' &&
-            Array.isArray(options.options)
-        ) {
-            $.each(options.options, function (key, option) {
-                let type = option.hasOwnProperty('type') && typeof option.type === 'string'
-                    ? option.type
-                    : 'option';
+        $.each(this._selectOptions, function (key, option) {
+            let type = option.hasOwnProperty('type') && typeof option.type === 'string'
+                ? option.type
+                : 'option';
 
-                if (type === 'group') {
-                    if (Array.isArray(option.options)) {
-                        $.each(option.options, function (key, groupOption) {
-                            let optionText = groupOption.hasOwnProperty('text') && ['string', 'number'].indexOf(typeof(groupOption.text)) >= 0
-                                ? groupOption.text
-                                : '';
+            if (type === 'group') {
+                if (Array.isArray(option.options)) {
+                    $.each(option.options, function (key, groupOption) {
+                        let optionText = groupOption.hasOwnProperty('text') && ['string', 'number'].indexOf(typeof(groupOption.text)) >= 0
+                            ? groupOption.text
+                            : '';
 
-                            if ( ! optionText || optionText === '') {
-                                return;
-                            }
+                        if ( ! optionText || optionText === '') {
+                            return;
+                        }
 
-                            if (Array.isArray(that._value)) {
-                                $.each(that._value, function (key, itemValue) {
-                                    if (itemValue == groupOption.value) {
-                                        selectedOptions.push(optionText);
-                                        return false;
-                                    }
-                                });
+                        if (Array.isArray(that._value)) {
+                            $.each(that._value, function (key, itemValue) {
+                                if (itemValue == groupOption.value) {
+                                    selectedOptions.push(optionText);
+                                    return false;
+                                }
+                            });
 
-                            } else if (that._value == groupOption.value) {
-                                selectedOptions.push(optionText);
-                            }
-                        });
-                    }
-
-                } else {
-                    let optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(typeof(option.text)) >= 0
-                        ? option.text
-                        : '';
-
-                    if ( ! optionText || optionText === '') {
-                        return;
-                    }
-
-                    if (Array.isArray(that._value)) {
-                        $.each(that._value, function (key, itemValue) {
-                            if (itemValue == option.value) {
-                                selectedOptions.push(optionText);
-                                return false;
-                            }
-                        });
-
-                    } else if (that._value == option.value) {
-                        selectedOptions.push(optionText);
-                    }
+                        } else if (that._value == groupOption.value) {
+                            selectedOptions.push(optionText);
+                        }
+                    });
                 }
-            });
-        }
+
+            } else {
+                let optionText = option.hasOwnProperty('text') && ['string', 'number'].indexOf(typeof(option.text)) >= 0
+                    ? option.text
+                    : '';
+
+                if ( ! optionText || optionText === '') {
+                    return;
+                }
+
+                if (Array.isArray(that._value)) {
+                    $.each(that._value, function (key, itemValue) {
+                        if (itemValue == option.value) {
+                            selectedOptions.push(optionText);
+                            return false;
+                        }
+                    });
+
+                } else if (that._value == option.value) {
+                    selectedOptions.push(optionText);
+                }
+            }
+        });
 
 
-        return ejs.render(coreuiFormTpl['fields/select.html'], {
-            field: options,
-            render: {
-                selectedOptions: selectedOptions
-            },
+        return coreuiFormUtils.render(coreuiFormTpl['fields/select.html'], {
+            readonly: true,
+            readonlyOptions: selectedOptions
         });
     }
 
@@ -458,6 +449,5 @@ class FieldSelect extends Field {
     }
 }
 
-coreuiForm.fields.select = FieldSelect;
 
 export default FieldSelect;
