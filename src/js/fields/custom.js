@@ -18,7 +18,8 @@ class FieldCustom extends Field {
             labelWidth: null,
             width: null,
             content: '',
-            outContent: null,
+            prefix: null,
+            suffix: null,
             description: null,
             required: null,
             show: true

@@ -1,6 +1,4 @@
 
-import coreuiFormUtils from "../coreui.form.utils";
-
 
 class Field {
 
@@ -29,11 +27,11 @@ class Field {
     constructor(form, options) {
 
         this._form      = form;
-        this._id        = options.id || '';
-        this._contentId = coreuiFormUtils.hashCode();
+        this._id        = options.hasOwnProperty('id') && typeof options.id === 'string' ? options.id : '';
+        this._contentId = options.hasOwnProperty('contentId') && typeof options.contentId === 'string' ? options.contentId : '';
         this._readonly  = options.hasOwnProperty('readonly') && typeof options.readonly === 'boolean' ? options.readonly : false;
-        this._value     = coreuiFormUtils.getFieldValue(form, options);
-        this._options   = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._value     = options.hasOwnProperty('value') && ['string', 'number', 'object'].indexOf(typeof options.value) >= 0 ? options.value : null;
+        this._options   = $.extend(true, this._options, options);
     }
 
 

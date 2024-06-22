@@ -10,21 +10,19 @@ let coreuiFormUtils = {
     /**
      * Получение значения поля
      * @param {object} form
-     * @param {object} fieldOptions
+     * @param {string} name
      * @returns {string|number|null}
      */
-    getFieldValue: function (form, fieldOptions) {
+    getFieldValue: function (form, name) {
 
         let formRecord = form.getRecord();
 
-        if (fieldOptions &&
-            formRecord &&
-            typeof fieldOptions.name === 'string' &&
-            typeof formRecord === 'object' &&
-            formRecord.hasOwnProperty(fieldOptions.name) &&
-            ['string', 'number', 'object'].indexOf(typeof formRecord[fieldOptions.name]) >= 0
+        if (formRecord &&
+            typeof name === 'string' &&
+            formRecord.hasOwnProperty(name) &&
+            ['string', 'number', 'object'].indexOf(typeof formRecord[name]) >= 0
         ) {
-            return formRecord[fieldOptions.name];
+            return formRecord[name];
         }
 
         return '';
@@ -58,52 +56,6 @@ let coreuiFormUtils = {
         }
 
         return null;
-    },
-
-
-    /**
-     * Обработка полей в полях
-     * @param form
-     * @param defaultOptions
-     * @param fieldOptions
-     */
-    mergeFieldOptions: function (form, defaultOptions, fieldOptions) {
-
-        let options = $.extend(true, {}, defaultOptions);
-
-        if (fieldOptions) {
-            if (options.hasOwnProperty('attr') && typeof options.attr === 'object' &&
-                fieldOptions.hasOwnProperty('attr') && typeof fieldOptions.attr === 'object'
-            ) {
-                fieldOptions.attr = this.mergeAttr(options.attr, fieldOptions.attr);
-            }
-
-            options = $.extend(true, {}, options, fieldOptions);
-        }
-
-        if (options.hasOwnProperty('width')) {
-            if (options.width) {
-                let unit = typeof options.width === 'number' ? 'px' : '';
-                options.width = options.width + unit;
-
-            } else if (form._options.fieldWidth && options.type !== 'color') {
-                let unit = typeof form._options.fieldWidth === 'number' ? 'px' : '';
-                options.width = form._options.fieldWidth + unit;
-            }
-        }
-
-        if (options.hasOwnProperty('labelWidth')) {
-            if (options.labelWidth >= 0 && options.labelWidth !== null) {
-                let unit = typeof options.labelWidth === 'number' ? 'px' : '';
-                options.labelWidth = options.labelWidth + unit;
-
-            } else if (form._options.labelWidth) {
-                let unit = typeof form._options.labelWidth === 'number' ? 'px' : '';
-                options.labelWidth = form._options.labelWidth + unit;
-            }
-        }
-
-        return options
     },
 
 

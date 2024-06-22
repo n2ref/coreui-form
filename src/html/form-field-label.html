@@ -22,11 +22,17 @@
     </div>
     <% } %>
     <div class="coreui-form__field_content flex-fill">
+        <% if (field.prefix) { %>
+        <span class="coreui-form__field-prefix d-inline-block align-top ps-1">
+            <%- field.prefix %>
+        </span>
+        <% } %>
+
         <div class="d-inline-block content-<%= contentId %>"></div>
 
-        <% if (field.outContent) { %>
-        <span class="coreui-form__field-content-out d-inline-block align-top ps-1">
-            <%- field.outContent %>
+        <% if (field.suffix) { %>
+        <span class="coreui-form__field-suffix d-inline-block align-top ps-1">
+            <%- field.suffix %>
         </span>
         <% } %>
 

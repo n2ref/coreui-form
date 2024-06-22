@@ -1,7 +1,5 @@
 
-import coreuiFormTpl     from "../coreui.form.templates";
 import coreuiFormPrivate from "../coreui.form.private";
-import coreuiFormUtils   from "../coreui.form.utils";
 
 
 class FieldGroup {

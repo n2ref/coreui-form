@@ -1,6 +1,4 @@
 
-import coreuiFormUtils from "../coreui.form.utils";
-
 
 class Control {
 
@@ -20,8 +18,8 @@ class Control {
     constructor(form, options) {
 
         this._form    = form;
-        this._id      = options.id || '';
-        this._options = coreuiFormUtils.mergeFieldOptions(form, this._options, options);
+        this._id      = options.hasOwnProperty('id') && typeof options.id === 'string' ? options.id : '';
+        this._options = $.extend(true, this._options, options);
     }
 
 

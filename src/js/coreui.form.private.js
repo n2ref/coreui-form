@@ -67,12 +67,23 @@ let coreuiFormPrivate = {
             options.readonly = true;
         }
 
-
         let index   = form._fieldsIndex++;
         let name    = options.hasOwnProperty('name') && typeof options.name === 'string' && options.name ? options.name : null;
         let fieldId = options.hasOwnProperty('id') && typeof options.id === 'string' && options.id ? options.id : null;
 
-        options.id = form.getId() + '-' + (fieldId || name || index);
+
+        if (options.hasOwnProperty('width') && options.width) {
+            let unit = typeof options.width === 'number' ? 'px' : '';
+            options.width = options.width + unit;
+
+        } else if (form._options.fieldWidth && options.type !== 'color') {
+            let unit = typeof form._options.fieldWidth === 'number' ? 'px' : '';
+            options.width = form._options.fieldWidth + unit;
+        }
+
+        options.value     = coreuiFormUtils.getFieldValue(form, name);
+        options.contentId = coreuiFormUtils.hashCode();
+        options.id        = form.getId() + '-' + (fieldId || name || index);
 
         let fieldInstance = new coreuiForm.fields[type](form, options);
 
@@ -118,33 +129,34 @@ let coreuiFormPrivate = {
     /**
      * Инициализация контролов
      * @param {object} form
-     * @param {object} control
+     * @param {object} options
      * @return {object|null}
      * @private
      */
-    initControl: function (form, control) {
+    initControl: function (form, options) {
 
-        if (typeof control !== 'object') {
+        if (typeof options !== 'object') {
             return null;
         }
 
-        let type = control.hasOwnProperty('type') && typeof control.type === 'string' ? control.type : null;
+        let type = options.hasOwnProperty('type') && typeof options.type === 'string' ? options.type : null;
 
         if ( ! type || ! coreuiForm.controls.hasOwnProperty(type)) {
             return null;
         }
 
         if (type === 'submit' && form._readonly) {
-            control.show = false;
+            options.show = false;
         }
 
         let index     = form._controlsIndex++;
-        let name      = control.hasOwnProperty('name') && typeof control.name === 'string' && control.name ? control.name : null;
-        let controlId = control.hasOwnProperty('id') && typeof control.id === 'string' && control.id ? control.id : null;
+        let name      = options.hasOwnProperty('name') && typeof options.name === 'string' && options.name ? options.name : null;
+        let controlId = options.hasOwnProperty('id') && typeof options.id === 'string' && options.id ? options.id : null;
 
-        control.id = form.getId() + '-control-' + (controlId || name || index);
+        options    = $.extend(true, {}, options);
+        options.id = form.getId() + '-control-' + (controlId || name || index);
 
-        let controlInstance = new coreuiForm.controls[type](form, control);
+        let controlInstance = new coreuiForm.controls[type](form, options);
 
         form._controls.push(controlInstance);
 
@@ -189,18 +201,29 @@ let coreuiFormPrivate = {
             return null;
         }
 
-        let options      = field.getOptions();
+        let fieldOptions = field.getOptions();
         let contentId    = field.getContentId();
-        let attachFields = coreuiFormUtils.getAttacheFields(form, options);
-        let direction    = options.hasOwnProperty('fieldsDirection') && typeof options.fieldsDirection === 'string'
-            ? options.fieldsDirection
+        let attachFields = coreuiFormUtils.getAttacheFields(form, fieldOptions);
+        let direction    = fieldOptions.hasOwnProperty('fieldsDirection') && typeof fieldOptions.fieldsDirection === 'string'
+            ? fieldOptions.fieldsDirection
             : 'row';
         let directionClass = direction === 'column' ? 'd-block mt-2' : 'd-inline-block';
+
+
+        if (fieldOptions.hasOwnProperty('labelWidth') && fieldOptions.labelWidth) {
+            let unit = typeof fieldOptions.labelWidth === 'number' ? 'px' : '';
+            fieldOptions.labelWidth = fieldOptions.labelWidth + unit;
+
+        } else if (form._options.labelWidth) {
+            let unit = typeof form._options.labelWidth === 'number' ? 'px' : '';
+            fieldOptions.labelWidth = form._options.labelWidth + unit;
+        }
+
 
         let fieldContainer = $(
             coreuiFormUtils.render(coreuiFormTpl['form-field-label.html'], {
                 id: field.getId(),
-                field: options,
+                field: fieldOptions,
                 contentId: contentId,
                 issetAttachFields: attachFields.length > 0,
                 directionClass: directionClass,
