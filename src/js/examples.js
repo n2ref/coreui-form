@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     { type: 'email',          name: 'email',     label: 'Email'},
                     { type: 'tel',            name: 'tel',       label: 'Phone',     attr: { pattern: "[0-9]{3}-[0-9]{3}-[0-9]{4}" } },
                     { type: 'url',            name: 'url',       label: 'Url',       attr: { pattern: "https://.*" } },
-                    { type: 'password',       name: 'password',  label: 'Password',  attr: { minlength: 8 }, outContent: ' <i>min length 8</i>' },
+                    { type: 'password',       name: 'password',  label: 'Password',  attr: { minlength: 8 }, suffix: ' <i>min length 8</i>' },
                     { type: 'passwordRepeat', name: 'password2', label: 'Password repeat', width: 100, showBtn: true },
                     { type: 'textarea',       name: 'textarea',  label: 'Text Area', attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' },
                     { type: 'hidden',         name: 'hidden' }
