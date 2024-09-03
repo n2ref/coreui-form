@@ -24,6 +24,23 @@ class ControlLink extends ControlButton {
         }, options);
 
         super(form, options);
+
+        if (['function', 'string'].indexOf(typeof this._options.onClick) >= 0) {
+            let that = this;
+
+            form.on('show', function () {
+
+                $('#coreui-form-' + that.getId() + ' > a')
+                    .click(function (event) {
+
+                        if (typeof that._options.onClick === 'function') {
+                            that._options.onClick(that._form, event);
+                        } else {
+                            (new Function('form', 'event', that._options.onClick))(that._form, event);
+                        }
+                    });
+            });
+        }
     }
 
 
