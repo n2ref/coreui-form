@@ -134,8 +134,8 @@
             },
             fields: [
                 { type: 'text',     name: 'text',     label: 'Text',      width: 180 },
-                { type: 'date',     name: 'date',     label: 'Date',      width: 180 },
-                { type: 'textarea', name: 'textarea', label: 'Text Area', width: 180, attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' }
+                { type: 'date',     name: 'date',     label: 'Date',      width: 180, description: 'Description text' },
+                { type: 'textarea', name: 'textarea', label: 'Text Area', width: 180, attr: { style: 'height:60px; resize: vertical' } }
             ],
             onSubmit: function() { return false; },
             controls: [
@@ -772,7 +772,7 @@
                         { value: 3, text: 'Radio 3' }
                     ]
                 },
-                { type: 'switch', name: 'is_active_sw', label: 'Switch', valueY: 'Y', valueN: 'N' },
+                { type: 'switch', name: 'is_active_sw', label: 'Switch', valueY: 1, valueN: 0 },
                 { type: 'file',   name: 'file',         label: 'Files',  width: 300 },
                 { type: 'modal',  name: 'modal',        label: 'Modal',  width: 300,
                     options: {

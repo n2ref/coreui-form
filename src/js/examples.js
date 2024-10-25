@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         fields: [
             { type: 'text',     name: 'text',     label: 'Text',      width: 180 },
-            { type: 'date',     name: 'date',     label: 'Date',      width: 180 },
-            { type: 'textarea', name: 'textarea', label: 'Text Area', width: 180, attr: { style: 'height:60px; resize: vertical' }, description: 'Description text' }
+            { type: 'date',     name: 'date',     label: 'Date',      width: 180, description: 'Description text' },
+            { type: 'textarea', name: 'textarea', label: 'Text Area', width: 180, attr: { style: 'height:60px; resize: vertical' } }
         ],
         onSubmit: function() { return false; },
         controls: [
@@ -424,8 +424,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 { nmbr: 123,   date_order: "2023-01-01" },
                 { nmbr: "234", date_order: "2023-02-01" },
             ],
-            checkbox: [ 1, 3 ],
+            checkbox: [ 1, 2 ],
+            checkbox_btn: [ 1, 2 ],
             radio: 2,
+            radio_btn: 2,
             is_active_sw: 'Y',
             hidden: 'value',
             wysiwyg: 'Simple wysiwyg editor'
@@ -521,7 +523,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     { value: 3, text: 'Radio 3' }
                 ]
             },
-            { type: 'switch', name: 'is_active_sw', label: 'Switch', valueY: 'Y', valueN: 'N' },
+            { type: 'checkboxBtn', name: 'checkbox_btn', label: 'Check Buttons',
+                options: [
+                    { value: 1, text: 'Check 1' },
+                    { value: 2, text: 'Check 2' },
+                    { value: 3, text: 'Check 3' }
+                ]
+            },
+            { type: 'radioBtn', name: 'radio_btn', label: 'Radio Buttons', invalidText: 'Required field',
+                options: [
+                    { value: 1, text: 'Radio 1' },
+                    { value: 2, text: 'Radio 2' },
+                    { value: 3, text: 'Radio 3' }
+                ]
+            },
+            { type: 'switch', name: 'is_active_sw', label: 'Switch', valueY: 1, valueN: 0 },
             { type: 'file',   name: 'file',         label: 'Files',  width: 300 },
             { type: 'modal',  name: 'modal',        label: 'Modal',  width: 300,
                 options: {
