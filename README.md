@@ -161,7 +161,7 @@
                     { value: 3, text: 'Radio 3' }
                 ]
             },
-            { type: 'switch', name: 'is_active_sw', label: 'Switch', valueY: 'Y', valueN: 'N' },
+            { type: 'switch', name: 'is_active_sw', label: 'Switch', valueY: 1, valueN: 0 },
             { type: 'file',   name: 'file',         label: 'Files',  width: 300 },
             { type: 'modal',  name: 'modal',        label: 'Modal',  width: 300,
                 options: {

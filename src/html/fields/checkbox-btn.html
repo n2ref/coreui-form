@@ -1,0 +1,12 @@
+<% if (readonly) { %>
+    <div class="coreui-form__field-readonly col-form-label"><%- selectedItems.join(', ') %></div>
+<% } else { %>
+    <div class="pt-2">
+        <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+            <% $.each(options, function(key, option) { %>
+            <input <%- option.attr %>>
+            <label class="<%= field.labelClass %>" for="<%= option.id %>"><%= option.text %></label>
+            <% }); %>
+        </div>
+    </div>
+<% } %>

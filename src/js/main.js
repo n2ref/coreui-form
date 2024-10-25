@@ -13,6 +13,7 @@ import ControlLink   from "./controls/link";
 import ControlCustom from "./controls/custom";
 
 import FieldCheckbox       from "./fields/checkbox";
+import FieldCheckboxBtn    from "./fields/checkboxBtn";
 import FieldColor          from "./fields/color";
 import FieldCustom         from "./fields/custom";
 import FieldDataset        from "./fields/dataset";
@@ -23,6 +24,7 @@ import FieldMask           from "./fields/mask";
 import FieldModal          from "./fields/modal";
 import FieldNumber         from "./fields/number";
 import FieldRadio          from "./fields/radio";
+import FieldRadioBtn       from "./fields/radioBtn";
 import FieldRange          from "./fields/range";
 import FieldSelect         from "./fields/select";
 import FieldSwitch         from "./fields/switch";
@@ -45,6 +47,7 @@ coreuiForm.controls.submit = ControlSubmit;
 coreuiForm.controls.link   = ControlLink;
 coreuiForm.controls.custom = ControlCustom;
 
+coreuiForm.fields.checkboxBtn    = FieldCheckboxBtn;
 coreuiForm.fields.checkbox       = FieldCheckbox;
 coreuiForm.fields.color          = FieldColor;
 coreuiForm.fields.custom         = FieldCustom;
@@ -56,6 +59,7 @@ coreuiForm.fields.mask           = FieldMask;
 coreuiForm.fields.modal          = FieldModal;
 coreuiForm.fields.number         = FieldNumber;
 coreuiForm.fields.radio          = FieldRadio;
+coreuiForm.fields.radioBtn       = FieldRadioBtn;
 coreuiForm.fields.range          = FieldRange;
 coreuiForm.fields.select         = FieldSelect;
 coreuiForm.fields.switch         = FieldSwitch;
@@ -64,6 +68,5 @@ coreuiForm.fields.wysiwyg        = FieldWysiwyg;
 coreuiForm.fields.passwordRepeat = FieldPasswordRepeat;
 coreuiForm.fields.file           = FieldFile;
 coreuiForm.fields.fileUpload     = FieldFileUpload;
-coreuiForm.fields.checkbox       = FieldCheckbox;
 
 export default coreuiForm;

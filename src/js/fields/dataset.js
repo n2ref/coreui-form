@@ -62,10 +62,10 @@ class FieldDataset extends Field {
                     : [];
                 let valueY = option.hasOwnProperty('valueY') && ['string', 'number'].indexOf(typeof option.valueY) >= 0
                     ? option.valueY
-                    : 'Y';
+                    : 1;
                 let valueN = option.hasOwnProperty('valueN') && ['string', 'number'].indexOf(typeof option.valueN) >= 0
                     ? option.valueN
-                    : 'N';
+                    : 0;
                 let width = option.hasOwnProperty('width') && ['string', 'number'].indexOf(typeof option.width) >= 0
                     ? option.width
                     : null;
@@ -554,7 +554,7 @@ class FieldDataset extends Field {
                 });
 
             } else if (option.type === 'switch') {
-                let valueY = 'Y';
+                let valueY = 1;
 
                 if (option.hasOwnProperty('valueY')) {
                     valueY = option.valueY;
