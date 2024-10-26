@@ -6,7 +6,7 @@
 
         <% $.each(options, function(key, option) { %>
             <input <%- option.attr %>>
-            <label class="<%= labelClass %>" for="<%= option.id %>"><%= option.text %></label>
+            <label class="<%= optionsClass %>" for="<%= option.id %>"><%= option.text %></label>
         <% }); %>
 
         </div>

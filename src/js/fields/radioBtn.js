@@ -18,7 +18,7 @@ class FieldRadioBtn extends FieldRadio {
             name: null,
             label: null,
             labelWidth: null,
-            labelClass: 'btn btn-outline-secondary',
+            optionsClass: 'btn btn-outline-secondary',
             inline: false,
             prefix: null,
             suffix: null,
@@ -107,7 +107,7 @@ class FieldRadioBtn extends FieldRadio {
         return coreuiFormUtils.render(coreuiFormTpl['fields/radio-btn.html'], {
             readonly: this._readonly,
             inline: fieldOptions.inline,
-            labelClass: fieldOptions.labelClass,
+            optionsClass: fieldOptions.optionsClass,
             value: this._value,
             options: radioOptions,
             selectedItem: selectedItem,

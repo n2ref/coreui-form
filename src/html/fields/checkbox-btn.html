@@ -5,7 +5,7 @@
         <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
             <% $.each(options, function(key, option) { %>
             <input <%- option.attr %>>
-            <label class="<%= field.labelClass %>" for="<%= option.id %>"><%= option.text %></label>
+            <label class="<%= field.optionsClass %>" for="<%= option.id %>"><%= option.text %></label>
             <% }); %>
         </div>
     </div>

@@ -18,7 +18,7 @@ class FieldCheckboxBtn extends FieldCheckbox {
             name: null,
             label: null,
             labelWidth: null,
-            labelClass: 'btn btn-outline-secondary',
+            optionsClass: 'btn btn-outline-secondary',
             inline: false,
             prefix: null,
             suffix: null,
