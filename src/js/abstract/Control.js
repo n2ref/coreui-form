@@ -12,7 +12,7 @@ class Control {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {

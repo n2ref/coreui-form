@@ -1,15 +1,15 @@
 import 'ejs/ejs.min';
-import coreuiFormPrivate from "./coreui.form.private";
+import FormPrivate from "./form.private";
 
 
-let coreuiFormUtils = {
+let FormUtils = {
 
     _templates: {},
 
 
     /**
      * Получение значения поля
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {string} name
      * @returns {string|number|null}
      */
@@ -94,7 +94,7 @@ let coreuiFormUtils = {
 
     /**
      * Инициализация и рендер дополнительных полей
-     * @param {coreuiFormInstance} form
+     * @param {FormInstance} form
      * @param {object}               options
      * @returns {object}
      * @private
@@ -108,7 +108,7 @@ let coreuiFormUtils = {
             Array.isArray(options.fields)
         ) {
             $.each(options.fields, function (key, field) {
-                let instance = coreuiFormPrivate.initField(form, field);
+                let instance = FormPrivate.initField(form, field);
 
                 if (typeof instance !== 'object') {
                     return;
@@ -352,4 +352,4 @@ let coreuiFormUtils = {
     }
 }
 
-export default coreuiFormUtils;
+export default FormUtils;

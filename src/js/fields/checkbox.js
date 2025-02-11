@@ -1,7 +1,7 @@
 
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
-import Field           from "../abstract/Field";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
+import Field     from "../abstract/Field";
 
 
 class FieldCheckbox extends Field {
@@ -9,7 +9,7 @@ class FieldCheckbox extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -242,7 +242,7 @@ class FieldCheckbox extends Field {
                     }
                 });
 
-                itemAttr.id = coreuiFormUtils.hashCode();
+                itemAttr.id = FormUtils.hashCode();
 
                 if (typeof(that._value) === 'object' &&
                     Array.isArray(that._value)
@@ -281,7 +281,7 @@ class FieldCheckbox extends Field {
             ? this._value.join(', ')
             : this._value
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/checkbox.html'], {
+        return FormUtils.render(FormTpl['fields/checkbox.html'], {
             readonly: this._readonly,
             field: fieldOptions,
             value: value,

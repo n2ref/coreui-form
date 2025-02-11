@@ -1,6 +1,6 @@
 
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import Field           from "../abstract/Field";
 
 
@@ -8,7 +8,7 @@ class FieldInput extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -162,7 +162,7 @@ class FieldInput extends Field {
         let attributes   = [];
         let datalist     = [];
         let options      = this.getOptions();
-        let datalistId   = coreuiFormUtils.hashCode();
+        let datalistId   = FormUtils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -180,7 +180,7 @@ class FieldInput extends Field {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = coreuiFormUtils.mergeAttr(
+            options.attr = FormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -214,7 +214,7 @@ class FieldInput extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+        return FormUtils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             datalistId: datalistId,
             value: this._value !== null ? this._value : '',
@@ -241,10 +241,10 @@ class FieldInput extends Field {
 
         try {
             switch (type) {
-                case 'date':           value = coreuiFormUtils.formatDate(value); break;
-                case 'datetime-local': value = coreuiFormUtils.formatDateTime(value); break;
-                case 'month':          value = coreuiFormUtils.formatDateMonth(value, lang); break;
-                case 'week':           value = coreuiFormUtils.formatDateWeek(value, lang); break;
+                case 'date':           value = FormUtils.formatDate(value); break;
+                case 'datetime-local': value = FormUtils.formatDateTime(value); break;
+                case 'month':          value = FormUtils.formatDateMonth(value, lang); break;
+                case 'week':           value = FormUtils.formatDateWeek(value, lang); break;
             }
 
         } catch (e) {
@@ -252,7 +252,7 @@ class FieldInput extends Field {
             // ignore
         }
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+        return FormUtils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: value
         });

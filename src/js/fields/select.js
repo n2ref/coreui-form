@@ -1,6 +1,6 @@
 
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import Field           from "../abstract/Field";
 
 
@@ -10,7 +10,7 @@ class FieldSelect extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -39,7 +39,7 @@ class FieldSelect extends Field {
         let selectOptions = [];
 
         if (options.hasOwnProperty('options') &&
-            (Array.isArray(options.options) || coreuiFormUtils.isObject(options.options))
+            (Array.isArray(options.options) || FormUtils.isObject(options.options))
         ) {
             selectOptions   = options.options;
             options.options = [];
@@ -263,7 +263,7 @@ class FieldSelect extends Field {
         }
 
         if (options.width) {
-            options.attr = coreuiFormUtils.mergeAttr(
+            options.attr = FormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -331,7 +331,7 @@ class FieldSelect extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/select.html'], {
+        return FormUtils.render(FormTpl['fields/select.html'], {
             readonly: false,
             options: selectOptions,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -403,7 +403,7 @@ class FieldSelect extends Field {
         });
 
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/select.html'], {
+        return FormUtils.render(FormTpl['fields/select.html'], {
             readonly: true,
             readonlyOptions: selectedOptions
         });

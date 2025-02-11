@@ -1,7 +1,7 @@
 
 import 'jquery-mask-plugin/dist/jquery.mask';
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import FieldInput      from "../fields/input";
 
 
@@ -9,7 +9,7 @@ class FieldMask extends FieldInput {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -94,7 +94,7 @@ class FieldMask extends FieldInput {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = coreuiFormUtils.hashCode();
+        let datalistId = FormUtils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -112,7 +112,7 @@ class FieldMask extends FieldInput {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = coreuiFormUtils.mergeAttr(
+            options.attr = FormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -145,7 +145,7 @@ class FieldMask extends FieldInput {
             attributes.push(name + '="' + value + '"');
         });
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+        return FormUtils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -163,7 +163,7 @@ class FieldMask extends FieldInput {
 
         let options = this.getOptions();
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+        return FormUtils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : ''
         });

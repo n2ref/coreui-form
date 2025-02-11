@@ -1,6 +1,6 @@
 
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import ControlButton   from "./button";
 
 
@@ -8,7 +8,7 @@ class ControlLink extends ControlButton {
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -85,7 +85,7 @@ class ControlLink extends ControlButton {
             attributes.push(name + '="' + value + '"');
         });
 
-        return coreuiFormUtils.render(coreuiFormTpl['controls/link.html'], {
+        return FormUtils.render(FormTpl['controls/link.html'], {
             url    : this._options.url,
             content: this._options.content,
             attr   : attributes.length > 0 ? (' ' + attributes.join(' ')) : '',

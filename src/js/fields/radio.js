@@ -1,6 +1,6 @@
 
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import Field           from "../abstract/Field";
 
 
@@ -8,7 +8,7 @@ class FieldRadio extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -202,7 +202,7 @@ class FieldRadio extends Field {
                     }
                 });
 
-                itemAttr.id = coreuiFormUtils.hashCode();
+                itemAttr.id = FormUtils.hashCode();
 
                 if (that._value == option.value) {
                     if (option.hasOwnProperty('text') && option.text) {
@@ -224,7 +224,7 @@ class FieldRadio extends Field {
             });
         }
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/radio.html'], {
+        return FormUtils.render(FormTpl['fields/radio.html'], {
             readonly: this._readonly,
             inline: fieldOptions.inline,
             value: this._value,

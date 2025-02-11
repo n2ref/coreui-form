@@ -1,8 +1,8 @@
 
-import coreuiFormInstance from './coreui.form.instance';
-import coreuiFormUtils    from "./coreui.form.utils";
+import FormInstance from './form.instance';
+import FormUtils    from "./form.utils";
 
-let coreuiForm = {
+let Form = {
 
     lang: {},
     fields: {},
@@ -14,7 +14,7 @@ let coreuiForm = {
         labelWidth: 200,
         lang: 'en',
         class: '',
-        sendDataFormat: 'form',
+        sendDataFormat: 'json',
         errorMessageScrollOffset: 70
     },
 
@@ -22,11 +22,11 @@ let coreuiForm = {
     /**
      * Создание экземпляра формы
      * @param {object} options
-     * @returns {coreuiFormInstance}
+     * @returns {FormInstance}
      */
     create: function (options) {
 
-        if ( ! coreuiFormUtils.isObject(options)) {
+        if ( ! FormUtils.isObject(options)) {
             options = {};
         }
 
@@ -37,11 +37,11 @@ let coreuiForm = {
         }
 
         let langList     = this.lang.hasOwnProperty(options.lang) ? this.lang[options.lang] : {};
-        options.langList = options.hasOwnProperty('langList') && coreuiFormUtils.isObject(options.langList)
+        options.langList = options.hasOwnProperty('langList') && FormUtils.isObject(options.langList)
             ? $.extend(true, {}, langList, options.langList)
             : langList;
 
-        options.errorMessageScrollOffset = options.hasOwnProperty('errorMessageScrollOffset') && coreuiFormUtils.isNumeric(options.errorMessageScrollOffset)
+        options.errorMessageScrollOffset = options.hasOwnProperty('errorMessageScrollOffset') && FormUtils.isNumeric(options.errorMessageScrollOffset)
             ? options.errorMessageScrollOffset
             : this.getSetting('errorMessageScrollOffset');
 
@@ -54,11 +54,11 @@ let coreuiForm = {
             : this.getSetting('errorClass');
 
         if ( ! options.hasOwnProperty('send') ||
-             ! coreuiFormUtils.isObject(options.send) ||
+             ! FormUtils.isObject(options.send) ||
              ! options.send.hasOwnProperty('format') ||
             typeof options.send.format !== 'string'
         ) {
-            if ( ! options.hasOwnProperty('send') || ! coreuiFormUtils.isObject(options.send)) {
+            if ( ! options.hasOwnProperty('send') || ! FormUtils.isObject(options.send)) {
                 options.send = {};
             }
 
@@ -66,8 +66,7 @@ let coreuiForm = {
         }
 
 
-        let instance = $.extend(true, {}, coreuiFormInstance);
-        instance._init(options);
+        let instance = new FormInstance(options);
 
         let formId = instance.getId();
         this._instances[formId] = instance;
@@ -79,7 +78,7 @@ let coreuiForm = {
     /**
      * Получение экземпляра формы по id
      * @param {string} id
-     * @returns {coreuiFormInstance|null}
+     * @returns {FormInstance|null}
      */
     get: function (id) {
 
@@ -122,4 +121,4 @@ let coreuiForm = {
     }
 }
 
-export default coreuiForm;
+export default Form;

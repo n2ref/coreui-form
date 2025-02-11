@@ -1,14 +1,14 @@
 
-import coreuiFormTpl from "../coreui.form.templates";
+import FormTpl from "../form.tpl";
 import Field         from "../abstract/Field";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormUtils from "../form.utils";
 
 
 class FieldHidden extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -96,7 +96,7 @@ class FieldHidden extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/hidden.html'], {
+        return FormUtils.render(FormTpl['fields/hidden.html'], {
             readonly: this._readonly,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
         });

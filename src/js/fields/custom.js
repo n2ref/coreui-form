@@ -1,5 +1,5 @@
 
-import coreuiFormUtils from "../coreui.form.utils";
+import FormUtils from "../form.utils";
 import Field           from "../abstract/Field";
 
 
@@ -7,7 +7,7 @@ class FieldCustom extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -95,6 +95,13 @@ class FieldCustom extends Field {
                 if (typeof content[i] === 'string') {
                     result.push(content[i]);
 
+                } else if (content[i] instanceof Object &&
+                    typeof content[i].render === 'function' &&
+                    typeof content[i].initEvents === 'function'
+                ) {
+                    result.push(content[i].render());
+                    this._form.on('show', content[i].initEvents, content[i], true);
+
                 } else if ( ! Array.isArray(content[i]) &&
                     content[i].hasOwnProperty('component') &&
                     typeof content[i].component === 'string' &&
@@ -103,7 +110,7 @@ class FieldCustom extends Field {
                     let name = content[i].component.split('.')[1];
 
                     if (CoreUI.hasOwnProperty(name) &&
-                        coreuiFormUtils.isObject(CoreUI[name])
+                        FormUtils.isObject(CoreUI[name])
                     ) {
                         let instance = CoreUI[name].create(content[i]);
                         result.push(instance.render());

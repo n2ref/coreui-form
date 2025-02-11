@@ -1,6 +1,6 @@
 
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import Field           from "../abstract/Field";
 
 
@@ -8,7 +8,7 @@ class FieldSwitch extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -157,7 +157,7 @@ class FieldSwitch extends Field {
             typeof options.attr === 'object' &&
             Array.isArray(options.attr)
         ) {
-            itemAttr = coreuiFormUtils.mergeAttr(itemAttr, options.attr);
+            itemAttr = FormUtils.mergeAttr(itemAttr, options.attr);
         }
 
         if (this._value === options.valueY) {
@@ -168,7 +168,7 @@ class FieldSwitch extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/switch.html'], {
+        return FormUtils.render(FormTpl['fields/switch.html'], {
             readonly: this._readonly,
             valueY: options.valueY,
             value: this._value,

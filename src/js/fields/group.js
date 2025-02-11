@@ -1,5 +1,5 @@
 
-import coreuiFormPrivate from "../coreui.form.private";
+import FormPrivate from "../form.private";
 
 
 class FieldGroup {
@@ -19,7 +19,7 @@ class FieldGroup {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -95,13 +95,13 @@ class FieldGroup {
 
         $.each(this._options.fields, function (key, field) {
 
-            let fieldInstance = coreuiFormPrivate.initField(that._form, field);
+            let fieldInstance = FormPrivate.initField(that._form, field);
 
             if (typeof fieldInstance !== 'object') {
                 return;
             }
 
-            fields.push(coreuiFormPrivate.renderField(that._form, fieldInstance));
+            fields.push(FormPrivate.renderField(that._form, fieldInstance));
         });
 
         return fields;

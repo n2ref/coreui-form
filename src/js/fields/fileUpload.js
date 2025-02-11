@@ -1,7 +1,7 @@
 
 import fileUp          from 'fileup-js/src/js/main';
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import Field           from "../abstract/Field";
 
 
@@ -12,7 +12,7 @@ class FieldFileUpload extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -121,7 +121,7 @@ class FieldFileUpload extends Field {
             if (item instanceof File) {
                 that._fileUp.appendFile(item);
 
-            } else if (coreuiFormUtils.isObject(item)) {
+            } else if (FormUtils.isObject(item)) {
                 that._fileUp.appendFileByData(item);
             }
         });
@@ -212,11 +212,11 @@ class FieldFileUpload extends Field {
     _renderContent() {
 
         let lang          = this._form.getLang();
-        let fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
-        let isMultiple    = ! (coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
+        let fileUpOptions = FormUtils.isObject(this._options.options) ? this._options.options : {};
+        let isMultiple    = ! (FormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
         let accept        = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/file-upload.html'], {
+        return FormUtils.render(FormTpl['fields/file-upload.html'], {
             id: this.getContentId(),
             showButton: !! fileUpOptions.showButton,
             showDropzone: !! fileUpOptions.showDropzone,
@@ -234,11 +234,11 @@ class FieldFileUpload extends Field {
     _renderContentReadonly() {
 
         let lang          = this._form.getLang();
-        let fileUpOptions = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
-        let isMultiple    = ! (coreuiFormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
+        let fileUpOptions = FormUtils.isObject(this._options.options) ? this._options.options : {};
+        let isMultiple    = ! (FormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
         let accept        = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/file-upload.html'], {
+        return FormUtils.render(FormTpl['fields/file-upload.html'], {
             id: this.getContentId(),
             showButton: false,
             showDropzone: false,
@@ -255,7 +255,7 @@ class FieldFileUpload extends Field {
      */
     _initEvents() {
 
-        let options     = coreuiFormUtils.isObject(this._options.options) ? this._options.options : {};
+        let options     = FormUtils.isObject(this._options.options) ? this._options.options : {};
         let formOptions = this._form.getOptions();
         let contentId   = this.getContentId();
         let queue       = $('#fileup-' + contentId + '-queue');
@@ -278,16 +278,16 @@ class FieldFileUpload extends Field {
         if (typeof options.httpMethod === 'string') {
             createOptions.httpMethod = options.httpMethod;
         }
-        if (coreuiFormUtils.isObject(options.extraFields)) {
+        if (FormUtils.isObject(options.extraFields)) {
             createOptions.extraFields = options.extraFields;
         }
-        if (coreuiFormUtils.isNumeric(options.sizeLimit)) {
+        if (FormUtils.isNumeric(options.sizeLimit)) {
             createOptions.sizeLimit = options.sizeLimit;
         }
-        if (coreuiFormUtils.isNumeric(options.filesLimit)) {
+        if (FormUtils.isNumeric(options.filesLimit)) {
             createOptions.filesLimit = options.filesLimit;
         }
-        if (coreuiFormUtils.isNumeric(options.timeout)) {
+        if (FormUtils.isNumeric(options.timeout)) {
             createOptions.timeout = options.timeout;
         }
         if (typeof options.autostart === 'boolean') {

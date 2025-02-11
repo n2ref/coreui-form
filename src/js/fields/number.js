@@ -1,6 +1,6 @@
 
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import Field           from "../abstract/Field";
 
 
@@ -9,7 +9,7 @@ class FieldNumber extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -107,7 +107,7 @@ class FieldNumber extends Field {
         }
 
         if (this._options.precision >= 0) {
-            value = coreuiFormUtils.round(value, this._options.precision);
+            value = FormUtils.round(value, this._options.precision);
         }
 
         if (this._options.attr.hasOwnProperty('min')) {
@@ -209,7 +209,7 @@ class FieldNumber extends Field {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = coreuiFormUtils.hashCode();
+        let datalistId = FormUtils.hashCode();
 
 
         if ( ! options.hasOwnProperty('attr') ||
@@ -228,7 +228,7 @@ class FieldNumber extends Field {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = coreuiFormUtils.mergeAttr(
+            options.attr = FormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -263,7 +263,7 @@ class FieldNumber extends Field {
         });
 
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+        return FormUtils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -303,7 +303,7 @@ class FieldNumber extends Field {
             let value = $(this).val();
 
             if (that._options.precision >= 0) {
-                value = coreuiFormUtils.round(value, that._options.precision);
+                value = FormUtils.round(value, that._options.precision);
             }
 
             if (that._options.attr.hasOwnProperty('min')) {

@@ -1,14 +1,14 @@
 
-import coreuiForm        from './coreui.form';
-import coreuiFormTpl     from './coreui.form.templates';
-import coreuiFormUtils   from './coreui.form.utils';
-import coreuiFormPrivate from './coreui.form.private';
+import Form        from './form';
+import FormTpl     from './form.tpl';
+import FormUtils   from './form.utils';
+import FormPrivate from './form.private';
 
 
 
-let coreuiFormInstance = {
+class FormInstance {
 
-    _options: {
+    _options = {
         id: null,
         title: '',
         lang: 'en',
@@ -16,7 +16,7 @@ let coreuiFormInstance = {
         send: {
             url: '',
             method: 'POST',
-            format: 'form',
+            format: 'json',
         },
         validResponse: {
             headers: null,
@@ -39,17 +39,17 @@ let coreuiFormInstance = {
         record: {},
         fields: [],
         controls: []
-    },
+    };
 
-    _lock: false,
-    _readonly: false,
-    _fieldsIndex: 0,
-    _groupsIndex: 0,
-    _controlsIndex: 0,
-    _groups: [],
-    _fields: [],
-    _controls: [],
-    _events: {},
+    _lock = false;
+    _readonly = false;
+    _fieldsIndex = 0;
+    _groupsIndex = 0;
+    _controlsIndex = 0;
+    _groups = [];
+    _fields = [];
+    _controls = [];
+    _events = {};
 
 
     /**
@@ -57,12 +57,12 @@ let coreuiFormInstance = {
      * @param {object} options
      * @private
      */
-    _init: function (options) {
+    constructor(options) {
 
         this._options = $.extend(true, {}, this._options, options);
 
         if ( ! this._options.id) {
-            this._options.id = coreuiFormUtils.hashCode();
+            this._options.id = FormUtils.hashCode();
         }
 
         this._readonly = options.hasOwnProperty('readonly') && typeof options.readonly === 'boolean' ? options.readonly : false;
@@ -82,13 +82,13 @@ let coreuiFormInstance = {
                 this._options.controlsOffset = this._options.controlsOffset + unit;
             }
         }
-    },
+    }
 
 
     /**
      * Инициализация событий
      */
-    initEvents: function () {
+    initEvents() {
 
         let that          = this;
         let formContainer = '#coreui-form-' + this._options.id + ' > form';
@@ -106,26 +106,25 @@ let coreuiFormInstance = {
             });
         }
 
-        coreuiFormPrivate.trigger(this, 'show');
-    },
+        FormPrivate.trigger(this, 'show');
+    }
 
 
     /**
      * Получение id формы
      * @return {string|null}
      */
-    getId: function () {
+    getId() {
 
         return this._options.hasOwnProperty('id') ? this._options.id : null;
-    },
+    }
 
 
     /**
-     *
      * @param element
      * @returns {*}
      */
-    render: function(element) {
+    render(element) {
 
         let that       = this;
         let widthSizes = [];
@@ -184,12 +183,12 @@ let coreuiFormInstance = {
                     let content = null;
 
                     if (type === 'group') {
-                        let instance = coreuiFormPrivate.initGroup(that, field);
-                        content      = coreuiFormPrivate.renderGroup(instance);
+                        let instance = FormPrivate.initGroup(that, field);
+                        content      = FormPrivate.renderGroup(instance);
 
                     } else {
-                        let instance = coreuiFormPrivate.initField(that, field);
-                        content      = coreuiFormPrivate.renderField(that, instance);
+                        let instance = FormPrivate.initField(that, field);
+                        content      = FormPrivate.renderField(that, instance);
                     }
 
 
@@ -222,7 +221,7 @@ let coreuiFormInstance = {
             this._options.controls.length > 0
         ) {
             $.each(this._options.controls, function (key, control) {
-                let instance = coreuiFormPrivate.initControl(that, control);
+                let instance = FormPrivate.initControl(that, control);
 
                 if ( ! instance || typeof instance !== 'object') {
                     return;
@@ -242,7 +241,7 @@ let coreuiFormInstance = {
 
 
         let containerElement = $(
-            coreuiFormUtils.render(coreuiFormTpl['form.html'], {
+            FormUtils.render(FormTpl['form.html'], {
                 form: this._options,
                 formAttr: formAttr ? ' ' + formAttr.join(' ') : '',
                 widthSizes: widthSizes,
@@ -277,13 +276,13 @@ let coreuiFormInstance = {
             $(domElement).html(containerElement);
             this.initEvents();
         }
-    },
+    }
 
 
     /**
      *
      */
-    lock: function () {
+    lock() {
 
         this._lock = true;
 
@@ -294,13 +293,13 @@ let coreuiFormInstance = {
                 control.lock();
             }
         });
-    },
+    }
 
 
     /**
      * Разблокировка
      */
-    unlock: function () {
+    unlock() {
 
         this._lock = false;
 
@@ -311,13 +310,13 @@ let coreuiFormInstance = {
                 control.unlock();
             }
         });
-    },
+    }
 
 
     /**
      * Отправка данных формы
      */
-    send: function () {
+    send() {
 
         if (this._lock) {
             return;
@@ -353,7 +352,7 @@ let coreuiFormInstance = {
             onsubmit = this._options.onSubmit;
 
         } else if (typeof this._options.onSubmit === 'string' && this._options.onSubmit) {
-            let func = coreuiFormUtils.getFunctionByName(this._options.onSubmit);
+            let func = FormUtils.getFunctionByName(this._options.onSubmit);
 
             if (typeof func === 'function') {
                 onsubmit = func;
@@ -371,7 +370,7 @@ let coreuiFormInstance = {
         }
 
 
-        let results    = coreuiFormPrivate.trigger(this, 'send', [ this, data ]);
+        let results    = FormPrivate.trigger(this, 'send', [this, data ]);
         let isStopSend = false;
 
         $.each(results, function(key, result) {
@@ -395,7 +394,7 @@ let coreuiFormInstance = {
         function buildFormData(formData, data, parentKey) {
 
             if (data &&
-                (Array.isArray(data) || coreuiFormUtils.isObject(data))
+                (Array.isArray(data) || FormUtils.isObject(data))
             ) {
                 Object.keys(data).forEach(function (key) {
                     buildFormData(formData, data[key], parentKey ? parentKey + '[' + key + ']' : key);
@@ -438,7 +437,7 @@ let coreuiFormInstance = {
 
             that.hideError();
 
-            coreuiFormPrivate.trigger(that, 'send_success', [ that, result ]);
+            FormPrivate.trigger(that, 'send_success', [that, result ]);
 
             let jsonResponse = null;
 
@@ -503,7 +502,7 @@ let coreuiFormInstance = {
 
                     if (Object.keys(urlParams).length > 0) {
                         $.each(urlParams, function (param, path) {
-                            let value = coreuiFormUtils.getObjValue(jsonResponse, path);
+                            let value = FormUtils.getObjValue(jsonResponse, path);
                             value = typeof value !== 'undefined' ? value : '';
 
                             successLoadUrl = successLoadUrl.replace(
@@ -558,7 +557,7 @@ let coreuiFormInstance = {
             }
 
             that.showError(errorMessage);
-            coreuiFormPrivate.trigger(that, 'send_error', [ that, xhr, textStatus, errorThrown ]);
+            FormPrivate.trigger(that, 'send_error', [that, xhr, textStatus, errorThrown ]);
         }
 
         $.ajax({
@@ -568,7 +567,7 @@ let coreuiFormInstance = {
             contentType: contentType,
             processData: false,
             beforeSend: function(xhr) {
-                coreuiFormPrivate.trigger(that, 'send_start', [ that, xhr ]);
+                FormPrivate.trigger(that, 'send_start', [that, xhr ]);
             },
             success: function (result, textStatus, xhr) {
 
@@ -597,7 +596,7 @@ let coreuiFormInstance = {
                             if (that._options.validResponse.dataType === 'json') {
                                 if (typeof result !== 'object' &&
                                     ! Array.isArray(result) &&
-                                    ! coreuiFormUtils.isJson(result)
+                                    ! FormUtils.isJson(result)
                                 ) {
                                     isValidResponse = false;
                                 }
@@ -609,7 +608,7 @@ let coreuiFormInstance = {
                                 if (dataType === 'json') {
                                     if (typeof result !== 'object' &&
                                         ! Array.isArray(result) &&
-                                        ! coreuiFormUtils.isJson(result)
+                                        ! FormUtils.isJson(result)
                                     ) {
                                         isValidResponse = false;
                                         return false;
@@ -629,40 +628,40 @@ let coreuiFormInstance = {
             error: errorSend,
             complete: function(xhr, textStatus) {
                 that.unlock();
-                coreuiFormPrivate.trigger(that, 'send_end', [ that, xhr, textStatus ]);
+                FormPrivate.trigger(that, 'send_end', [that, xhr, textStatus ]);
             },
         });
-    },
+    }
 
 
     /**
      * Получение параметров
      * @returns {object}
      */
-    getOptions: function () {
+    getOptions() {
         return this._options;
-    },
+    }
 
 
     /**
      * Получение записи
      * @returns {object}
      */
-    getRecord: function () {
+    getRecord() {
 
         if (this._options.hasOwnProperty('record') && typeof this._options.record === 'object') {
             return this._options.record;
         }
 
         return {};
-    },
+    }
 
 
     /**
      * Получение данных с формы
      * @returns {object}
      */
-    getData: function () {
+    getData() {
 
         let data = {};
 
@@ -679,34 +678,34 @@ let coreuiFormInstance = {
         });
 
         return data;
-    },
+    }
 
 
     /**
      * Получение полей
      * @returns {object}
      */
-    getFields: function () {
+    getFields() {
         return this._fields;
-    },
+    }
 
 
     /**
      * Получение элементов управления
      * @returns {object}
      */
-    getControls: function () {
+    getControls() {
         return this._controls;
-    },
+    }
 
 
     /**
      * Получение групп полей
      * @returns {object}
      */
-    getGroups: function () {
+    getGroups() {
         return this._groups;
-    },
+    }
 
 
     /**
@@ -714,7 +713,7 @@ let coreuiFormInstance = {
      * @param {string} name
      * @returns {object}
      */
-    getField: function (name) {
+    getField(name) {
 
         let field = {};
 
@@ -727,13 +726,13 @@ let coreuiFormInstance = {
         });
 
         return field;
-    },
+    }
 
 
     /**
      * Смена состояний полей формы
      */
-    readonly: function (isReadonly) {
+    readonly(isReadonly) {
 
         $.each(this._fields, function (key, fieldInstance) {
             fieldInstance.readonly(isReadonly);
@@ -751,36 +750,36 @@ let coreuiFormInstance = {
                 }
             }
         });
-    },
+    }
 
 
     /**
      * Показ всех элементов управления
      */
-    showControls: function () {
+    showControls() {
 
         $.each(this._controls, function (key, control) {
             control.show();
         });
-    },
+    }
 
 
     /**
      * Скрытие всех элементов управления
      */
-    hideControls: function () {
+    hideControls() {
 
         $.each(this._controls, function (key, control) {
             control.hide();
         });
-    },
+    }
 
 
     /**
      * Валидация полей
      * @return {boolean}
      */
-    validate: function () {
+    validate() {
 
         let isValid = true;
 
@@ -796,7 +795,7 @@ let coreuiFormInstance = {
         });
 
         return isValid;
-    },
+    }
 
 
     /**
@@ -804,7 +803,7 @@ let coreuiFormInstance = {
      * @param {string} message
      * @param {object} options
      */
-    showError: function (message, options) {
+    showError(message, options) {
 
         let formContainer = $('#coreui-form-' + this._options.id + ' > form');
         let formError     = formContainer.find('> .coreui-form__error');
@@ -826,7 +825,7 @@ let coreuiFormInstance = {
         };
 
         formContainer.prepend(
-            coreuiFormUtils.render(coreuiFormTpl['form-error.html'], {
+            FormUtils.render(FormTpl['form-error.html'], {
                 message: message,
                 options: errorOptions,
             })
@@ -838,16 +837,16 @@ let coreuiFormInstance = {
                 scrollTop : formContainer.offset().top - options.errorMessageScrollOffset
             }, 'fast');
         }
-    },
+    }
 
 
     /**
      * Скрытие сообщения с ошибкой
      */
-    hideError: function () {
+    hideError() {
 
         $('#coreui-form-' + this._options.id + ' > form > .coreui-form__error').remove();
-    },
+    }
 
 
     /**
@@ -856,7 +855,7 @@ let coreuiFormInstance = {
      * @param {function}    callback
      * @param {object|null} context
      */
-    on: function(eventName, callback, context) {
+    on(eventName, callback, context) {
         if (typeof this._events[eventName] !== 'object') {
             this._events[eventName] = [];
         }
@@ -865,7 +864,7 @@ let coreuiFormInstance = {
             callback: callback,
             singleExec: false
         });
-    },
+    }
 
 
     /**
@@ -874,7 +873,7 @@ let coreuiFormInstance = {
      * @param {function}    callback
      * @param {object|null} context
      */
-    one: function(eventName, callback, context) {
+    one(eventName, callback, context) {
         if (typeof this._events[eventName] !== 'object') {
             this._events[eventName] = [];
         }
@@ -883,28 +882,28 @@ let coreuiFormInstance = {
             callback: callback,
             singleExec: true,
         });
-    },
+    }
 
 
     /**
      * Удаление формы
      */
-    destruct: function () {
+    destruct () {
 
         $('#coreui-form-' + this._options.id).remove();
-        delete coreuiForm._instances[this.getId()];
-    },
+        delete Form._instances[this.getId()];
+    }
 
 
     /**
      * Получение настроек языка
      * @private
      */
-    getLang: function () {
+    getLang() {
 
         return $.extend(true, {}, this._options.langList);
     }
 }
 
 
-export default coreuiFormInstance;
+export default FormInstance;

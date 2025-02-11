@@ -1,16 +1,16 @@
 
 
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
-import Control         from "../abstract/Control";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
+import Control   from "../abstract/Control";
 
 
 class ControlButton extends Control {
 
     /**
      * Инициализация
-     * @param {coreuiFormInstance} form
-     * @param {object}            options
+     * @param {FormInstance} form
+     * @param {object}       options
      */
     constructor(form, options) {
 
@@ -87,7 +87,7 @@ class ControlButton extends Control {
             attributes.push(name + '="' + value + '"');
         });
 
-        return coreuiFormUtils.render(coreuiFormTpl['controls/button.html'], {
+        return FormUtils.render(FormTpl['controls/button.html'], {
             content: this._options.content,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : ''
         });

@@ -18,23 +18,23 @@ var conf = {
     js: {
         file: 'coreui-form.js',
         fileMin: 'coreui-form.min.js',
-        main: 'src/js/main.js',
+        main: 'src/main.js',
+        reservedNames: ['FormInstance'],
         src: 'src/js/**/*.js'
     },
     css: {
         fileMin: 'coreui.form.min.css',
         file: 'coreui.form.css',
-        main: 'src/css/main.scss',
+        main: 'src/main.scss',
         src: [
             'src/css/**/*.scss',
         ]
     },
     tpl: {
-        file: 'coreui.form.templates.js',
+        file: 'form.tpl.js',
         dist: './src/js',
         src: [
             'src/html/**/*.html',
-            'src/html/*.html'
         ]
     }
 };
@@ -141,7 +141,11 @@ gulp.task('build_js_min', function() {
         .pipe(source(conf.js.fileMin))
         .pipe(buffer())
         .pipe(sourcemaps.init())
-        .pipe(uglify())
+        .pipe(uglify({
+            mangle: {
+                reserved: conf.js.reservedNames
+            }
+        }))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(conf.dist));
 });

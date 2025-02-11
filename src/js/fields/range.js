@@ -1,7 +1,7 @@
 
-import coreuiForm      from "../coreui.form";
-import coreuiFormTpl   from "../coreui.form.templates";
-import coreuiFormUtils from "../coreui.form.utils";
+import form      from "../form";
+import FormTpl   from "../form.tpl";
+import FormUtils from "../form.utils";
 import Field           from "../abstract/Field";
 
 
@@ -9,7 +9,7 @@ class FieldRange extends Field {
 
     /**
      * Инициализация
-     * @param {object} form
+     * @param {FormInstance} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -149,7 +149,7 @@ class FieldRange extends Field {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = coreuiFormUtils.hashCode();
+        let datalistId = FormUtils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -167,7 +167,7 @@ class FieldRange extends Field {
         options.attr.value = this._value;
 
         if (options.width) {
-            options.attr = coreuiFormUtils.mergeAttr(
+            options.attr = FormUtils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -200,7 +200,7 @@ class FieldRange extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return coreuiFormUtils.render(coreuiFormTpl['fields/input.html'], {
+        return FormUtils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
