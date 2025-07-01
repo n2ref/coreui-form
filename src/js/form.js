@@ -366,7 +366,7 @@ class Form {
             : langList;
 
         this._options.errorMessageScrollOffset = this._options.hasOwnProperty('errorMessageScrollOffset') && Utils.isNumeric(this._options.errorMessageScrollOffset)
-            ? options.errorMessageScrollOffset
+            ? this._options.errorMessageScrollOffset
             : this._controller.getSetting('errorMessageScrollOffset');
 
         this._options.labelWidth = this._options.hasOwnProperty('labelWidth')
