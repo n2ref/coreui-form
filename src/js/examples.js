@@ -24,6 +24,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let formSimple = CoreUI.form.create(simpleOptions);
     formSimple.render('form-simple');
+    //
+    // let simpleOptions = CoreUI.form.create();
+    //
+    // simpleOptions.setHandler('/path/to/object/1', 'post');
+    // simpleOptions.setRecord({
+    //     text: 'default text value',
+    //     textarea: "123",
+    //     date: "2023-01-01"
+    // });
+    // simpleOptions.addFields([
+    //     simpleOptions.field.text('text', 'Text').setWidth(180),
+    //     simpleOptions.field.date('date', 'Date').setWidth(180).setDescription('Description text'),
+    //     simpleOptions.field.textarea('textarea', 'Text Area').setWidth(180).setAttr({ style: 'height:60px; resize: vertical' }),
+    // ]);
+    //
+    // simpleOptions.render('form-simple');
 
 
     // Group
