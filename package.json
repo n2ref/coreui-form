@@ -1,11 +1,11 @@
 {
   "name": "coreui-form",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "CoreUI form",
   "scripts": {
     "build": "gulp build_tpl && gulp build_js && gulp build_css && npm run test_js",
     "watch": "gulp build_watch",
-    "test_js": "eslint -c .eslintrc.json --max-warnings 100 --ext .js ./dist"
+    "test_js": "eslint -c .eslintrc.json --max-warnings 100 --ext .js ./src"
   },
   "dependencies": {
     "ejs": "3.1.10",

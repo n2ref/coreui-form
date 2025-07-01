@@ -361,7 +361,7 @@ class Form {
         }
 
         let langList           = this._controller.lang.hasOwnProperty(this._options.lang) ? this._controller.lang[this._options.lang] : {};
-        this._options.langList = options.hasOwnProperty('langList') && Utils.isObject(this._options.langList)
+        this._options.langList = this._options.hasOwnProperty('langList') && Utils.isObject(this._options.langList)
             ? $.extend(true, {}, langList, this._options.langList)
             : langList;
 
