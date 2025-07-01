@@ -1,17 +1,16 @@
-import Form      from "./form";
-import FormUtils from "./form.utils";
-import FormTpl   from "./form.tpl";
+import Utils   from "./utils";
+import FormTpl from "./tpl";
 
 
-let FormPrivate = {
+let Private = {
 
     /**
      * Выполнение событий
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {string}       name
      * @param {object|null}  context
      * @param {Array}        params
-     * @return {object}
+     * @return {Array}
      * @private
      */
     trigger: function(form, name, params, context) {
@@ -42,7 +41,7 @@ let FormPrivate = {
 
     /**
      * Инициализация поля
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object}       options
      * @return {object|null}
      * @private
@@ -59,7 +58,7 @@ let FormPrivate = {
             return null;
         }
 
-        if ( ! Form.fields.hasOwnProperty(type)) {
+        if ( ! form._controller.fields.hasOwnProperty(type)) {
             type = 'input';
         }
 
@@ -81,11 +80,11 @@ let FormPrivate = {
             options.width = form._options.fieldWidth + unit;
         }
 
-        options.value     = FormUtils.getFieldValue(form, name);
-        options.contentId = FormUtils.hashCode();
+        options.value     = Utils.getFieldValue(form, name);
+        options.contentId = Utils.hashCode();
         options.id        = form.getId() + '-' + (fieldId || name || index);
 
-        let fieldInstance = new Form.fields[type](form, options);
+        let fieldInstance = new form._controller.fields[type](form, options);
 
         form._fields.push(fieldInstance);
 
@@ -95,7 +94,7 @@ let FormPrivate = {
 
     /**
      * Инициализация группы
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object}       options
      * @return {object|null}
      * @private
@@ -118,7 +117,7 @@ let FormPrivate = {
         options.id = form.getId() + '-' + (fieldId || index);
 
 
-        let groupInstance = new Form.fields.group(form, options);
+        let groupInstance = new form._controller.fields.group(form, options);
 
         form._groups.push(groupInstance);
 
@@ -128,7 +127,7 @@ let FormPrivate = {
 
     /**
      * Инициализация контролов
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object}       options
      * @return {object|null}
      * @private
@@ -141,7 +140,7 @@ let FormPrivate = {
 
         let type = options.hasOwnProperty('type') && typeof options.type === 'string' ? options.type : null;
 
-        if ( ! type || ! Form.controls.hasOwnProperty(type)) {
+        if ( ! type || ! form._controller.controls.hasOwnProperty(type)) {
             return null;
         }
 
@@ -156,7 +155,7 @@ let FormPrivate = {
         options    = $.extend(true, {}, options);
         options.id = form.getId() + '-control-' + (controlId || name || index);
 
-        let controlInstance = new Form.controls[type](form, options);
+        let controlInstance = new form._controller.controls[type](form, options);
 
         form._controls.push(controlInstance);
 
@@ -172,7 +171,7 @@ let FormPrivate = {
     renderGroup: function (group) {
 
         let container = $(
-            FormUtils.render(FormTpl['form-field-group.html'], {
+            Utils.render(FormTpl['form-field-group.html'], {
                 id: group.getId(),
                 group: group.getOptions(),
             })
@@ -181,7 +180,7 @@ let FormPrivate = {
         let groupContent = container.find('.coreui-form__group_content');
         let fields       = group.renderContent();
 
-        $.each(fields, function (key, field) {
+        fields.map(function (field) {
             groupContent.append(field);
         });
 
@@ -191,7 +190,7 @@ let FormPrivate = {
 
     /**
      * Рендер поля
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {Field}        field
      * @return {*|null}
      */
@@ -203,7 +202,7 @@ let FormPrivate = {
 
         let fieldOptions = field.getOptions();
         let contentId    = field.getContentId();
-        let attachFields = FormUtils.getAttacheFields(form, fieldOptions);
+        let attachFields = Utils.getAttacheFields(form, fieldOptions);
         let direction    = fieldOptions.hasOwnProperty('fieldsDirection') && typeof fieldOptions.fieldsDirection === 'string'
             ? fieldOptions.fieldsDirection
             : 'row';
@@ -221,7 +220,7 @@ let FormPrivate = {
 
 
         let fieldContainer = $(
-            FormUtils.render(FormTpl['form-field-label.html'], {
+            Utils.render(FormTpl['form-field-label.html'], {
                 id: field.getId(),
                 field: fieldOptions,
                 contentId: contentId,
@@ -234,7 +233,7 @@ let FormPrivate = {
         let content     = field.renderContent();
 
         if (Array.isArray(content) || content instanceof jQuery) {
-            $.each(content, function (key, item) {
+            content.map(function (item) {
                 fiendContent.append(item);
             });
 
@@ -246,9 +245,9 @@ let FormPrivate = {
         if (attachFields.length > 0) {
             let fiendAttachContainer = $('.coreui-form__attach-fields', fieldContainer);
 
-            $.each(attachFields, function (i, attachField) {
+            attachFields.map(function (attachField) {
                 let attachContainer = $(
-                    FormUtils.render(FormTpl['form-field-attach.html'], {
+                    Utils.render(FormTpl['form-field-attach.html'], {
                         contentId     : attachField.contentId,
                         directionClass: directionClass,
                     })
@@ -264,4 +263,4 @@ let FormPrivate = {
     }
 }
 
-export default FormPrivate;
+export default Private;

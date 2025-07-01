@@ -1,5 +1,5 @@
 
-import FormPrivate from "../form.private";
+import Private from "../private";
 
 
 class FieldGroup {
@@ -19,7 +19,7 @@ class FieldGroup {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -95,13 +95,13 @@ class FieldGroup {
 
         $.each(this._options.fields, function (key, field) {
 
-            let fieldInstance = FormPrivate.initField(that._form, field);
+            let fieldInstance = Private.initField(that._form, field);
 
             if (typeof fieldInstance !== 'object') {
                 return;
             }
 
-            fields.push(FormPrivate.renderField(that._form, fieldInstance));
+            fields.push(Private.renderField(that._form, fieldInstance));
         });
 
         return fields;

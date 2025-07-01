@@ -1,14 +1,14 @@
 {
   "name": "coreui-form",
-  "version": "1.0.42",
+  "version": "1.1.0",
   "description": "CoreUI form",
   "scripts": {
-    "build_all": "gulp build_tpl && gulp build_js && gulp build_js_min && gulp build_css_min && gulp build_css && npm run test_js",
-    "build_watch": "gulp build_watch",
+    "build": "gulp build_tpl && gulp build_js && gulp build_css && npm run test_js",
+    "watch": "gulp build_watch",
     "test_js": "eslint -c .eslintrc.json --max-warnings 100 --ext .js ./dist"
   },
   "dependencies": {
-    "ejs": "3.1.*",
+    "ejs": "3.1.10",
     "fileup-js": "1.0.3",
     "jquery-mask-plugin": "1.14.16"
   },

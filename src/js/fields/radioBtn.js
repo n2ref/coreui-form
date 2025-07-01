@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import FieldRadio      from "../fields/radio";
 
 
@@ -8,7 +8,7 @@ class FieldRadioBtn extends FieldRadio {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -82,7 +82,7 @@ class FieldRadioBtn extends FieldRadio {
                     }
                 });
 
-                itemAttr.id = FormUtils.hashCode();
+                itemAttr.id = Utils.hashCode();
 
                 if (that._value == option.value) {
                     if (option.hasOwnProperty('text') && option.text) {
@@ -104,7 +104,7 @@ class FieldRadioBtn extends FieldRadio {
             });
         }
 
-        return FormUtils.render(FormTpl['fields/radio-btn.html'], {
+        return Utils.render(FormTpl['fields/radio-btn.html'], {
             readonly: this._readonly,
             inline: fieldOptions.inline,
             optionsClass: fieldOptions.optionsClass,

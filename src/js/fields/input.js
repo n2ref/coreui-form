@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -8,7 +8,7 @@ class FieldInput extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -22,19 +22,19 @@ class FieldInput extends Field {
             prefix: null,
             suffix: null,
             description: null,
-            errorText: null,
-            fields: null,
-            attr: {
+            errorText  : null,
+            fields     : null,
+            attr       : {
                 class: 'form-control d-inline-block'
             },
-            required: null,
+            required   : null,
             invalidText: null,
-            validText: null,
-            readonly: null,
-            datalist: null,
-            show: true,
-            position: null,
-            noSend: null,
+            validText  : null,
+            readonly   : null,
+            datalist  : null,
+            show       : true,
+            position   : null,
+            noSend     : null,
         }, options);
 
         super(form, options);
@@ -162,7 +162,7 @@ class FieldInput extends Field {
         let attributes   = [];
         let datalist     = [];
         let options      = this.getOptions();
-        let datalistId   = FormUtils.hashCode();
+        let datalistId   = Utils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -180,7 +180,7 @@ class FieldInput extends Field {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = FormUtils.mergeAttr(
+            options.attr = Utils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -214,7 +214,7 @@ class FieldInput extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/input.html'], {
+        return Utils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             datalistId: datalistId,
             value: this._value !== null ? this._value : '',
@@ -241,10 +241,10 @@ class FieldInput extends Field {
 
         try {
             switch (type) {
-                case 'date':           value = FormUtils.formatDate(value); break;
-                case 'datetime-local': value = FormUtils.formatDateTime(value); break;
-                case 'month':          value = FormUtils.formatDateMonth(value, lang); break;
-                case 'week':           value = FormUtils.formatDateWeek(value, lang); break;
+                case 'date':           value = Utils.formatDate(value); break;
+                case 'datetime-local': value = Utils.formatDateTime(value); break;
+                case 'month':          value = Utils.formatDateMonth(value, lang); break;
+                case 'week':           value = Utils.formatDateWeek(value, lang); break;
             }
 
         } catch (e) {
@@ -252,7 +252,7 @@ class FieldInput extends Field {
             // ignore
         }
 
-        return FormUtils.render(FormTpl['fields/input.html'], {
+        return Utils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: value
         });

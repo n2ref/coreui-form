@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -11,7 +11,7 @@ class FieldDataset extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -163,7 +163,7 @@ class FieldDataset extends Field {
      */
     setValue(value) {
 
-        if ( ! FormUtils.isObject(value)) {
+        if ( ! Utils.isObject(value)) {
             return;
         }
 
@@ -317,7 +317,7 @@ class FieldDataset extends Field {
             }
         }
 
-        return FormUtils.render(FormTpl['fields/dataset.html'], {
+        return Utils.render(FormTpl['fields/dataset.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             lang: this._form.getLang(),
@@ -366,7 +366,7 @@ class FieldDataset extends Field {
             }
         }
 
-        return FormUtils.render(FormTpl['fields/dataset.html'], {
+        return Utils.render(FormTpl['fields/dataset.html'], {
             readonly: this._readonly,
             field: options,
             value: this._value !== null ? this._value : '',
@@ -488,7 +488,7 @@ class FieldDataset extends Field {
                 let unit     = typeof option.width === 'number' ? 'px' : '';
                 let widthVal = option.width + unit;
 
-                option.attr = FormUtils.mergeAttr(
+                option.attr = Utils.mergeAttr(
                     option.attr || {},
                     { style: 'width:' + widthVal }
                 );
@@ -507,8 +507,8 @@ class FieldDataset extends Field {
             });
         });
 
-        return FormUtils.render(FormTpl['fields/dataset-row.html'], {
-            hashItem: FormUtils.hashCode(),
+        return Utils.render(FormTpl['fields/dataset-row.html'], {
+            hashItem: Utils.hashCode(),
             options: rowOptions,
         });
     }
@@ -569,10 +569,10 @@ class FieldDataset extends Field {
                     optionValue = cellValue;
 
                     switch (option.type) {
-                        case 'date':           optionValue = FormUtils.formatDate(optionValue); break;
-                        case 'datetime-local': optionValue = FormUtils.formatDateTime(optionValue); break;
-                        case 'month':          optionValue = FormUtils.formatDateMonth(optionValue, lang); break;
-                        case 'week':           optionValue = FormUtils.formatDateWeek(optionValue, lang); break;
+                        case 'date':           optionValue = Utils.formatDate(optionValue); break;
+                        case 'datetime-local': optionValue = Utils.formatDateTime(optionValue); break;
+                        case 'month':          optionValue = Utils.formatDateMonth(optionValue, lang); break;
+                        case 'week':           optionValue = Utils.formatDateWeek(optionValue, lang); break;
                         default: optionValue = cellValue;
                     }
                 }
@@ -583,7 +583,7 @@ class FieldDataset extends Field {
             });
         });
 
-        return FormUtils.render(FormTpl['fields/dataset-row-readonly.html'], {
+        return Utils.render(FormTpl['fields/dataset-row-readonly.html'], {
             options: rowOptions,
         });
     }

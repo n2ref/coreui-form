@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -8,7 +8,7 @@ class FieldFile extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -191,7 +191,7 @@ class FieldFile extends Field {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = FormUtils.mergeAttr(
+            options.attr = Utils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -207,7 +207,7 @@ class FieldFile extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/input.html'], {
+        return Utils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -234,10 +234,10 @@ class FieldFile extends Field {
 
         try {
             switch (type) {
-                case 'date':           value = FormUtils.formatDate(value); break;
-                case 'datetime-local': value = FormUtils.formatDateTime(value); break;
-                case 'month':          value = FormUtils.formatDateMonth(value, lang); break;
-                case 'week':           value = FormUtils.formatDateWeek(value, lang); break;
+                case 'date':           value = Utils.formatDate(value); break;
+                case 'datetime-local': value = Utils.formatDateTime(value); break;
+                case 'month':          value = Utils.formatDateMonth(value, lang); break;
+                case 'week':           value = Utils.formatDateWeek(value, lang); break;
             }
 
         } catch (e) {
@@ -245,7 +245,7 @@ class FieldFile extends Field {
             // ignore
         }
 
-        return FormUtils.render(FormTpl['fields/input.html'], {
+        return Utils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: value,
         });

@@ -1,14 +1,14 @@
 
-import FormTpl from "../form.tpl";
+import FormTpl from "../tpl";
 import Field         from "../abstract/Field";
-import FormUtils from "../form.utils";
+import Utils from "../utils";
 
 
 class FieldHidden extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -96,7 +96,7 @@ class FieldHidden extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/hidden.html'], {
+        return Utils.render(FormTpl['fields/hidden.html'], {
             readonly: this._readonly,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
         });

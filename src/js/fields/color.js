@@ -1,7 +1,7 @@
 
-import form      from "../form";
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import form      from "../controller";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import FieldInput      from "../fields/input";
 
 
@@ -9,7 +9,7 @@ class FieldColor extends FieldInput {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -20,20 +20,20 @@ class FieldColor extends FieldInput {
             label: null,
             labelWidth: null,
             width: null,
-            prefix: null,
-            suffix: null,
+            prefix     : null,
+            suffix     : null,
             description: null,
-            errorText: null,
-            fields: null,
-            attr: {
+            errorText  : null,
+            fields     : null,
+            attr       : {
                 class: 'form-control form-control-color d-inline-block'
             },
-            required: null,
-            readonly: null,
-            datalist: null,
-            show: true,
-            position: null,
-            noSend: null,
+            required   : null,
+            readonly   : null,
+            datalist  : null,
+            show       : true,
+            position   : null,
+            noSend     : null,
         }, options);
 
         super(form, options);
@@ -50,7 +50,7 @@ class FieldColor extends FieldInput {
         let attributes   = [];
         let datalist     = [];
         let options      = this.getOptions();
-        let datalistId   = FormUtils.hashCode();
+        let datalistId   = Utils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -68,7 +68,7 @@ class FieldColor extends FieldInput {
         options.attr.value = this._value;
 
         if (options.width) {
-            options.attr = FormUtils.mergeAttr(
+            options.attr = Utils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -101,13 +101,13 @@ class FieldColor extends FieldInput {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/color.html'], {
-            readonly: this._readonly,
-            field: options,
-            value: this._value,
-            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+        return Utils.render(FormTpl['fields/color.html'], {
+            readonly  : this._readonly,
+            field     : options,
+            value     : this._value,
+            attr      : attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
             datalistId: datalistId,
-            datalist: datalist,
+            datalist : datalist,
         });
     }
 
@@ -119,7 +119,7 @@ class FieldColor extends FieldInput {
      */
     _renderContentReadonly () {
 
-        return FormUtils.render(FormTpl['fields/color.html'], {
+        return Utils.render(FormTpl['fields/color.html'], {
             readonly: this._readonly,
             value: this._value
         });

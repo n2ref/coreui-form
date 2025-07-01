@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -9,7 +9,7 @@ class FieldNumber extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -21,21 +21,21 @@ class FieldNumber extends Field {
             labelWidth: null,
             width: null,
             prefix: null,
-            suffix: null,
+            suffix     : null,
             description: null,
-            errorText: null,
-            fields: null,
-            attr: {
+            errorText  : null,
+            fields     : null,
+            attr       : {
                 class: 'form-control d-inline-block',
                 step: 'any'
             },
-            required: null,
-            readonly: null,
-            datalist: null,
-            show: true,
-            position: null,
-            precision: null,
-            noSend: null,
+            required   : null,
+            readonly   : null,
+            datalist  : null,
+            show       : true,
+            position   : null,
+            precision  : null,
+            noSend     : null,
         }, options);
 
         super(form, options);
@@ -107,7 +107,7 @@ class FieldNumber extends Field {
         }
 
         if (this._options.precision >= 0) {
-            value = FormUtils.round(value, this._options.precision);
+            value = Utils.round(value, this._options.precision);
         }
 
         if (this._options.attr.hasOwnProperty('min')) {
@@ -209,7 +209,7 @@ class FieldNumber extends Field {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = FormUtils.hashCode();
+        let datalistId = Utils.hashCode();
 
 
         if ( ! options.hasOwnProperty('attr') ||
@@ -228,7 +228,7 @@ class FieldNumber extends Field {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = FormUtils.mergeAttr(
+            options.attr = Utils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -263,7 +263,7 @@ class FieldNumber extends Field {
         });
 
 
-        return FormUtils.render(FormTpl['fields/input.html'], {
+        return Utils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -303,7 +303,7 @@ class FieldNumber extends Field {
             let value = $(this).val();
 
             if (that._options.precision >= 0) {
-                value = FormUtils.round(value, that._options.precision);
+                value = Utils.round(value, that._options.precision);
             }
 
             if (that._options.attr.hasOwnProperty('min')) {

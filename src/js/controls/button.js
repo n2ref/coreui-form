@@ -1,16 +1,16 @@
 
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
-import Control   from "../abstract/Control";
+import FormTpl from "../tpl";
+import Utils   from "../utils";
+import Control from "../abstract/Control";
 
 
 class ControlButton extends Control {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
-     * @param {object}       options
+     * @param {Form}   form
+     * @param {object} options
      */
     constructor(form, options) {
 
@@ -87,7 +87,7 @@ class ControlButton extends Control {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['controls/button.html'], {
+        return Utils.render(FormTpl['controls/button.html'], {
             content: this._options.content,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : ''
         });

@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -10,7 +10,7 @@ class FieldSelect extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -39,7 +39,7 @@ class FieldSelect extends Field {
         let selectOptions = [];
 
         if (options.hasOwnProperty('options') &&
-            (Array.isArray(options.options) || FormUtils.isObject(options.options))
+            (Array.isArray(options.options) || Utils.isObject(options.options))
         ) {
             selectOptions   = options.options;
             options.options = [];
@@ -263,7 +263,7 @@ class FieldSelect extends Field {
         }
 
         if (options.width) {
-            options.attr = FormUtils.mergeAttr(
+            options.attr = Utils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -331,7 +331,7 @@ class FieldSelect extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/select.html'], {
+        return Utils.render(FormTpl['fields/select.html'], {
             readonly: false,
             options: selectOptions,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
@@ -403,7 +403,7 @@ class FieldSelect extends Field {
         });
 
 
-        return FormUtils.render(FormTpl['fields/select.html'], {
+        return Utils.render(FormTpl['fields/select.html'], {
             readonly: true,
             readonlyOptions: selectedOptions
         });

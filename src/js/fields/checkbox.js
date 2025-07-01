@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field     from "../abstract/Field";
 
 
@@ -9,7 +9,7 @@ class FieldCheckbox extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -242,7 +242,7 @@ class FieldCheckbox extends Field {
                     }
                 });
 
-                itemAttr.id = FormUtils.hashCode();
+                itemAttr.id = Utils.hashCode();
 
                 if (typeof(that._value) === 'object' &&
                     Array.isArray(that._value)
@@ -281,7 +281,7 @@ class FieldCheckbox extends Field {
             ? this._value.join(', ')
             : this._value
 
-        return FormUtils.render(FormTpl['fields/checkbox.html'], {
+        return Utils.render(FormTpl['fields/checkbox.html'], {
             readonly: this._readonly,
             field: fieldOptions,
             value: value,

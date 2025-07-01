@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -11,7 +11,7 @@ class FieldPasswordRepeat extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -231,7 +231,7 @@ class FieldPasswordRepeat extends Field {
         options.attr.value = this._value ? '******' : '';
 
         if (options.width) {
-            options.attr = FormUtils.mergeAttr(
+            options.attr = Utils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -252,7 +252,7 @@ class FieldPasswordRepeat extends Field {
 
         let lang = this._form.getLang();
 
-        return FormUtils.render(FormTpl['fields/passwordRepeat.html'], {
+        return Utils.render(FormTpl['fields/passwordRepeat.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             lang: lang,
@@ -270,7 +270,7 @@ class FieldPasswordRepeat extends Field {
      */
     _renderContentReadonly() {
 
-        return FormUtils.render(FormTpl['fields/passwordRepeat.html'], {
+        return Utils.render(FormTpl['fields/passwordRepeat.html'], {
             readonly: this._readonly,
             value: this._value ? '******' : ''
         });

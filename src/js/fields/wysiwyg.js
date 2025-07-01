@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -12,7 +12,7 @@ class FieldWysiwyg extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      * @param {int}    index Порядковый номер на форме
      */
@@ -41,7 +41,7 @@ class FieldWysiwyg extends Field {
 
         super(form, options, index);
 
-        this._editorHash = FormUtils.hashCode();
+        this._editorHash = Utils.hashCode();
 
         let that = this;
 
@@ -165,7 +165,7 @@ class FieldWysiwyg extends Field {
      */
     renderContent() {
 
-        return FormUtils.render(FormTpl['fields/wysiwyg.html'], {
+        return Utils.render(FormTpl['fields/wysiwyg.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             editorHash: this._editorHash

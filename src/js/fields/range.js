@@ -1,7 +1,7 @@
 
-import form      from "../form";
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import form      from "../controller";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -9,7 +9,7 @@ class FieldRange extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -20,20 +20,20 @@ class FieldRange extends Field {
             label: null,
             labelWidth: null,
             width: null,
-            prefix: null,
-            suffix: null,
+            prefix     : null,
+            suffix     : null,
             description: null,
-            errorText: null,
-            fields: null,
-            attr: {
+            errorText  : null,
+            fields     : null,
+            attr       : {
                 class: 'form-range d-inline-block pt-1'
             },
-            required: null,
-            readonly: null,
-            datalist: null,
-            show: true,
-            position: null,
-            noSend: null,
+            required   : null,
+            readonly   : null,
+            datalist  : null,
+            show       : true,
+            position   : null,
+            noSend     : null,
         }, options);
 
         super(form, options);
@@ -149,7 +149,7 @@ class FieldRange extends Field {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = FormUtils.hashCode();
+        let datalistId = Utils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -167,7 +167,7 @@ class FieldRange extends Field {
         options.attr.value = this._value;
 
         if (options.width) {
-            options.attr = FormUtils.mergeAttr(
+            options.attr = Utils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -200,7 +200,7 @@ class FieldRange extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/input.html'], {
+        return Utils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',

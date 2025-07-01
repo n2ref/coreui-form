@@ -1,15 +1,34 @@
 import 'ejs/ejs.min';
-import FormPrivate from "./form.private";
+import Private from "./private";
 
 
-let FormUtils = {
+let Utils = {
 
     _templates: {},
+
+    /**
+     * Копирование свойств и методов
+     * @param {Object} target
+     * @param {Object} source
+     */
+    assign: function (target, source) {
+
+        const helperInstance = Object.create(source.prototype);
+        Object.assign(target, helperInstance );
+
+        // Копируем методы из прототипа
+        const prototypeMethods = Object.getOwnPropertyNames(source.prototype);
+        for (const methodName of prototypeMethods) {
+            if (methodName !== 'constructor') {
+                target[methodName] = helperInstance[methodName].bind(target);
+            }
+        }
+    },
 
 
     /**
      * Получение значения поля
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {string} name
      * @returns {string|number|null}
      */
@@ -94,7 +113,7 @@ let FormUtils = {
 
     /**
      * Инициализация и рендер дополнительных полей
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object}               options
      * @returns {object}
      * @private
@@ -108,7 +127,7 @@ let FormUtils = {
             Array.isArray(options.fields)
         ) {
             $.each(options.fields, function (key, field) {
-                let instance = FormPrivate.initField(form, field);
+                let instance = Private.initField(form, field);
 
                 if (typeof instance !== 'object') {
                     return;
@@ -352,4 +371,4 @@ let FormUtils = {
     }
 }
 
-export default FormUtils;
+export default Utils;

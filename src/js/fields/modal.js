@@ -1,7 +1,7 @@
 
-import FormTpl     from "../form.tpl";
-import FormUtils   from "../form.utils";
-import FormPrivate from "../form.private";
+import FormTpl     from "../tpl";
+import Utils   from "../utils";
+import Private from "../private";
 import Field           from "../abstract/Field";
 
 
@@ -12,7 +12,7 @@ class FieldModal extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -98,7 +98,7 @@ class FieldModal extends Field {
      */
     setValue(value) {
 
-        if ( ! FormUtils.isObject(value)) {
+        if ( ! Utils.isObject(value)) {
             return;
         }
 
@@ -135,7 +135,7 @@ class FieldModal extends Field {
                     }
                 }
 
-                FormPrivate.trigger(this._form, 'change-modal.coreui.form', [this], this);
+                Private.trigger(this._form, 'change-modal.coreui.form', [this], this);
             }
         }
     }
@@ -224,14 +224,14 @@ class FieldModal extends Field {
             typeof fieldOptions.attr === 'object' &&
             Array.isArray(fieldOptions.attr)
         ) {
-            textAttr = FormUtils.mergeAttr(textAttr, fieldOptions.attr);
+            textAttr = Utils.mergeAttr(textAttr, fieldOptions.attr);
         }
 
         $.each(textAttr, function (name, value) {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/modal.html'], {
+        return Utils.render(FormTpl['fields/modal.html'], {
             readonly: this._readonly,
             required: fieldOptions.required,
             name: fieldOptions.name,
@@ -267,7 +267,7 @@ class FieldModal extends Field {
                 }
             }
 
-            FormPrivate.trigger(that._form, 'modal_clear', [that, e ], that);
+            Private.trigger(that._form, 'modal_clear', [that, e ], that);
 
             that.setValue({value: '', text: ''});
         });
@@ -291,8 +291,8 @@ class FieldModal extends Field {
             }
 
 
-            let modalId      = FormUtils.hashCode();
-            let modalLoading = FormUtils.render(FormTpl['fields/modal-loading.html'], {
+            let modalId      = Utils.hashCode();
+            let modalLoading = Utils.render(FormTpl['fields/modal-loading.html'], {
                 lang: that._form.getLang(),
             });
 
@@ -331,22 +331,22 @@ class FieldModal extends Field {
                 url: url,
                 method: 'GET',
                 beforeSend: function(xhr) {
-                    FormPrivate.trigger(that._form, 'modal_load_before', [that, xhr ], that);
+                    Private.trigger(that._form, 'modal_load_before', [that, xhr ], that);
                 },
                 success: function (result) {
                     $('#modal-' + modalId + ' .modal-body').html(result);
-                    FormPrivate.trigger(that._form, 'modal_load_success', [that, result ], that);
+                    Private.trigger(that._form, 'modal_load_success', [that, result ], that);
                 },
                 error: function(xhr, textStatus, errorThrown) {
-                    FormPrivate.trigger(that._form, 'modal_load_error', [that, xhr, textStatus, errorThrown ], that);
+                    Private.trigger(that._form, 'modal_load_error', [that, xhr, textStatus, errorThrown ], that);
                 },
                 complete: function(xhr, textStatus) {
-                    FormPrivate.trigger(that._form, 'modal_load_complete', [that, xhr, textStatus ], that);
+                    Private.trigger(that._form, 'modal_load_complete', [that, xhr, textStatus ], that);
                 },
             });
 
 
-            FormPrivate.trigger(that._form, 'modal_select', [that, e ], that);
+            Private.trigger(that._form, 'modal_select', [that, e ], that);
         });
     }
 }

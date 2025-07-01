@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -9,7 +9,7 @@ class FieldTextarea extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -160,16 +160,16 @@ class FieldTextarea extends Field {
         }
 
         if (options.width) {
-            let unit = FormUtils.isNumeric(options.width) ? 'px' : '';
-            options.attr = FormUtils.mergeAttr(
+            let unit = Utils.isNumeric(options.width) ? 'px' : '';
+            options.attr = Utils.mergeAttr(
                 options.attr,
                 { style: 'width:' + options.width + unit }
             );
         }
 
         if (options.height) {
-            let unit = FormUtils.isNumeric(options.height) ? 'px' : '';
-            options.attr = FormUtils.mergeAttr(
+            let unit = Utils.isNumeric(options.height) ? 'px' : '';
+            options.attr = Utils.mergeAttr(
                 options.attr,
                 { style: 'height:' + options.height + unit }
             );
@@ -183,7 +183,7 @@ class FieldTextarea extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/textarea.html'], {
+        return Utils.render(FormTpl['fields/textarea.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',

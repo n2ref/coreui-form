@@ -1,5 +1,5 @@
 
-import Form from "./js/form";
+import Controller from "./js/controller";
 
 import langEn from "./js/lang/en";
 import langRu from "./js/lang/ru";
@@ -36,37 +36,37 @@ import FieldFileUpload     from "./js/fields/fileUpload";
 
 
 
-Form.lang.ru = langRu;
-Form.lang.en = langEn;
+Controller.lang.ru = langRu;
+Controller.lang.en = langEn;
 
-Form.abstract.field   = Field;
-Form.abstract.control = Control;
+Controller.abstract.field   = Field;
+Controller.abstract.control = Control;
 
-Form.controls.button = ControlButton;
-Form.controls.submit = ControlSubmit;
-Form.controls.link   = ControlLink;
-Form.controls.custom = ControlCustom;
+Controller.controls.button = ControlButton;
+Controller.controls.submit = ControlSubmit;
+Controller.controls.link   = ControlLink;
+Controller.controls.custom = ControlCustom;
 
-Form.fields.checkboxBtn    = FieldCheckboxBtn;
-Form.fields.checkbox       = FieldCheckbox;
-Form.fields.color          = FieldColor;
-Form.fields.custom         = FieldCustom;
-Form.fields.dataset        = FieldDataset;
-Form.fields.group          = FieldGroup;
-Form.fields.hidden         = FieldHidden;
-Form.fields.input          = FieldInput;
-Form.fields.mask           = FieldMask;
-Form.fields.modal          = FieldModal;
-Form.fields.number         = FieldNumber;
-Form.fields.radio          = FieldRadio;
-Form.fields.radioBtn       = FieldRadioBtn;
-Form.fields.range          = FieldRange;
-Form.fields.select         = FieldSelect;
-Form.fields.switch         = FieldSwitch;
-Form.fields.textarea       = FieldTextarea;
-Form.fields.wysiwyg        = FieldWysiwyg;
-Form.fields.passwordRepeat = FieldPasswordRepeat;
-Form.fields.file           = FieldFile;
-Form.fields.fileUpload     = FieldFileUpload;
+Controller.fields.checkboxBtn    = FieldCheckboxBtn;
+Controller.fields.checkbox       = FieldCheckbox;
+Controller.fields.color          = FieldColor;
+Controller.fields.custom         = FieldCustom;
+Controller.fields.dataset        = FieldDataset;
+Controller.fields.group          = FieldGroup;
+Controller.fields.hidden         = FieldHidden;
+Controller.fields.input          = FieldInput;
+Controller.fields.mask           = FieldMask;
+Controller.fields.modal          = FieldModal;
+Controller.fields.number         = FieldNumber;
+Controller.fields.radio          = FieldRadio;
+Controller.fields.radioBtn       = FieldRadioBtn;
+Controller.fields.range          = FieldRange;
+Controller.fields.select         = FieldSelect;
+Controller.fields.switch         = FieldSwitch;
+Controller.fields.textarea       = FieldTextarea;
+Controller.fields.wysiwyg        = FieldWysiwyg;
+Controller.fields.passwordRepeat = FieldPasswordRepeat;
+Controller.fields.file           = FieldFile;
+Controller.fields.fileUpload     = FieldFileUpload;
 
-export default Form;
+export default Controller;

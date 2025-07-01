@@ -1,6 +1,6 @@
 
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import ControlButton   from "./button";
 
 
@@ -9,7 +9,7 @@ class ControlSubmit extends ControlButton {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -43,7 +43,7 @@ class ControlSubmit extends ControlButton {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['controls/button.html'], {
+        return Utils.render(FormTpl['controls/button.html'], {
             content: this._options.content,
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : ''
         });

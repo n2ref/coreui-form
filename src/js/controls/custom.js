@@ -5,7 +5,7 @@ class ControlCustom extends Control {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {

@@ -1,7 +1,7 @@
 
 import 'jquery-mask-plugin/dist/jquery.mask';
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import FieldInput      from "../fields/input";
 
 
@@ -9,7 +9,7 @@ class FieldMask extends FieldInput {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -20,20 +20,20 @@ class FieldMask extends FieldInput {
             label: null,
             labelWidth: null,
             width: null,
-            prefix: null,
-            suffix: null,
+            prefix     : null,
+            suffix     : null,
             description: null,
-            errorText: null,
-            fields: null,
-            attr: {
+            errorText  : null,
+            fields     : null,
+            attr       : {
                 class: 'form-control d-inline-block'
             },
-            required: null,
-            readonly: null,
-            datalist: null,
-            show: true,
-            position: null,
-            noSend: null,
+            required   : null,
+            readonly   : null,
+            datalist  : null,
+            show       : true,
+            position   : null,
+            noSend     : null,
         }, options);
 
         super(form, options);
@@ -94,7 +94,7 @@ class FieldMask extends FieldInput {
         let attributes = [];
         let datalist   = [];
         let options    = this.getOptions();
-        let datalistId = FormUtils.hashCode();
+        let datalistId = Utils.hashCode();
 
         if ( ! options.hasOwnProperty('attr') ||
             typeof options.attr !== 'object' ||
@@ -112,7 +112,7 @@ class FieldMask extends FieldInput {
         options.attr.value = this._value !== null ? this._value : '';
 
         if (options.width) {
-            options.attr = FormUtils.mergeAttr(
+            options.attr = Utils.mergeAttr(
                 { style: 'width:' + options.width },
                 options.attr
             );
@@ -145,12 +145,12 @@ class FieldMask extends FieldInput {
             attributes.push(name + '="' + value + '"');
         });
 
-        return FormUtils.render(FormTpl['fields/input.html'], {
-            readonly: this._readonly,
-            value: this._value !== null ? this._value : '',
-            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+        return Utils.render(FormTpl['fields/input.html'], {
+            readonly  : this._readonly,
+            value     : this._value !== null ? this._value : '',
+            attr      : attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
             datalistId: datalistId,
-            datalist: datalist,
+            datalist : datalist,
         });
     }
 
@@ -163,7 +163,7 @@ class FieldMask extends FieldInput {
 
         let options = this.getOptions();
 
-        return FormUtils.render(FormTpl['fields/input.html'], {
+        return Utils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : ''
         });

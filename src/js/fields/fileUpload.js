@@ -1,7 +1,7 @@
 
 import fileUp          from 'fileup-js/src/js/main';
-import FormTpl   from "../form.tpl";
-import FormUtils from "../form.utils";
+import FormTpl   from "../tpl";
+import Utils from "../utils";
 import Field           from "../abstract/Field";
 
 
@@ -12,7 +12,7 @@ class FieldFileUpload extends Field {
 
     /**
      * Инициализация
-     * @param {FormInstance} form
+     * @param {Form} form
      * @param {object} options
      */
     constructor(form, options) {
@@ -121,7 +121,7 @@ class FieldFileUpload extends Field {
             if (item instanceof File) {
                 that._fileUp.appendFile(item);
 
-            } else if (FormUtils.isObject(item)) {
+            } else if (Utils.isObject(item)) {
                 that._fileUp.appendFileByData(item);
             }
         });
@@ -212,11 +212,11 @@ class FieldFileUpload extends Field {
     _renderContent() {
 
         let lang          = this._form.getLang();
-        let fileUpOptions = FormUtils.isObject(this._options.options) ? this._options.options : {};
-        let isMultiple    = ! (FormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
+        let fileUpOptions = Utils.isObject(this._options.options) ? this._options.options : {};
+        let isMultiple    = ! (Utils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
         let accept        = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
 
-        return FormUtils.render(FormTpl['fields/file-upload.html'], {
+        return Utils.render(FormTpl['fields/file-upload.html'], {
             id: this.getContentId(),
             showButton: !! fileUpOptions.showButton,
             showDropzone: !! fileUpOptions.showDropzone,
@@ -234,11 +234,11 @@ class FieldFileUpload extends Field {
     _renderContentReadonly() {
 
         let lang          = this._form.getLang();
-        let fileUpOptions = FormUtils.isObject(this._options.options) ? this._options.options : {};
-        let isMultiple    = ! (FormUtils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
+        let fileUpOptions = Utils.isObject(this._options.options) ? this._options.options : {};
+        let isMultiple    = ! (Utils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
         let accept        = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
 
-        return FormUtils.render(FormTpl['fields/file-upload.html'], {
+        return Utils.render(FormTpl['fields/file-upload.html'], {
             id: this.getContentId(),
             showButton: false,
             showDropzone: false,
@@ -255,7 +255,7 @@ class FieldFileUpload extends Field {
      */
     _initEvents() {
 
-        let options     = FormUtils.isObject(this._options.options) ? this._options.options : {};
+        let options     = Utils.isObject(this._options.options) ? this._options.options : {};
         let formOptions = this._form.getOptions();
         let contentId   = this.getContentId();
         let queue       = $('#fileup-' + contentId + '-queue');
@@ -278,16 +278,16 @@ class FieldFileUpload extends Field {
         if (typeof options.httpMethod === 'string') {
             createOptions.httpMethod = options.httpMethod;
         }
-        if (FormUtils.isObject(options.extraFields)) {
+        if (Utils.isObject(options.extraFields)) {
             createOptions.extraFields = options.extraFields;
         }
-        if (FormUtils.isNumeric(options.sizeLimit)) {
+        if (Utils.isNumeric(options.sizeLimit)) {
             createOptions.sizeLimit = options.sizeLimit;
         }
-        if (FormUtils.isNumeric(options.filesLimit)) {
+        if (Utils.isNumeric(options.filesLimit)) {
             createOptions.filesLimit = options.filesLimit;
         }
-        if (FormUtils.isNumeric(options.timeout)) {
+        if (Utils.isNumeric(options.timeout)) {
             createOptions.timeout = options.timeout;
         }
         if (typeof options.autostart === 'boolean') {
