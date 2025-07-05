@@ -19,7 +19,7 @@ import HelpersFieldsPropertiesShow             from "./properties/show";
 import HelpersFieldsPropertiesFields           from "./properties/fields";
 import HelpersFieldsPropertiesNoSend           from "./properties/noSend";
 import HelpersFieldsPropertiesOptionsSelect    from "./properties/optionsSelect";
-import HelpersFieldsPropertiesMultiline        from "./properties/multiline";
+import HelpersFieldsPropertiesMultiple         from "./properties/multiple";
 
 /**
  * @extends {HelpersFieldsPropertiesName}
@@ -40,7 +40,7 @@ import HelpersFieldsPropertiesMultiline        from "./properties/multiline";
  * @extends {HelpersFieldsPropertiesShow}
  * @extends {HelpersFieldsPropertiesFields}
  * @extends {HelpersFieldsPropertiesNoSend}
- * @extends {HelpersFieldsPropertiesMultiline}
+ * @extends {HelpersFieldsPropertiesMultiple}
  */
 class HelperFieldSelect extends HelperField {
 
@@ -69,7 +69,7 @@ class HelperFieldSelect extends HelperField {
         Utils.assign(this, HelpersFieldsPropertiesShow);
         Utils.assign(this, HelpersFieldsPropertiesFields);
         Utils.assign(this, HelpersFieldsPropertiesNoSend);
-        Utils.assign(this, HelpersFieldsPropertiesMultiline);
+        Utils.assign(this, HelpersFieldsPropertiesMultiple);
 
         this.setName(name);
         this.setLabel(label);

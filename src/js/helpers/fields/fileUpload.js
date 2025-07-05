@@ -432,7 +432,7 @@ class HelperFieldFileUpload extends HelperField {
 
 
 
-        result.options = [];
+        result.options = {};
 
         if (this._url !== null)          { result.options.url          = this._url; }
         if (this._httpMethod !== null)   { result.options.httpMethod   = this._httpMethod; }

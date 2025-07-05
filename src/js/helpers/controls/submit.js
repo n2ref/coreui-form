@@ -88,7 +88,7 @@ class HelperControlSubmit extends HelperControl {
      */
     toObject() {
         return {
-            type: 'button',
+            type: 'submit',
             id: this.getId(),
             content: this.getContent(),
             onClick: this.getOnClick(),
