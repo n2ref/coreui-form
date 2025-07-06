@@ -105,7 +105,7 @@ class HelperFieldSelect extends HelperField {
         if (this._attr !== null)             { result.attr             = this._attr; }
         if (this._noSend !== null)           { result.noSend           = this._noSend; }
 
-        if (this._multiple !== null) {
+        if (this._multiple === true) {
             if ( ! Utils.isObject(result.attr)) {
                 result.attr = {};
             }
