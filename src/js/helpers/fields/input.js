@@ -19,6 +19,7 @@ import HelpersFieldsPropertiesShow             from "./properties/show";
 import HelpersFieldsPropertiesDatalist         from "./properties/datalist";
 import HelpersFieldsPropertiesFields           from "./properties/fields";
 import HelpersFieldsPropertiesNoSend           from "./properties/noSend";
+import HelpersFieldsPropertiesOn               from "./properties/on";
 
 
 /**
@@ -40,6 +41,7 @@ import HelpersFieldsPropertiesNoSend           from "./properties/noSend";
  * @extends {HelpersFieldsPropertiesDatalist}
  * @extends {HelpersFieldsPropertiesFields}
  * @extends {HelpersFieldsPropertiesNoSend}
+ * @extends {HelpersFieldsPropertiesOn}
  */
 class HelperFieldInput extends HelperField {
 
@@ -50,24 +52,25 @@ class HelperFieldInput extends HelperField {
     constructor(name, label) {
         super();
 
-        Utils.assign(this, HelpersFieldsPropertiesName);
-        Utils.assign(this, HelpersFieldsPropertiesLabel);
-        Utils.assign(this, HelpersFieldsPropertiesDescription);
-        Utils.assign(this, HelpersFieldsPropertiesDescriptionLabel);
-        Utils.assign(this, HelpersFieldsPropertiesHelp);
-        Utils.assign(this, HelpersFieldsPropertiesWidth);
-        Utils.assign(this, HelpersFieldsPropertiesWidthLabel);
-        Utils.assign(this, HelpersFieldsPropertiesAttributes);
-        Utils.assign(this, HelpersFieldsPropertiesRequired);
-        Utils.assign(this, HelpersFieldsPropertiesReadonly);
-        Utils.assign(this, HelpersFieldsPropertiesInvalidText);
-        Utils.assign(this, HelpersFieldsPropertiesValidText);
-        Utils.assign(this, HelpersFieldsPropertiesPrefix);
-        Utils.assign(this, HelpersFieldsPropertiesSuffix);
-        Utils.assign(this, HelpersFieldsPropertiesShow);
-        Utils.assign(this, HelpersFieldsPropertiesDatalist);
-        Utils.assign(this, HelpersFieldsPropertiesFields);
-        Utils.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesName);
+        Object.assign(this, HelpersFieldsPropertiesLabel);
+        Object.assign(this, HelpersFieldsPropertiesDescription);
+        Object.assign(this, HelpersFieldsPropertiesDescriptionLabel);
+        Object.assign(this, HelpersFieldsPropertiesHelp);
+        Object.assign(this, HelpersFieldsPropertiesWidth);
+        Object.assign(this, HelpersFieldsPropertiesWidthLabel);
+        Object.assign(this, HelpersFieldsPropertiesAttributes);
+        Object.assign(this, HelpersFieldsPropertiesRequired);
+        Object.assign(this, HelpersFieldsPropertiesReadonly);
+        Object.assign(this, HelpersFieldsPropertiesInvalidText);
+        Object.assign(this, HelpersFieldsPropertiesValidText);
+        Object.assign(this, HelpersFieldsPropertiesPrefix);
+        Object.assign(this, HelpersFieldsPropertiesSuffix);
+        Object.assign(this, HelpersFieldsPropertiesShow);
+        Object.assign(this, HelpersFieldsPropertiesDatalist);
+        Object.assign(this, HelpersFieldsPropertiesFields);
+        Object.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesOn);
 
         this.setName(name);
         this.setLabel(label);
@@ -99,9 +102,10 @@ class HelperFieldInput extends HelperField {
         if (this._suffix !== null)           { result.suffix           = this._suffix; }
         if (this._show !== null)             { result.show             = this._show; }
         if (this._position !== null)         { result.position         = this._position; }
-        if (this.datalist !== null)         { result.datalist         = this.datalist; }
+        if (this.datalist !== null)          { result.datalist         = this.datalist; }
         if (this._attr !== null)             { result.attr             = this._attr; }
         if (this._noSend !== null)           { result.noSend           = this._noSend; }
+        if (this._on !== null)               { result.on               = this._on; }
 
         if (Array.isArray(this._fields)) {
             let fields = [];

@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesLabel {
+let HelpersFieldsPropertiesLabel = {
 
-    _label = null;
+    _label : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesLabel {
     setLabel(label = null) {
         this._label = label;
         return this;
-    }
+    },
 
 
     /**

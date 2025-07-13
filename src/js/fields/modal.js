@@ -41,6 +41,7 @@ class FieldModal extends Field {
             show: true,
             position: null,
             noSend: null,
+            on: null,
         }, options);
 
         super(form, options);
@@ -231,15 +232,33 @@ class FieldModal extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return Utils.render(FormTpl['fields/modal.html'], {
-            readonly: this._readonly,
-            required: fieldOptions.required,
-            name: fieldOptions.name,
-            value: this._value !== null ? this._value : '',
-            text: this._text !== null ? this._text : '',
-            lang: this._form.getLang(),width: this._options.width,
-            attr: attributes.length > 0 ? attributes.join(' ') : '',
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/modal.html'], {
+                readonly: this._readonly,
+                required: fieldOptions.required,
+                name: fieldOptions.name,
+                value: this._value !== null ? this._value : '',
+                text: this._text !== null ? this._text : '',
+                lang: this._form.getLang(),width: this._options.width,
+                attr: attributes.length > 0 ? attributes.join(' ') : '',
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 
 

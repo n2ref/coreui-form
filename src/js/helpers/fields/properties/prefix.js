@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesPrefix {
+let HelpersFieldsPropertiesPrefix = {
 
-    _prefix = null;
+    _prefix : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesPrefix {
     setPrefix(prefix = null) {
         this._prefix = prefix;
         return this;
-    }
+    },
 
 
     /**

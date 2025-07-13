@@ -22,9 +22,9 @@ class HelperFieldDatasetSelect extends HelperFieldDatasetType {
 
         super(name, title);
 
-        Utils.assign(this, HelpersFieldsPropertiesAttributes);
-        Utils.assign(this, HelpersFieldsPropertiesOptionsList);
-        Utils.assign(this, HelpersFieldsPropertiesWidth);
+        Object.assign(this, HelpersFieldsPropertiesAttributes);
+        Object.assign(this, HelpersFieldsPropertiesOptionsList);
+        Object.assign(this, HelpersFieldsPropertiesWidth);
     }
 
 

@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesShow {
+let HelpersFieldsPropertiesShow = {
 
-    _show = null;
+    _show : null,
 
 
     /**
@@ -19,7 +19,7 @@ class HelpersFieldsPropertiesShow {
         }
 
         return this;
-    }
+    },
 
 
     /**

@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesWidthLabel {
+let HelpersFieldsPropertiesWidthLabel = {
 
-    _widthLabel = null;
+    _widthLabel : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesWidthLabel {
     setWidthLabel(widthLabel = null) {
         this._widthLabel = widthLabel;
         return this;
-    }
+    },
 
 
     /**

@@ -18,7 +18,7 @@ class HelperFieldFileUpFile {
      */
     constructor(name) {
 
-        Utils.assign(this, HelpersFieldsPropertiesName);
+        Object.assign(this, HelpersFieldsPropertiesName);
 
         this.setName(name);
     }

@@ -35,16 +35,16 @@ class HelperFieldCustom extends HelperField {
     constructor(name, label) {
         super();
 
-        Utils.assign(this, HelpersFieldsPropertiesName);
-        Utils.assign(this, HelpersFieldsPropertiesLabel);
-        Utils.assign(this, HelpersFieldsPropertiesDescription);
-        Utils.assign(this, HelpersFieldsPropertiesDescriptionLabel);
-        Utils.assign(this, HelpersFieldsPropertiesHelp);
-        Utils.assign(this, HelpersFieldsPropertiesWidthLabel);
-        Utils.assign(this, HelpersFieldsPropertiesRequired);
-        Utils.assign(this, HelpersFieldsPropertiesShow);
-        Utils.assign(this, HelpersFieldsPropertiesFields);
-        Utils.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesName);
+        Object.assign(this, HelpersFieldsPropertiesLabel);
+        Object.assign(this, HelpersFieldsPropertiesDescription);
+        Object.assign(this, HelpersFieldsPropertiesDescriptionLabel);
+        Object.assign(this, HelpersFieldsPropertiesHelp);
+        Object.assign(this, HelpersFieldsPropertiesWidthLabel);
+        Object.assign(this, HelpersFieldsPropertiesRequired);
+        Object.assign(this, HelpersFieldsPropertiesShow);
+        Object.assign(this, HelpersFieldsPropertiesFields);
+        Object.assign(this, HelpersFieldsPropertiesNoSend);
 
         this.setName(name);
         this.setLabel(label);

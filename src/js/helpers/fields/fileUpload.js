@@ -16,6 +16,7 @@ import HelpersFieldsPropertiesSuffix           from "./properties/sufix";
 import HelpersFieldsPropertiesShow             from "./properties/show";
 import HelpersFieldsPropertiesFields           from "./properties/fields";
 import HelpersFieldsPropertiesNoSend           from "./properties/noSend";
+import HelpersFieldsPropertiesOn               from "./properties/on";
 
 import HelperFieldFileUpFile from "./fileUpload/file";
 
@@ -35,6 +36,7 @@ import HelperFieldFileUpFile from "./fileUpload/file";
  * @extends {HelpersFieldsPropertiesSuffix}
  * @extends {HelpersFieldsPropertiesShow}
  * @extends {HelpersFieldsPropertiesNoSend}
+ * @extends {HelpersFieldsPropertiesOn}
  */
 class HelperFieldFileUpload extends HelperField {
 
@@ -57,21 +59,22 @@ class HelperFieldFileUpload extends HelperField {
     constructor(name, label) {
         super();
 
-        Utils.assign(this, HelpersFieldsPropertiesName);
-        Utils.assign(this, HelpersFieldsPropertiesLabel);
-        Utils.assign(this, HelpersFieldsPropertiesDescription);
-        Utils.assign(this, HelpersFieldsPropertiesDescriptionLabel);
-        Utils.assign(this, HelpersFieldsPropertiesHelp);
-        Utils.assign(this, HelpersFieldsPropertiesReadonly);
-        Utils.assign(this, HelpersFieldsPropertiesRequired);
-        Utils.assign(this, HelpersFieldsPropertiesWidthLabel);
-        Utils.assign(this, HelpersFieldsPropertiesInvalidText);
-        Utils.assign(this, HelpersFieldsPropertiesValidText);
-        Utils.assign(this, HelpersFieldsPropertiesFields);
-        Utils.assign(this, HelpersFieldsPropertiesPrefix);
-        Utils.assign(this, HelpersFieldsPropertiesSuffix);
-        Utils.assign(this, HelpersFieldsPropertiesShow);
-        Utils.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesName);
+        Object.assign(this, HelpersFieldsPropertiesLabel);
+        Object.assign(this, HelpersFieldsPropertiesDescription);
+        Object.assign(this, HelpersFieldsPropertiesDescriptionLabel);
+        Object.assign(this, HelpersFieldsPropertiesHelp);
+        Object.assign(this, HelpersFieldsPropertiesReadonly);
+        Object.assign(this, HelpersFieldsPropertiesRequired);
+        Object.assign(this, HelpersFieldsPropertiesWidthLabel);
+        Object.assign(this, HelpersFieldsPropertiesInvalidText);
+        Object.assign(this, HelpersFieldsPropertiesValidText);
+        Object.assign(this, HelpersFieldsPropertiesFields);
+        Object.assign(this, HelpersFieldsPropertiesPrefix);
+        Object.assign(this, HelpersFieldsPropertiesSuffix);
+        Object.assign(this, HelpersFieldsPropertiesShow);
+        Object.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesOn);
 
         this.setName(name);
         this.setLabel(label);
@@ -429,6 +432,7 @@ class HelperFieldFileUpload extends HelperField {
         if (this._show !== null)             { result.show             = this._show; }
         if (this._position !== null)         { result.position         = this._position; }
         if (this._noSend !== null)           { result.noSend           = this._noSend; }
+        if (this._on !== null)               { result.on               = this._on; }
 
 
 

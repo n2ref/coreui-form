@@ -1,9 +1,9 @@
 import Utils from "../../../utils";
 
 
-class HelpersFieldsPropertiesAttributes {
+let HelpersFieldsPropertiesAttributes = {
 
-    _attributes = null;
+    _attributes: null,
 
 
     /**
@@ -21,7 +21,7 @@ class HelpersFieldsPropertiesAttributes {
         }
 
         return this;
-    }
+    },
 
 
     /**

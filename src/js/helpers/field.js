@@ -15,7 +15,7 @@ class HelperField {
      */
     constructor() {
 
-        Utils.assign(this, HelpersFieldsPropertiesPosition);
+        Object.assign(this, HelpersFieldsPropertiesPosition);
     }
 
 

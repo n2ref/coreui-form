@@ -38,7 +38,8 @@ class FieldPasswordRepeat extends Field {
             show: true,
             showBtn: true,
             position: null,
-            noSend: null
+            noSend: null,
+            on: null,
         }, options);
 
         super(form, options);
@@ -252,7 +253,7 @@ class FieldPasswordRepeat extends Field {
 
         let lang = this._form.getLang();
 
-        return Utils.render(FormTpl['fields/passwordRepeat.html'], {
+        let field = Utils.render(FormTpl['fields/passwordRepeat.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             lang: lang,
@@ -261,6 +262,22 @@ class FieldPasswordRepeat extends Field {
             attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
             attr2: attributes2.length > 0 ? (' ' + attributes2.join(' ')) : ''
         });
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 
 

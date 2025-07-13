@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesHelp {
+let HelpersFieldsPropertiesHelp = {
 
-    _help = null;
+    _help: null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesHelp {
     setHelp(help = null) {
         this._help = help;
         return this;
-    }
+    },
 
 
     /**

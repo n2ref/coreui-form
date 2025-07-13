@@ -232,10 +232,15 @@ let Private = {
         let fiendContent = $('.content-' + contentId, fieldContainer);
         let content     = field.renderContent();
 
-        if (Array.isArray(content) || content instanceof jQuery) {
+        if (Array.isArray(content)) {
             content.map(function (item) {
                 fiendContent.append(item);
             });
+
+        } else if (Utils.isObject(content)) {
+            for(let i = 0; i <= content.length; i++) {
+                fiendContent.append(content[i]);
+            }
 
         } else if (content) {
             fiendContent.append(content);

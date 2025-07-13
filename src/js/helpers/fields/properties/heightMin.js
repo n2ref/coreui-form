@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesHeightMin {
+let HelpersFieldsPropertiesHeightMin = {
 
-    _heightMin = null;
+    _heightMin : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesHeightMin {
     setHeightMin(heightMin = null) {
         this._heightMin = heightMin;
         return this;
-    }
+    },
 
 
     /**

@@ -118,13 +118,31 @@ class FieldCheckboxBtn extends FieldCheckbox {
             ? this._value.join(', ')
             : this._value
 
-        return Utils.render(FormTpl['fields/checkbox-btn.html'], {
-            readonly: this._readonly,
-            field: fieldOptions,
-            value: value,
-            options: checkboxOptions,
-            selectedItems: selectedItems
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/checkbox-btn.html'], {
+                readonly: this._readonly,
+                field: fieldOptions,
+                value: value,
+                options: checkboxOptions,
+                selectedItems: selectedItems
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 }
 

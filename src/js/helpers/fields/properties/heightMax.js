@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesHeightMax {
+let HelpersFieldsPropertiesHeightMax = {
 
-    _heightMax = null;
+    _heightMax : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesHeightMax {
     setHeightMax(heightMax = null) {
         this._heightMax = heightMax;
         return this;
-    }
+    },
 
 
     /**

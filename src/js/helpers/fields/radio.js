@@ -10,7 +10,7 @@ import HelpersFieldsPropertiesWidthLabel       from "./properties/widthLabel";
 import HelpersFieldsPropertiesRequired         from "./properties/required";
 import HelpersFieldsPropertiesReadonly         from "./properties/readonly";
 import HelpersFieldsPropertiesInvalidText      from "./properties/invalidText";
-import HelpersFieldsPropertiesValidText    from "./properties/validText";
+import HelpersFieldsPropertiesValidText        from "./properties/validText";
 import HelpersFieldsPropertiesPrefix           from "./properties/prefix";
 import HelpersFieldsPropertiesSuffix           from "./properties/sufix";
 import HelpersFieldsPropertiesShow             from "./properties/show";
@@ -18,6 +18,7 @@ import HelpersFieldsPropertiesFields           from "./properties/fields";
 import HelpersFieldsPropertiesNoSend           from "./properties/noSend";
 import HelpersFieldsPropertiesOptionsList      from "./properties/optionsList";
 import HelpersFieldsPropertiesInline           from "./properties/inline";
+import HelpersFieldsPropertiesOn               from "./properties/on";
 
 /**
  * @extends {HelpersFieldsPropertiesName}
@@ -37,6 +38,7 @@ import HelpersFieldsPropertiesInline           from "./properties/inline";
  * @extends {HelpersFieldsPropertiesInline}
  * @extends {HelpersFieldsPropertiesFields}
  * @extends {HelpersFieldsPropertiesNoSend}
+ * @extends {HelpersFieldsPropertiesOn}
  */
 class HelperFieldRadio extends HelperField {
 
@@ -47,23 +49,24 @@ class HelperFieldRadio extends HelperField {
     constructor(name, label) {
         super();
 
-        Utils.assign(this, HelpersFieldsPropertiesName);
-        Utils.assign(this, HelpersFieldsPropertiesLabel);
-        Utils.assign(this, HelpersFieldsPropertiesDescription);
-        Utils.assign(this, HelpersFieldsPropertiesDescriptionLabel);
-        Utils.assign(this, HelpersFieldsPropertiesHelp);
-        Utils.assign(this, HelpersFieldsPropertiesWidthLabel);
-        Utils.assign(this, HelpersFieldsPropertiesRequired);
-        Utils.assign(this, HelpersFieldsPropertiesReadonly);
-        Utils.assign(this, HelpersFieldsPropertiesInvalidText);
-        Utils.assign(this, HelpersFieldsPropertiesValidText);
-        Utils.assign(this, HelpersFieldsPropertiesPrefix);
-        Utils.assign(this, HelpersFieldsPropertiesSuffix);
-        Utils.assign(this, HelpersFieldsPropertiesOptionsList);
-        Utils.assign(this, HelpersFieldsPropertiesShow);
-        Utils.assign(this, HelpersFieldsPropertiesInline);
-        Utils.assign(this, HelpersFieldsPropertiesFields);
-        Utils.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesName);
+        Object.assign(this, HelpersFieldsPropertiesLabel);
+        Object.assign(this, HelpersFieldsPropertiesDescription);
+        Object.assign(this, HelpersFieldsPropertiesDescriptionLabel);
+        Object.assign(this, HelpersFieldsPropertiesHelp);
+        Object.assign(this, HelpersFieldsPropertiesWidthLabel);
+        Object.assign(this, HelpersFieldsPropertiesRequired);
+        Object.assign(this, HelpersFieldsPropertiesReadonly);
+        Object.assign(this, HelpersFieldsPropertiesInvalidText);
+        Object.assign(this, HelpersFieldsPropertiesValidText);
+        Object.assign(this, HelpersFieldsPropertiesPrefix);
+        Object.assign(this, HelpersFieldsPropertiesSuffix);
+        Object.assign(this, HelpersFieldsPropertiesOptionsList);
+        Object.assign(this, HelpersFieldsPropertiesShow);
+        Object.assign(this, HelpersFieldsPropertiesInline);
+        Object.assign(this, HelpersFieldsPropertiesFields);
+        Object.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesOn);
 
         this.setName(name);
         this.setLabel(label);
@@ -97,6 +100,7 @@ class HelperFieldRadio extends HelperField {
         if (this._position !== null)         { result.position         = this._position; }
         if (this._optionsList !== null)      { result.options          = this._optionsList; }
         if (this._noSend !== null)           { result.noSend           = this._noSend; }
+        if (this._on !== null)               { result.on               = this._on; }
 
         if (Array.isArray(this._fields)) {
             let fields = [];

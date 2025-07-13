@@ -48,7 +48,8 @@ class FieldFileUpload extends Field {
                 filesLimit: null,
                 sizeLimit: null,
                 templateFile: null,
-            }
+            },
+            on: null,
         }, options);
 
         super(form, options);
@@ -216,14 +217,32 @@ class FieldFileUpload extends Field {
         let isMultiple    = ! (Utils.isNumeric(fileUpOptions.filesLimit) && Number(fileUpOptions.filesLimit) === 1);
         let accept        = typeof fileUpOptions.accept === 'string' && fileUpOptions.accept ? fileUpOptions.accept : null;
 
-        return Utils.render(FormTpl['fields/file-upload.html'], {
-            id: this.getContentId(),
-            showButton: !! fileUpOptions.showButton,
-            showDropzone: !! fileUpOptions.showDropzone,
-            isMultiple: isMultiple,
-            accept: accept,
-            lang: lang,
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/file-upload.html'], {
+                id: this.getContentId(),
+                showButton: !! fileUpOptions.showButton,
+                showDropzone: !! fileUpOptions.showDropzone,
+                isMultiple: isMultiple,
+                accept: accept,
+                lang: lang,
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 
 

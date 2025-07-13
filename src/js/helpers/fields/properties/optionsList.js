@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesOptionsList {
+let HelpersFieldsPropertiesOptionsList = {
 
-    _optionsList = null;
+    _optionsList : null,
 
 
     /**
@@ -38,7 +38,8 @@ class HelpersFieldsPropertiesOptionsList {
             this._optionsList = optionsItems.length > 0 ? optionsItems : null;
         }
         return this;
-    }
+    },
+
 
     /**
      * Получение списка опций

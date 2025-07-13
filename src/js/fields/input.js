@@ -1,14 +1,14 @@
 
-import FormTpl   from "../tpl";
-import Utils from "../utils";
-import Field           from "../abstract/Field";
+import FormTpl from "../tpl";
+import Utils   from "../utils";
+import Field   from "../abstract/Field";
 
 
 class FieldInput extends Field {
 
     /**
      * Инициализация
-     * @param {Form} form
+     * @param {Form}   form
      * @param {object} options
      */
     constructor(form, options) {
@@ -35,6 +35,7 @@ class FieldInput extends Field {
             show       : true,
             position   : null,
             noSend     : null,
+            on         : null,
         }, options);
 
         super(form, options);
@@ -210,17 +211,36 @@ class FieldInput extends Field {
             });
         }
 
-        $.each(options.attr, function (name, value) {
+        for (let [name, value] of Object.entries(options.attr)) {
             attributes.push(name + '="' + value + '"');
-        });
+        }
 
-        return Utils.render(FormTpl['fields/input.html'], {
-            readonly: this._readonly,
-            datalistId: datalistId,
-            value: this._value !== null ? this._value : '',
-            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-            datalist: datalist
-        });
+
+        let field = $(
+            Utils.render(FormTpl['fields/input.html'], {
+                readonly: this._readonly,
+                datalistId: datalistId,
+                value: this._value !== null ? this._value : '',
+                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+                datalist: datalist
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+
+        return field;
     }
 
 

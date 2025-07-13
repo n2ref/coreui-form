@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesMultiple {
+let HelpersFieldsPropertiesMultiple = {
 
-    _multiple = null;
+    _multiple : null,
 
 
     /**
@@ -19,7 +19,7 @@ class HelpersFieldsPropertiesMultiple {
         }
 
         return this;
-    }
+    },
 
 
     /**

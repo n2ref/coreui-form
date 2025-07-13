@@ -22,9 +22,9 @@ class HelperFieldDatasetSwitch extends HelperFieldDatasetType {
 
         super(name, title);
 
-        Utils.assign(this, HelpersFieldsPropertiesAttributes);
-        Utils.assign(this, HelpersFieldsPropertiesValueY);
-        Utils.assign(this, HelpersFieldsPropertiesValueN);
+        Object.assign(this, HelpersFieldsPropertiesAttributes);
+        Object.assign(this, HelpersFieldsPropertiesValueY);
+        Object.assign(this, HelpersFieldsPropertiesValueN);
     }
 
 

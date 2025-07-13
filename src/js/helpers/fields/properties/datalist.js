@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesDatalist {
+let HelpersFieldsPropertiesDatalist = {
 
-    _datalist = null;
+    _datalist: null,
 
 
     /**
@@ -41,7 +41,7 @@ class HelpersFieldsPropertiesDatalist {
             this._datalist = datalistItems.length > 0 ? datalistItems : null;
         }
         return this;
-    }
+    },
 
 
     /**

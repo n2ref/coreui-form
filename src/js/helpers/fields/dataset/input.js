@@ -21,8 +21,8 @@ class HelperFieldDatasetInput extends HelperFieldDatasetType {
 
         super(name, title);
 
-        Utils.assign(this, HelpersFieldsPropertiesWidth);
-        Utils.assign(this, HelpersFieldsPropertiesAttributes);
+        Object.assign(this, HelpersFieldsPropertiesWidth);
+        Object.assign(this, HelpersFieldsPropertiesAttributes);
 
         this._type = type;
     }

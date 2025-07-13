@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesValidText {
+let HelpersFieldsPropertiesValidText = {
 
-    _validTextText = null;
+    _validTextText : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesValidText {
     setValidTextText(validTextText = null) {
         this._validTextText = validTextText;
         return this;
-    }
+    },
 
 
     /**

@@ -104,14 +104,32 @@ class FieldRadioBtn extends FieldRadio {
             });
         }
 
-        return Utils.render(FormTpl['fields/radio-btn.html'], {
-            readonly: this._readonly,
-            inline: fieldOptions.inline,
-            optionsClass: fieldOptions.optionsClass,
-            value: this._value,
-            options: radioOptions,
-            selectedItem: selectedItem,
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/radio-btn.html'], {
+                readonly: this._readonly,
+                inline: fieldOptions.inline,
+                optionsClass: fieldOptions.optionsClass,
+                value: this._value,
+                options: radioOptions,
+                selectedItem: selectedItem,
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 }
 

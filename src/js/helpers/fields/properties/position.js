@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesPosition {
+let HelpersFieldsPropertiesPosition = {
 
-    _position = null;
+    _position: null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesPosition {
     setPosition(position = null) {
         this._position = position;
         return this;
-    }
+    },
 
 
     /**

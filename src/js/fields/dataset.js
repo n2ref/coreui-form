@@ -30,7 +30,8 @@ class FieldDataset extends Field {
             readonly: null,
             show: true,
             position: null,
-            noSend: null
+            noSend: null,
+            on: null,
         }, options);
 
         super(form, options);
@@ -317,13 +318,31 @@ class FieldDataset extends Field {
             }
         }
 
-        return Utils.render(FormTpl['fields/dataset.html'], {
-            readonly: this._readonly,
-            value: this._value !== null ? this._value : '',
-            lang: this._form.getLang(),
-            headers: headers,
-            rows: rows,
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/dataset.html'], {
+                readonly: this._readonly,
+                value: this._value !== null ? this._value : '',
+                lang: this._form.getLang(),
+                headers: headers,
+                rows: rows,
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input, select').addBack('input, select');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 
 

@@ -34,6 +34,7 @@ class FieldSelect extends Field {
             show: true,
             position: null,
             noSend: null,
+            on: null,
         }, options);
 
         let selectOptions = [];
@@ -331,11 +332,29 @@ class FieldSelect extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return Utils.render(FormTpl['fields/select.html'], {
-            readonly: false,
-            options: selectOptions,
-            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/select.html'], {
+                readonly: false,
+                options: selectOptions,
+                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('select').addBack('select');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 
 

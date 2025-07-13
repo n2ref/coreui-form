@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesDescription {
+let HelpersFieldsPropertiesDescription = {
 
-    _description = null;
+    _description: null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesDescription {
     setDescription(description = null) {
         this._description = description;
         return this;
-    }
+    },
 
 
     /**

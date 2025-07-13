@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesWidthMin {
+let HelpersFieldsPropertiesWidthMin = {
 
-    _widthMin = null;
+    _widthMin : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesWidthMin {
     setWidthMin(widthMin = null) {
         this._widthMin = widthMin;
         return this;
-    }
+    },
 
 
     /**

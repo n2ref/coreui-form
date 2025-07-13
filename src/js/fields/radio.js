@@ -30,6 +30,7 @@ class FieldRadio extends Field {
             show: true,
             position: null,
             noSend: null,
+            on: null,
         }, options);
 
         super(form, options);
@@ -224,13 +225,31 @@ class FieldRadio extends Field {
             });
         }
 
-        return Utils.render(FormTpl['fields/radio.html'], {
-            readonly: this._readonly,
-            inline: fieldOptions.inline,
-            value: this._value,
-            options: radioOptions,
-            selectedItem: selectedItem,
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/radio.html'], {
+                readonly: this._readonly,
+                inline: fieldOptions.inline,
+                value: this._value,
+                options: radioOptions,
+                selectedItem: selectedItem,
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 }
 

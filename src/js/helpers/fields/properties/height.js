@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesHeight {
+let HelpersFieldsPropertiesHeight = {
 
-    _height = null;
+    _height: null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesHeight {
     setHeight(height = null) {
         this._height = height;
         return this;
-    }
+    },
 
 
     /**

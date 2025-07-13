@@ -1,9 +1,9 @@
 import Utils from "../../../utils";
 
 
-class HelpersFieldsPropertiesOptionsSelect {
+let HelpersFieldsPropertiesOptionsSelect = {
 
-    _optionsSelect = null;
+    _optionsSelect : null,
 
     /**
      * Установка списка значений с поддержкой групп опций
@@ -45,7 +45,7 @@ class HelpersFieldsPropertiesOptionsSelect {
             this._optionsSelect = datalistItems.length > 0 ? datalistItems : null;
         }
         return this;
-    }
+    },
 
 
     /**

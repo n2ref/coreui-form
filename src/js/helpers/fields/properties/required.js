@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesRequired {
+let HelpersFieldsPropertiesRequired = {
 
-    _required = null;
+    _required : null,
 
 
     /**
@@ -19,7 +19,7 @@ class HelpersFieldsPropertiesRequired {
         }
 
         return this;
-    }
+    },
 
 
     /**

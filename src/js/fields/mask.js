@@ -34,31 +34,12 @@ class FieldMask extends FieldInput {
             show       : true,
             position   : null,
             noSend     : null,
+            on: null,
         }, options);
 
         super(form, options);
 
         let that = this;
-
-        form.on('show', function () {
-            if ( ! that._readonly) {
-                that._initEvents();
-            }
-        });
-    }
-
-
-    /**
-     * Изменение режима поля только для чтения
-     * @param {boolean} isReadonly
-     */
-    readonly(isReadonly) {
-
-        super.readonly(isReadonly);
-
-        if ( ! isReadonly) {
-            this._initEvents();
-        }
     }
 
 
@@ -145,13 +126,31 @@ class FieldMask extends FieldInput {
             attributes.push(name + '="' + value + '"');
         });
 
-        return Utils.render(FormTpl['fields/input.html'], {
+        let field = Utils.render(FormTpl['fields/input.html'], {
             readonly  : this._readonly,
             value     : this._value !== null ? this._value : '',
             attr      : attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
             datalistId: datalistId,
             datalist : datalist,
         });
+
+        $('#coreui-form-' + this.getId() + ' .content-' + this.getContentId() + ' input')
+            .mask(this._options.mask, this._options.options)
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 
 
@@ -161,23 +160,10 @@ class FieldMask extends FieldInput {
      */
     _renderContentReadonly() {
 
-        let options = this.getOptions();
-
         return Utils.render(FormTpl['fields/input.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : ''
         });
-    }
-
-
-    /**
-     * Инициализация событий
-     * @private
-     */
-    _initEvents () {
-
-        $('#coreui-form-' + this.getId() + ' .content-' + this.getContentId() + ' input')
-            .mask(this._options.mask, this._options.options)
     }
 }
 

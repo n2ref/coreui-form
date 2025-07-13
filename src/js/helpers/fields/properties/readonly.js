@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesReadonly {
+let HelpersFieldsPropertiesReadonly = {
 
-    _readonly = null;
+    _readonly : null,
 
 
     /**
@@ -19,7 +19,7 @@ class HelpersFieldsPropertiesReadonly {
         }
 
         return this;
-    }
+    },
 
 
     /**

@@ -15,7 +15,7 @@ class HelperFieldRadioBtn extends HelperFieldRadio {
     constructor(name, label) {
         super();
 
-        Utils.assign(this, HelpersFieldsPropertiesOptionsClass);
+        Object.assign(this, HelpersFieldsPropertiesOptionsClass);
 
         this.setName(name);
         this.setLabel(label);

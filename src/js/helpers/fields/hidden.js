@@ -4,12 +4,14 @@ import Utils       from "../../utils";
 import HelpersFieldsPropertiesName       from "./properties/name";
 import HelpersFieldsPropertiesAttributes from "./properties/attributes";
 import HelpersFieldsPropertiesNoSend     from "./properties/noSend";
+import HelpersFieldsPropertiesOn         from "./properties/on";
 
 
 /**
  * @extends {HelpersFieldsPropertiesName}
  * @extends {HelpersFieldsPropertiesAttributes}
  * @extends {HelpersFieldsPropertiesNoSend}
+ * @extends {HelpersFieldsPropertiesOn}
  */
 class HelperFieldHidden extends HelperField {
 
@@ -20,9 +22,10 @@ class HelperFieldHidden extends HelperField {
     constructor(name, label) {
         super();
 
-        Utils.assign(this, HelpersFieldsPropertiesName);
-        Utils.assign(this, HelpersFieldsPropertiesAttributes);
-        Utils.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesName);
+        Object.assign(this, HelpersFieldsPropertiesAttributes);
+        Object.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesOn);
 
         this.setName(name);
         this.setLabel(label);
@@ -42,6 +45,7 @@ class HelperFieldHidden extends HelperField {
         if (this._name !== null)   { result.name   = this._name; }
         if (this._attr !== null)   { result.attr   = this._attr; }
         if (this._noSend !== null) { result.noSend = this._noSend; }
+        if (this._on !== null)     { result.on     = this._on; }
 
 
         return result;

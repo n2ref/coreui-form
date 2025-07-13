@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesSuffix {
+let HelpersFieldsPropertiesSuffix = {
     
-    _suffix = null;
+    _suffix : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesSuffix {
     setSuffix(suffix = null) {
         this._suffix = suffix;
         return this;
-    }
+    },
 
 
     /**

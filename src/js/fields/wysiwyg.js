@@ -36,7 +36,8 @@ class FieldWysiwyg extends Field {
             readonly: false,
             show: true,
             positions: null,
-            noSend: null
+            noSend: null,
+            on: null,
         }, options);
 
         super(form, options, index);
@@ -165,11 +166,27 @@ class FieldWysiwyg extends Field {
      */
     renderContent() {
 
-        return Utils.render(FormTpl['fields/wysiwyg.html'], {
+        let field = Utils.render(FormTpl['fields/wysiwyg.html'], {
             readonly: this._readonly,
             value: this._value !== null ? this._value : '',
             editorHash: this._editorHash
         });
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('textarea').addBack('textarea');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 
 

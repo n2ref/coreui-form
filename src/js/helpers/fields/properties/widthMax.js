@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesWidthMax {
+let HelpersFieldsPropertiesWidthMax = {
 
-    _widthMax = null;
+    _widthMax : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesWidthMax {
     setWidthMax(widthMax = null) {
         this._widthMax = widthMax;
         return this;
-    }
+    },
 
 
     /**

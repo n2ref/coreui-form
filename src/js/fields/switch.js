@@ -30,6 +30,7 @@ class FieldSwitch extends Field {
             show: true,
             position: null,
             noSend: null,
+            on: null,
         }, options);
 
         super(form, options);
@@ -168,13 +169,31 @@ class FieldSwitch extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return Utils.render(FormTpl['fields/switch.html'], {
-            readonly: this._readonly,
-            valueY: options.valueY,
-            value: this._value,
-            lang: this._form.getLang(),
-            attr: attributes.length > 0 ? attributes.join(' ') : ''
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/switch.html'], {
+                readonly: this._readonly,
+                valueY: options.valueY,
+                value: this._value,
+                lang: this._form.getLang(),
+                attr: attributes.length > 0 ? attributes.join(' ') : ''
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 }
 

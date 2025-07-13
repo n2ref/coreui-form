@@ -1,9 +1,9 @@
 
 
-class HelpersFieldsPropertiesFields {
+let HelpersFieldsPropertiesFields = {
 
-    _fields          = null;
-    _fieldsDirection = null;
+    _fields: null,
+    _fieldsDirection: null,
 
 
 
@@ -30,7 +30,7 @@ class HelpersFieldsPropertiesFields {
         });
 
         return this;
-    }
+    },
 
 
     /**
@@ -40,7 +40,7 @@ class HelpersFieldsPropertiesFields {
     getAttachFields() {
 
         return this._fields;
-    }
+    },
 
 
     /**
@@ -51,7 +51,7 @@ class HelpersFieldsPropertiesFields {
 
         this._fields = null;
         return this;
-    }
+    },
 
 
     /**
@@ -62,7 +62,7 @@ class HelpersFieldsPropertiesFields {
     setFieldDirection(direction = null) {
         this._fieldsDirection = direction;
         return this;
-    }
+    },
 
 
     /**

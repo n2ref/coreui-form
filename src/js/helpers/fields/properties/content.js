@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesContent {
+let HelpersFieldsPropertiesContent = {
 
-    _content = null;
+    _content: null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesContent {
     setContent(content = null) {
         this._content = content;
         return this;
-    }
+    },
 
 
     /**

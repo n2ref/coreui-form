@@ -19,6 +19,7 @@ import HelpersFieldsPropertiesFields           from "./properties/fields";
 import HelpersFieldsPropertiesNoSend           from "./properties/noSend";
 import HelpersFieldsPropertiesValueY           from "./properties/valueY";
 import HelpersFieldsPropertiesValueN           from "./properties/valueN";
+import HelpersFieldsPropertiesOn               from "./properties/on";
 
 /**
  * @extends {HelpersFieldsPropertiesName}
@@ -39,6 +40,7 @@ import HelpersFieldsPropertiesValueN           from "./properties/valueN";
  * @extends {HelpersFieldsPropertiesShow}
  * @extends {HelpersFieldsPropertiesFields}
  * @extends {HelpersFieldsPropertiesNoSend}
+ * @extends {HelpersFieldsPropertiesOn}
  */
 class HelperFieldSwitch extends HelperField {
 
@@ -49,24 +51,25 @@ class HelperFieldSwitch extends HelperField {
     constructor(name, label) {
         super();
 
-        Utils.assign(this, HelpersFieldsPropertiesName);
-        Utils.assign(this, HelpersFieldsPropertiesLabel);
-        Utils.assign(this, HelpersFieldsPropertiesDescription);
-        Utils.assign(this, HelpersFieldsPropertiesDescriptionLabel);
-        Utils.assign(this, HelpersFieldsPropertiesHelp);
-        Utils.assign(this, HelpersFieldsPropertiesWidthLabel);
-        Utils.assign(this, HelpersFieldsPropertiesAttributes);
-        Utils.assign(this, HelpersFieldsPropertiesValueY);
-        Utils.assign(this, HelpersFieldsPropertiesValueN);
-        Utils.assign(this, HelpersFieldsPropertiesRequired);
-        Utils.assign(this, HelpersFieldsPropertiesReadonly);
-        Utils.assign(this, HelpersFieldsPropertiesInvalidText);
-        Utils.assign(this, HelpersFieldsPropertiesValidText);
-        Utils.assign(this, HelpersFieldsPropertiesPrefix);
-        Utils.assign(this, HelpersFieldsPropertiesSuffix);
-        Utils.assign(this, HelpersFieldsPropertiesShow);
-        Utils.assign(this, HelpersFieldsPropertiesFields);
-        Utils.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesName);
+        Object.assign(this, HelpersFieldsPropertiesLabel);
+        Object.assign(this, HelpersFieldsPropertiesDescription);
+        Object.assign(this, HelpersFieldsPropertiesDescriptionLabel);
+        Object.assign(this, HelpersFieldsPropertiesHelp);
+        Object.assign(this, HelpersFieldsPropertiesWidthLabel);
+        Object.assign(this, HelpersFieldsPropertiesAttributes);
+        Object.assign(this, HelpersFieldsPropertiesValueY);
+        Object.assign(this, HelpersFieldsPropertiesValueN);
+        Object.assign(this, HelpersFieldsPropertiesRequired);
+        Object.assign(this, HelpersFieldsPropertiesReadonly);
+        Object.assign(this, HelpersFieldsPropertiesInvalidText);
+        Object.assign(this, HelpersFieldsPropertiesValidText);
+        Object.assign(this, HelpersFieldsPropertiesPrefix);
+        Object.assign(this, HelpersFieldsPropertiesSuffix);
+        Object.assign(this, HelpersFieldsPropertiesShow);
+        Object.assign(this, HelpersFieldsPropertiesFields);
+        Object.assign(this, HelpersFieldsPropertiesNoSend);
+        Object.assign(this, HelpersFieldsPropertiesOn);
 
         this.setName(name);
         this.setLabel(label);
@@ -101,6 +104,7 @@ class HelperFieldSwitch extends HelperField {
         if (this._valueN !== null)           { result.valueN           = this._valueN; }
         if (this._attr !== null)             { result.attr             = this._attr; }
         if (this._noSend !== null)           { result.noSend           = this._noSend; }
+        if (this._on !== null)               { result.on               = this._on; }
 
         if (Array.isArray(this._fields)) {
             let fields = [];

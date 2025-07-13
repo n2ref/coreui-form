@@ -17,7 +17,8 @@ class FieldHidden extends Field {
             type: 'hidden',
             name: null,
             attr: {},
-            required: null
+            required: null,
+            on: null,
         }, options);
 
         super(form, options);
@@ -96,10 +97,28 @@ class FieldHidden extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return Utils.render(FormTpl['fields/hidden.html'], {
-            readonly: this._readonly,
-            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/hidden.html'], {
+                readonly: this._readonly,
+                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('input').addBack('input');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 }
 

@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesOptionsClass {
+let HelpersFieldsPropertiesOptionsClass = {
 
-    _optionsClass = null;
+    _optionsClass : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesOptionsClass {
     setOptionsClass(optionsClass = null) {
         this._optionsClass = optionsClass;
         return this;
-    }
+    },
 
 
     /**

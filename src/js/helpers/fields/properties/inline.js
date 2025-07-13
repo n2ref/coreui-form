@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesInline {
+let HelpersFieldsPropertiesInline = {
 
-    _inline = null;
+    _inline : null,
 
 
     /**
@@ -19,7 +19,7 @@ class HelpersFieldsPropertiesInline {
         }
 
         return this;
-    }
+    },
 
 
     /**

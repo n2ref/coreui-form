@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesWidth {
+let HelpersFieldsPropertiesWidth = {
 
-    _width = null;
+    _width : null,
 
 
     /**
@@ -13,7 +13,7 @@ class HelpersFieldsPropertiesWidth {
     setWidth(width = null) {
         this._width = width;
         return this;
-    }
+    },
 
 
     /**

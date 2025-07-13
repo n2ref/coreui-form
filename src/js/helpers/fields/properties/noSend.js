@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesNoSend {
+let HelpersFieldsPropertiesNoSend = {
 
-    _noSend = null;
+    _noSend : null,
 
 
     /**
@@ -19,7 +19,7 @@ class HelpersFieldsPropertiesNoSend {
         }
 
         return this;
-    }
+    },
 
 
     /**

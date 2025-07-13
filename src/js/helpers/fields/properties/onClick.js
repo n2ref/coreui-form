@@ -1,8 +1,8 @@
 
 
-class HelpersFieldsPropertiesOnclick {
+let HelpersFieldsPropertiesOnclick = {
 
-    _onclick = null;
+    _onclick : null,
 
 
     /**
@@ -17,7 +17,7 @@ class HelpersFieldsPropertiesOnclick {
         }
 
         return this;
-    }
+    },
 
 
     /**

@@ -34,6 +34,7 @@ class FieldTextarea extends Field {
             show: true,
             position: null,
             noSend: null,
+            on: null,
         }, options);
 
         super(form, options);
@@ -183,11 +184,29 @@ class FieldTextarea extends Field {
             attributes.push(name + '="' + value + '"');
         });
 
-        return Utils.render(FormTpl['fields/textarea.html'], {
-            readonly: this._readonly,
-            value: this._value !== null ? this._value : '',
-            attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
-        });
+        let field = $(
+            Utils.render(FormTpl['fields/textarea.html'], {
+                readonly: this._readonly,
+                value: this._value !== null ? this._value : '',
+                attr: attributes.length > 0 ? (' ' + attributes.join(' ')) : '',
+            })
+        );
+
+
+        if (this._options.on && Utils.isObject(this._options.on)) {
+            let input = field.find('textarea').addBack('textarea');
+
+            for (let [eventName, callback] of Object.entries(this._options.on)) {
+
+                if (typeof eventName === 'string' && typeof callback === 'function') {
+                    input.on(eventName, function (event) {
+                        callback({ field: this, event: event });
+                    })
+                }
+            }
+        }
+
+        return field;
     }
 }
 
