@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //     date: "2023-01-01"
     // });
     // simpleOptions.addFields([
-    //     simpleOptions.field.text('text', 'Text').setWidth(180),
+    //     simpleOptions.field.text('text', 'Text').setWidth(180).on('click', function () { console.log(111) }),
     //     simpleOptions.field.date('date', 'Date').setWidth(180).setDescription('Description text'),
     //     simpleOptions.field.textarea('textarea', 'Text Area').setWidth(180).setAttr({ style: 'height:60px; resize: vertical' }),
     // ]);
