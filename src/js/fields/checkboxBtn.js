@@ -131,12 +131,13 @@ class FieldCheckboxBtn extends FieldCheckbox {
 
         if (this._options.on && Utils.isObject(this._options.on)) {
             let input = field.find('input').addBack('input');
+            let that  = this;
 
             for (let [eventName, callback] of Object.entries(this._options.on)) {
 
                 if (typeof eventName === 'string' && typeof callback === 'function') {
                     input.on(eventName, function (event) {
-                        callback({ field: this, event: event });
+                        callback({ field: that, event: event });
                     })
                 }
             }
