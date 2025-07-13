@@ -101,7 +101,7 @@ class HelperFieldSelect extends HelperField {
         if (this._suffix !== null)           { result.suffix           = this._suffix; }
         if (this._show !== null)             { result.show             = this._show; }
         if (this._position !== null)         { result.position         = this._position; }
-        if (this._options !== null)          { result.options          = this._options; }
+        if (this._optionsSelect !== null)    { result.options          = this._optionsSelect; }
         if (this._attr !== null)             { result.attr             = this._attr; }
         if (this._noSend !== null)           { result.noSend           = this._noSend; }
 
