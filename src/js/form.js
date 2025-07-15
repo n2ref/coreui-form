@@ -227,7 +227,7 @@ class Form {
      */
     setHandler(url, httpMethod, formatData) {
 
-        if (typeof url !== 'function') {
+        if (typeof url !== 'string') {
             return;
         }
 
