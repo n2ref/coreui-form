@@ -760,10 +760,10 @@ class Form {
 
             if (that._options.hasOwnProperty('onSubmitSuccess')) {
                 if (typeof that._options.onSubmitSuccess === 'function') {
-                    that._options.onSubmitSuccess();
+                    that._options.onSubmitSuccess(jsonResponse);
 
                 } else if (typeof that._options.onSubmitSuccess === 'string') {
-                    (new Function(that._options.onSubmitSuccess))();
+                    (new Function(that._options.onSubmitSuccess))(jsonResponse);
                 }
             }
 
